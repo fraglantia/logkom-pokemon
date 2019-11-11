@@ -69,13 +69,26 @@ special_attack(turun,200).
 start :- addPemain(akill, 7, 5).
 addPemain(Nama, X, Y) :- asserta(pemain(Nama, [], X, Y)).
 
+%$ INVENTORY
+notmaxinv :-
+	findall(I,inventory(I),L),
+	count(L,N),
+	maxinventory(X),
+	N<X.
+
+count([],0).
+count([_|T],N) :-
+	count(T, N1),
+	N is N1+1, !.
+
+
+
 %% MOVE
 w :- pemain(Name, L, X, Y), Ynew is (Y-1), retract(pemain(Name, _, _, _)), asserta(pemain(Name, L, X, Ynew)).
 a :- pemain(Name, L, X, Y), Xnew is (X-1), retract(pemain(Name, _, _, _)), asserta(pemain(Name, L, Xnew, Y)).
 s :- pemain(Name, L, X, Y), Ynew is (Y+1), retract(pemain(Name, _, _, _)), asserta(pemain(Name, L, X, Ynew)).
 d :- pemain(Name, L, X, Y), Xnew is (X+1), retract(pemain(Name, _, _, _)), asserta(pemain(Name, L, Xnew, Y)).
 
-AddString([], X) :-
 %% DEBUG PRINT LIST
 printlist([]).
 printlist([X|List]) :-
@@ -123,8 +136,8 @@ help :-
 	write('6. d : Bergerak kearah bawah.'),nl,
 	write('7. attack : Menyerang tokemon pada peta yang sama.'),nl,
 	write('8. help : Menampilkan ini lagi.'),nl,
-	write('9. status : Melihat status diri.'),nl,
-	write('10. quit : Keluar dari permainan.'),nl,
+	write('9. status : Melihat status diri dan daftar pokemon yang dimiliki.'),nl,
+	write('10. quit : Keluar dari permainan.'),nl.
 	/*write('9. take(object) : Mengambil object pada petak.'),nl,
 	write('10. drop(object) : Membuang sebuah object dari inventory.'),nl,
 	write('11. use(object) : Menggunakan sebuah object yang dalam inventori.'),nl,
@@ -135,29 +148,26 @@ help :-
 	write('16. help : Menampilkan ini lagi.'),nl,
 	write('Catatan : Semua command di atas diakhiri titik (Misal : "help.")'), nl, !.*/
 
+writeTokemon(_,[H|T]).
+writeTokemon(_,[]) :- !.
+writeTokemon(A,[H|T]) :-
+	nl,
+	stat_tokemon(H,Nama,Curr_Health,_,_).
+	jenis_tokemon(Nama,Tipe,_,_,_,_).
+	write(Nama),nl,
+	write('Health : '), write(Curr_Health),nl,
+	write('Tipe   : '), write(Tipe),nl,
+	nl,
+	writeTokemon(A,T).
+
+
+
 status :-
 	\+pemain(_,_,_,_),
 	write('Command ini hanya bisa dipakai setelah game dimulai.'), nl,
 	write('Gunakan command "start." untuk memulai game.'), nl, !.
 status :-
-	write('Your Tokemon            : '),healthpoint(Darah),write(Darah),nl,
-	write('Armor              : '),armor(ArmorP),write(ArmorP),nl,
-	statusWeapon,
-	write('Kapasitas inventory: '),maxInventory(MaxInv),write(MaxInv),write(' barang'), nl,
-	write('Isi inventory      : '),nl,
-	inventory(_,_)->(
-		forall(inventory(Obj,Atribut),
-		(
-			write('  -'),write(Obj),write(' : '),write(Atribut),
-			(
-				(isAmmo(Obj,_,_),write(' peluru'));
-				(isSenjata(Obj,_),write(' damage'));
-				(isArmor(Obj,_),write(' defense'));
-				(isMedicine(Obj,_),write(' HP'));
-				(isBag(Obj,_),write(' barang'))
-			),nl
-		))
-	);(
-		write(' Inventory kosong'),nl
-	),
+	pemain(akill,Inventory,_,_),
+	write('[ ***** '),write(X),write('\'s  tokemon  ***** ]'),nl,
+	writeTokemon(akill,Inventory),
 !.
