@@ -1,6 +1,6 @@
 %% pemain(Nama,Inventory,Xpos,Ypos).
 
-:- dynamic pemain/4.
+%:- dynamic pemain/4.
 
 start :- addPemain(akill, 7, 5).
 addPemain(Nama, X, Y) :- asserta(pemain(Nama, [], X, Y)).
