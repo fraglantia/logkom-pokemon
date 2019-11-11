@@ -75,6 +75,7 @@ a :- pemain(Name, L, X, Y), Xnew is (X-1), retract(pemain(Name, _, _, _)), asser
 s :- pemain(Name, L, X, Y), Ynew is (Y+1), retract(pemain(Name, _, _, _)), asserta(pemain(Name, L, X, Ynew)).
 d :- pemain(Name, L, X, Y), Xnew is (X+1), retract(pemain(Name, _, _, _)), asserta(pemain(Name, L, Xnew, Y)).
 
+AddString([], X) :-
 %% DEBUG PRINT LIST
 printlist([]).
 printlist([X|List]) :-
@@ -112,3 +113,51 @@ map :-
 
 
 
+help :-
+	write('Daftar Command : '),nl,
+	write('1. start : memulai permainan.'),nl,
+	write('2. map : Menampilkan peta.'),nl,
+	write('3. w : Bergerak kearah atas.'),nl,
+	write('4. s : Bergerak kearah kanan.'),nl,
+	write('5. a : Bergerak kearah kiri.'),nl,
+	write('6. d : Bergerak kearah bawah.'),nl,
+	write('7. attack : Menyerang tokemon pada peta yang sama.'),nl,
+	write('8. help : Menampilkan ini lagi.'),nl,
+	write('9. status : Melihat status diri.'),nl,
+	write('10. quit : Keluar dari permainan.'),nl,
+	/*write('9. take(object) : Mengambil object pada petak.'),nl,
+	write('10. drop(object) : Membuang sebuah object dari inventory.'),nl,
+	write('11. use(object) : Menggunakan sebuah object yang dalam inventori.'),nl,
+	write('12. attack : Menyerang enemy dalam petak sama.'),nl,
+	write('13. status : Melihat status diri.'),nl,
+	write('14. save(filename) : Menyimpan permainan pemain.'),nl,
+	write('15. loads(filename) : Membuka save-an pemain.'),nl,
+	write('16. help : Menampilkan ini lagi.'),nl,
+	write('Catatan : Semua command di atas diakhiri titik (Misal : "help.")'), nl, !.*/
+
+status :-
+	\+pemain(_,_,_,_),
+	write('Command ini hanya bisa dipakai setelah game dimulai.'), nl,
+	write('Gunakan command "start." untuk memulai game.'), nl, !.
+status :-
+	write('Your Tokemon            : '),healthpoint(Darah),write(Darah),nl,
+	write('Armor              : '),armor(ArmorP),write(ArmorP),nl,
+	statusWeapon,
+	write('Kapasitas inventory: '),maxInventory(MaxInv),write(MaxInv),write(' barang'), nl,
+	write('Isi inventory      : '),nl,
+	inventory(_,_)->(
+		forall(inventory(Obj,Atribut),
+		(
+			write('  -'),write(Obj),write(' : '),write(Atribut),
+			(
+				(isAmmo(Obj,_,_),write(' peluru'));
+				(isSenjata(Obj,_),write(' damage'));
+				(isArmor(Obj,_),write(' defense'));
+				(isMedicine(Obj,_),write(' HP'));
+				(isBag(Obj,_),write(' barang'))
+			),nl
+		))
+	);(
+		write(' Inventory kosong'),nl
+	),
+!.
