@@ -10,7 +10,7 @@
 
 /* --- Deklarasi Fakta --- */
 %% pemain(Nama,Inventory,Xpos,Ypos).
-%% stat_tokemon(Id,Nama,Curr_Health,Max_Health,Level).
+%% stat_tokemon(Id,Nama,Curr_Health,Level).
 %% normal_attack(Nama_Attack,Base_Damage).
 %% special_attack(Nama_Special,Base_Damage).
 %% potion(Jumlah).
@@ -64,17 +64,82 @@ special_attack(turun,200).
 
 
 %% START
-%% :- dynamic pemain/4.
 
-start :- addPemain(akill, 7, 5).
+:- dynamic(pemain/4).
+:- dynamic(inFight/2).
+:- dynamic(tokemonCount/1).
+:- dynamic(stat_tokemon/4).
+
+%% pemain(Nama,Inventory,Xpos,Ypos).
+%% inFight(Id,Can_Run)
+%% tokemonCount(Counter)
+%% stat_tokemon(Id,Nama,Curr_Health,Level).
+
+
+start :- 
+	addPemain(akill, 7, 5),
+	asserta(tokemonCount(0)),
+	addTokemon(karma-nder, 1), addTokemon(rerumputan, 1), addTokemon(tukangair, 1),
+	add2InvTokemon(0).
+
+
 addPemain(Nama, X, Y) :- asserta(pemain(Nama, [], X, Y)).
 
-%$ INVENTORY
-notmaxinv :-
-	findall(I,inventory(I),L),
-	count(L,N),
-	maxinventory(X),
-	N<X.
+%% ================= UTILITY =================
+%% DEBUG PRINT LIST
+printlist([]).
+printlist([X|List]) :-
+	write(X),nl,
+	printlist(List).
+
+%% REPLACE FOR MAP
+replace([_|T], X, 0, [X|T]).
+replace([H|T], X, Pos, [H|B]) :- Pos > 0, Posmin1 is Pos-1, replace(T, X, Posmin1, B).
+
+%% ISLISTMEMBER
+isMember(X, [X|_]) :- !.
+isMember(X, [_|T]):- isMember(X, T).
+
+%% RANDOM
+randInterval(X, X, X) :- !.
+randInterval(X, A, B) :- random(R), X is floor((B-A+1)*R)+A.
+
+
+%% ================= STAT_TOKEMON =================
+wildTokemon(Id) :- pemain(_, L, _, _), \+isMember(Id, L).
+
+%% H adalah max health dari tokemon Nama pada level Level
+max_Health(Nama, Level, H) :- 
+	jenis_tokemon(Nama, _, Base, _, _, _), 
+	H is ceiling((Level-1) * (Base*0.1) + Base).
+
+%% menambahkan satu pada tokemonCount untuk id
+incTokemonCount :- 
+	tokemonCount(X), 
+	Xnew is (X+1), 
+	retract(tokemonCount(_)), 
+	asserta(tokemonCount(Xnew)).
+
+%% menambahkan tokemon Nama dengan level Level dengan id tokemoncount
+addTokemon(Nama, Level) :- 
+	tokemonCount(Id), 
+	max_Health(Nama, Level, H),
+	asserta(stat_tokemon(Id, Nama, H, Level)), 
+	incTokemonCount.
+
+%% menambahkan tokemon dengan id Id ke inventory pemain
+add2InvTokemon(Id) :- 
+	pemain(Name, L, X, Y),
+	append(L, [Id], Lnew),
+	retract(pemain(_, _, _, _)),
+	asserta(pemain(Name, Lnew, X, Y)).
+
+%$ ================= INVENTORY =================
+%% notmaxinv :-
+%% 	findall(I,inventory(I),L),
+%% 	count(L,N),
+%% 	maxinventory(X),
+%% 	N<X.
 
 count([],0).
 count([_|T],N) :-
@@ -82,20 +147,86 @@ count([_|T],N) :-
 	N is N1+1, !.
 
 
+%% ================= MOVE =================
+w :- inFight(_, _), write('Anda sedang melawan Tokemon!'), !.
+w :-
+	pemain(Name, L, X, Y), Ynew is (Y-1),
+	retract(pemain(_, _, _, _)),
+	asserta(pemain(Name, L, X, Ynew)),
+	randomWildTokemon(Id),
+	meetWild(Id).
 
-%% MOVE
-w :- pemain(Name, L, X, Y), Ynew is (Y-1), retract(pemain(Name, _, _, _)), asserta(pemain(Name, L, X, Ynew)).
-a :- pemain(Name, L, X, Y), Xnew is (X-1), retract(pemain(Name, _, _, _)), asserta(pemain(Name, L, Xnew, Y)).
-s :- pemain(Name, L, X, Y), Ynew is (Y+1), retract(pemain(Name, _, _, _)), asserta(pemain(Name, L, X, Ynew)).
-d :- pemain(Name, L, X, Y), Xnew is (X+1), retract(pemain(Name, _, _, _)), asserta(pemain(Name, L, Xnew, Y)).
+a :- inFight(_, _), write('Anda sedang melawan Tokemon!'), !.
+a :- 
+	pemain(Name, L, X, Y),
+	Xnew is (X-1), 
+	retract(pemain(_, _, _, _)), 
+	asserta(pemain(Name, L, Xnew, Y)),
+	randomWildTokemon(Id),
+	meetWild(Id).
 
-%% DEBUG PRINT LIST
-printlist([]).
-printlist([X|List]) :-
-	write(X),nl,
-	printlist(List).
+s :- inFight(_, _), write('Anda sedang melawan Tokemon!'), !.
+s :- 
+	pemain(Name, L, X, Y),
+	Ynew is (Y+1), 
+	retract(pemain(_, _, _, _)), 
+	asserta(pemain(Name, L, X, Ynew)),
+	randomWildTokemon(Id),
+	meetWild(Id).
 
-%% READ MAP FROM FILE
+d :- inFight(_, _), write('Anda sedang melawan Tokemon!'), !.
+d :- 
+	pemain(Name, L, X, Y),
+	Xnew is (X+1), 
+	retract(pemain(_, _, _, _)), 
+	asserta(pemain(Name, L, Xnew, Y)),
+	randomWildTokemon(Id),
+	meetWild(Id).
+
+%% RANDOMLY MEET TOKEMON
+randomWildTokemon(Id) :-
+	findall(X, (stat_tokemon(X, _, _, _), wildTokemon(X)), L),
+	length(L, Len),
+	IdxMax is Len-1,
+	randInterval(N, 0, IdxMax),
+	nth0(N, L, Id).
+
+meetWild(Id) :-
+	%% 25%
+	randInterval(X, 1, 4), X=1,
+	stat_tokemon(Id, Nama, _, _),
+	write('A wild '), write(Nama), write(' appears!'), nl,
+	asserta(inFight(Id, 1)),
+	write('Fight or Run?'), nl.
+
+
+%% ================= FIGHT =================
+fight :- 
+	\+inFight(_, _),
+	write('Tidak ada tokemon yang bisa anda lawan.'), nl, !.
+fight :- 
+	inFight(Id, _),
+	retract(inFight(_, _)),
+	asserta(inFight(Id, 0)),
+	stat_tokemon(Id, Nama, _, _),
+	write('Anda melawan '), write(Nama), write('!!'), nl.
+
+run :- 
+	\+inFight(_, _),
+	write('Lari dari apa atuh :('), nl, !.
+run :- 
+	inFight(_, 0),
+	write('Gak bisa lari :('), nl, !.
+run :- 
+	%% 50%
+	randInterval(X, 1, 2),
+	runRandom(X).
+
+runRandom(X) :- X=1, retract(inFight(_, _)), write('You sucessfully escaped the Tokemon!'), nl.
+runRandom(X) :- X=2, write('You failed to run!'), nl, fight.
+
+
+%% ================= MAP =================
 readMap(InStream,Chars):-
 	get_code(InStream,Char),
 	checkChar(Char,Chars,InStream).
@@ -106,17 +237,13 @@ checkChar(Char,[Char|Chars],InStream):-
 	get_code(InStream,NextChar),
 	checkChar(NextChar,Chars,InStream).
 
-
-replace([_|T], X, 0, [X|T]).
-replace([H|T], X, Pos, [H|B]) :- Pos > 0, Posmin1 is Pos-1, replace(T, X, Posmin1, B).
-
 %% (X, Y) = 24*Y + 2*X
 replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (24*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
 
 map :-
 	open('peta.txt',read,Str), !,
 	readMap(Str, Chars),
-	pemain(akill, _, X, Y),
+	pemain(_, _, X, Y),
 	%% 80 = charcode P
 	replaceCoor(Chars, X, Y, 80, MapwithP),
 	atom_codes(M,MapwithP),
@@ -125,7 +252,7 @@ map :-
 	!.
 
 
-
+%% ================= HELP =================
 help :-
 	write('Daftar Command : '),nl,
 	write('1. start : memulai permainan.'),nl,
@@ -148,26 +275,28 @@ help :-
 	write('16. help : Menampilkan ini lagi.'),nl,
 	write('Catatan : Semua command di atas diakhiri titik (Misal : "help.")'), nl, !.*/
 
-writeTokemon(_,[H|T]).
-writeTokemon(_,[]) :- !.
-writeTokemon(A,[H|T]) :-
-	nl,
-	stat_tokemon(H,Nama,Curr_Health,_,_).
-	jenis_tokemon(Nama,Tipe,_,_,_,_).
-	write(Nama),nl,
-	write('Health : '), write(Curr_Health),nl,
-	write('Tipe   : '), write(Tipe),nl,
-	nl,
-	writeTokemon(A,T).
+
+writeInventory([]) :- !.
+writeInventory([H|T]) :- 
+	writeStat(H), 
+	writeInventory(T).
+
+writeStat(Id) :-
+	stat_tokemon(Id, Nama, Curr_H, Level),
+	jenis_tokemon(Nama, Tipe, _, _, _, _),
+	max_Health(Nama, Level, Max_H),
+	write(Nama), nl,
+	write('Level: '), write(Level), nl,
+	write('Health: '), write(Curr_H), write('/'), write(Max_H), nl,
+	write('Type: '), write(Tipe), nl, nl.
 
 
-
+%% ================= STAT =================
 status :-
 	\+pemain(_,_,_,_),
 	write('Command ini hanya bisa dipakai setelah game dimulai.'), nl,
 	write('Gunakan command "start." untuk memulai game.'), nl, !.
 status :-
-	pemain(akill,Inventory,_,_),
-	write('[ ***** '),write(X),write('\'s  tokemon  ***** ]'),nl,
-	writeTokemon(akill,Inventory),
-!.
+	pemain(X,Inventory,_,_),
+	write('[ ***** '), write(X), write('\'s  tokemon  ***** ]'), nl,
+	writeInventory(Inventory), !.
