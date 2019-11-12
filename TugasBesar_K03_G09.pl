@@ -66,21 +66,21 @@ special_attack(turun,200).
 %% START
 
 :- dynamic(pemain/4).
-:- dynamic(inFight/2).
+:- dynamic(inFight/3).
 :- dynamic(tokemonCount/1).
 :- dynamic(stat_tokemon/4).
 
 %% pemain(Nama,Inventory,Xpos,Ypos).
-%% inFight(Id,Can_Run)
-%% tokemonCount(Counter)
+%% inFight(EnemyId, MyId, Can_Run). MyId if belom pick = -1, can_run 1/0
+%% tokemonCount(Counter).
 %% stat_tokemon(Id,Nama,Curr_Health,Level).
 
 
 start :- 
 	addPemain(akill, 7, 5),
 	asserta(tokemonCount(0)),
-	addTokemon(karma-nder, 1), addTokemon(rerumputan, 1), addTokemon(tukangair, 1),
-	add2InvTokemon(0).
+	addTokemon(karma-nder, 1), addTokemon(karma-nder, 2), addTokemon(tukangair, 1), addTokemon(rerumputan, 1),
+	add2InvTokemon(0), add2InvTokemon(1).
 
 
 addPemain(Nama, X, Y) :- asserta(pemain(Nama, [], X, Y)).
@@ -124,7 +124,7 @@ incTokemonCount :-
 addTokemon(Nama, Level) :- 
 	tokemonCount(Id), 
 	max_Health(Nama, Level, H),
-	asserta(stat_tokemon(Id, Nama, H, Level)), 
+	assertz(stat_tokemon(Id, Nama, H, Level)), 
 	incTokemonCount.
 
 %% menambahkan tokemon dengan id Id ke inventory pemain
@@ -148,7 +148,7 @@ count([_|T],N) :-
 
 
 %% ================= MOVE =================
-w :- inFight(_, _), write('Anda sedang melawan Tokemon!'), !.
+w :- inFight(_, _, _), write('Anda sedang melawan Tokemon!'), !.
 w :-
 	pemain(Name, L, X, Y), Ynew is (Y-1),
 	retract(pemain(_, _, _, _)),
@@ -156,7 +156,7 @@ w :-
 	randomWildTokemon(Id),
 	meetWild(Id).
 
-a :- inFight(_, _), write('Anda sedang melawan Tokemon!'), !.
+a :- inFight(_, _, _), write('Anda sedang melawan Tokemon!'), !.
 a :- 
 	pemain(Name, L, X, Y),
 	Xnew is (X-1), 
@@ -165,7 +165,7 @@ a :-
 	randomWildTokemon(Id),
 	meetWild(Id).
 
-s :- inFight(_, _), write('Anda sedang melawan Tokemon!'), !.
+s :- inFight(_, _, _), write('Anda sedang melawan Tokemon!'), !.
 s :- 
 	pemain(Name, L, X, Y),
 	Ynew is (Y+1), 
@@ -174,7 +174,7 @@ s :-
 	randomWildTokemon(Id),
 	meetWild(Id).
 
-d :- inFight(_, _), write('Anda sedang melawan Tokemon!'), !.
+d :- inFight(_, _, _), write('Anda sedang melawan Tokemon!'), !.
 d :- 
 	pemain(Name, L, X, Y),
 	Xnew is (X+1), 
@@ -184,6 +184,7 @@ d :-
 	meetWild(Id).
 
 %% RANDOMLY MEET TOKEMON
+%% random id from list of wild tokemons
 randomWildTokemon(Id) :-
 	findall(X, (stat_tokemon(X, _, _, _), wildTokemon(X)), L),
 	length(L, Len),
@@ -196,34 +197,86 @@ meetWild(Id) :-
 	randInterval(X, 1, 4), X=1,
 	stat_tokemon(Id, Nama, _, _),
 	write('A wild '), write(Nama), write(' appears!'), nl,
-	asserta(inFight(Id, 1)),
+	asserta(inFight(Id, -1, 1)),
 	write('Fight or Run?'), nl.
 
 
 %% ================= FIGHT =================
 fight :- 
-	\+inFight(_, _),
+	\+inFight(_, _, _),
 	write('Tidak ada tokemon yang bisa anda lawan.'), nl, !.
+fight :-
+	inFight(_, MyId, _),
+	MyId \= -1,
+	write('Ini kan lagi berantem :('), nl, !.
 fight :- 
-	inFight(Id, _),
-	retract(inFight(_, _)),
-	asserta(inFight(Id, 0)),
+	inFight(Id, _, _),
+	retract(inFight(_, _, _)),
+	asserta(inFight(Id, -1, 0)),
 	stat_tokemon(Id, Nama, _, _),
-	write('Anda melawan '), write(Nama), write('!!'), nl.
+	write('Anda melawan '), write(Nama), write('!!'), nl,
+	pemain(_, L, _, _),
+	write('Choose your Tokemon!'), nl,
+	write('Available Tokemons: ['), writeAvailable(L), write(']'), nl, !.
 
 run :- 
-	\+inFight(_, _),
+	\+inFight(_, _, _),
 	write('Lari dari apa atuh :('), nl, !.
 run :- 
-	inFight(_, 0),
+	inFight(_, _, 0),
 	write('Gak bisa lari :('), nl, !.
 run :- 
 	%% 50%
 	randInterval(X, 1, 2),
 	runRandom(X).
 
-runRandom(X) :- X=1, retract(inFight(_, _)), write('You sucessfully escaped the Tokemon!'), nl.
+runRandom(X) :- X=1, retract(inFight(_, _, _)), write('You sucessfully escaped the Tokemon!'), nl.
 runRandom(X) :- X=2, write('You failed to run!'), nl, fight.
+
+%% cari Name di Inventory ambil yg pertama if none Id = -1
+inInventory(Name, Id) :- 
+	findall(X, (stat_tokemon(X, _, _, _), \+wildTokemon(X)), L),
+	searchNameInList(Name, L, Id).
+
+
+searchNameInList(_, [], -1) :- !.
+
+searchNameInList(Name, [Id|_], Id) :-
+	stat_tokemon(Id, Name, _, _), !.
+
+searchNameInList(Name, [_|T], Id) :-
+	searchNameInList(Name, T, Id).
+
+
+pick(_) :-
+	\+inFight(_, _, _),
+	write('Anda tidak dalam battle saat ini.'), nl, !.
+
+pick(_) :-
+	inFight(_, MyId, _),
+	MyId \= -1,
+	write('Anda sudah pick tokemon!'), nl, !.
+
+pick(Name) :-
+	\+jenis_tokemon(Name, _, _, _, _, _),
+	write('Tidak ada tokemon bernama '),
+	write(Name), write('!'), nl, !.
+
+pick(Name) :-
+	inInventory(Name, Id),
+	Id = -1,
+	write('Anda tidak memiliki '),
+	write(Name), write('!'), nl, !.
+
+pick(Name) :-
+	inInventory(Name, Id),
+	Id \= -1,
+	retract(inFight(EnemyId, _, _)),
+	asserta(inFight(EnemyId, Id, 0)),
+	write(Name), write(', I choose you!'), nl,
+	writeStat(Id),
+	writeStat(EnemyId), !.
+
 
 
 %% ================= MAP =================
@@ -276,10 +329,21 @@ help :-
 	write('Catatan : Semua command di atas diakhiri titik (Misal : "help.")'), nl, !.*/
 
 
+writeAvailable([]) :- !.
+writeAvailable([A]) :- 
+	writeName(A).
+writeAvailable([H|T]) :- 
+	writeName(H), write(', '),
+	writeAvailable(T).
+
 writeInventory([]) :- !.
 writeInventory([H|T]) :- 
 	writeStat(H), 
 	writeInventory(T).
+
+writeName(Id) :- 
+	stat_tokemon(Id, Nama, _, _),
+	write(Nama).
 
 writeStat(Id) :-
 	stat_tokemon(Id, Nama, Curr_H, Level),
