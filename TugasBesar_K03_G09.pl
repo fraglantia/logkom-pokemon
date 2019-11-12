@@ -298,7 +298,14 @@ attack :-
 	assertz(stat_tokemon(EnemyId, EnemyName, NewHealth, Lvl)), nl,
 	write('You dealt '), write(Dmg), write(' damage to '), write(EnemyName), nl, 
 	writeStat(MyId),
-	writeStat(EnemyId), !.
+	writeStat(EnemyId),
+	checkIfEnemyDead(EnemyId), !.
+
+checkIfEnemyDead(Id) :- 
+	stat_tokemon(Id, Name, Health, _),
+	Health =< 0,
+	write('You defeated '), write(Name), write('!'), nl, 
+	retract(inFight(_, _, _)), !.
 
 %% check if enemy is defeated retract inFight
 
