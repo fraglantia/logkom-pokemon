@@ -278,6 +278,30 @@ pick(Name) :-
 	writeStat(EnemyId), !.
 
 
+attack :- 
+	\+inFight(_, _, _),
+	write('Anda tidak dalam battle saat ini.'), nl, !.
+
+attack :-
+	inFight(_, MyId, _),
+	MyId = -1,
+	write('Anda belum pick tokemon!'), nl, !.	
+
+attack :- 
+	inFight(EnemyId, MyId, _),
+	stat_tokemon(EnemyId, EnemyName, Health, Lvl),
+	stat_tokemon(MyId, MyName, _, _),
+	jenis_tokemon(MyName, _, _, AttackName, _, _),
+	normal_attack(AttackName, Dmg),
+	retract(stat_tokemon(EnemyId, EnemyName, Health, Lvl)),
+	NewHealth is Health-Dmg,
+	assertz(stat_tokemon(EnemyId, EnemyName, NewHealth, Lvl)), nl,
+	write('You dealt '), write(Dmg), write(' damage to '), write(EnemyName), nl, 
+	writeStat(MyId),
+	writeStat(EnemyId), !.
+
+%% check if enemy is defeated retract inFight
+
 
 %% ================= MAP =================
 readMap(InStream,Chars):-
