@@ -67,11 +67,13 @@ special_attack(turun,200).
 
 :- dynamic(pemain/4).
 :- dynamic(inFight/4).
+:- dynamic(mayCapture/2).
 :- dynamic(tokemonCount/1).
 :- dynamic(stat_tokemon/4).
 
 %% pemain(Nama,Inventory,Xpos,Ypos).
 %% inFight(EnemyId, MyId, Can_Run, Can_Special). MyId if belom pick = -1, Can_Run 1/0, Can_Special 1/0
+%% mayCapture(Yes/No, Id) 1/0
 %% tokemonCount(Counter).
 %% stat_tokemon(Id,Nama,Curr_Health,Level).
 
@@ -79,9 +81,12 @@ special_attack(turun,200).
 start :- 
 	addPemain(akill, 7, 5),
 	asserta(tokemonCount(0)),
+	asserta(mayCapture(0, -1)),
 	addTokemon(karma-nder, 1), addTokemon(karma-nder, 2), addTokemon(tukangair, 1), addTokemon(rerumputan, 1),
-	add2InvTokemon(0), add2InvTokemon(1).
+	addTokemon(sesasasosa, 1), addTokemon(abhaigimon, 2), addTokemon(tukangair, 5), addTokemon(rerumputan, 7),
+	add2InvTokemon(0), add2InvTokemon(1), add2InvTokemon(2), add2InvTokemon(3), add2InvTokemon(5).
 
+%% todo initialize tokemons
 
 addPemain(Nama, X, Y) :- asserta(pemain(Nama, [], X, Y)).
 
@@ -91,6 +96,13 @@ printlist([]).
 printlist([X|List]) :-
 	write(X),nl,
 	printlist(List).
+
+%% COUNT N LIST
+count([],0).
+count([_|T],N) :-
+	count(T, N1),
+	N is N1+1, !.
+
 
 %% REPLACE FOR MAP
 replace([_|T], X, 0, [X|T]).
@@ -103,7 +115,6 @@ isMember(X, [_|T]):- isMember(X, T).
 %% RANDOM
 randInterval(X, X, X) :- !.
 randInterval(X, A, B) :- random(R), X is floor((B-A+1)*R)+A.
-
 
 %% ================= STAT_TOKEMON =================
 wildTokemon(Id) :- pemain(_, L, _, _), \+isMember(Id, L).
@@ -135,16 +146,17 @@ add2InvTokemon(Id) :-
 	asserta(pemain(Name, Lnew, X, Y)).
 
 %$ ================= INVENTORY =================
-%% notmaxinv :-
-%% 	findall(I,inventory(I),L),
-%% 	count(L,N),
-%% 	maxinventory(X),
-%% 	N<X.
+notMaxInv :-
+	pemain(_, L, _, _),
+	count(L, N),
+	%% maxinventory(X),
+	N<6.
 
-count([],0).
-count([_|T],N) :-
-	count(T, N1),
-	N is N1+1, !.
+deleteFromInv(Id) :-
+	pemain(Name, L, X, Y),
+	delete(L, Id, NewL),
+	retract(pemain(_, _, _, _)),
+	asserta(pemain(Name, NewL, X, Y)).
 
 
 %% ================= MOVE =================
@@ -153,6 +165,7 @@ w :-
 	pemain(Name, L, X, Y), Ynew is (Y-1),
 	retract(pemain(_, _, _, _)),
 	asserta(pemain(Name, L, X, Ynew)),
+	makeCannotCapture,
 	randomWildTokemon(Id),
 	meetWild(Id).
 
@@ -162,6 +175,7 @@ a :-
 	Xnew is (X-1), 
 	retract(pemain(_, _, _, _)), 
 	asserta(pemain(Name, L, Xnew, Y)),
+	makeCannotCapture,
 	randomWildTokemon(Id),
 	meetWild(Id).
 
@@ -171,6 +185,7 @@ s :-
 	Ynew is (Y+1), 
 	retract(pemain(_, _, _, _)), 
 	asserta(pemain(Name, L, X, Ynew)),
+	makeCannotCapture,
 	randomWildTokemon(Id),
 	meetWild(Id).
 
@@ -180,6 +195,7 @@ d :-
 	Xnew is (X+1), 
 	retract(pemain(_, _, _, _)), 
 	asserta(pemain(Name, L, Xnew, Y)),
+	makeCannotCapture,
 	randomWildTokemon(Id),
 	meetWild(Id).
 
@@ -187,7 +203,7 @@ d :-
 %% random id from list of wild tokemons
 randomWildTokemon(Id) :-
 	findall(X, (stat_tokemon(X, _, _, _), wildTokemon(X)), L),
-	length(L, Len),
+	count(L, Len),
 	IdxMax is Len-1,
 	randInterval(N, 0, IdxMax),
 	nth0(N, L, Id).
@@ -277,6 +293,25 @@ pick(Name) :-
 	writeStat(Id),
 	writeStat(EnemyId), !.
 
+drop(Name) :-
+	\+jenis_tokemon(Name, _, _, _, _, _),
+	write('Tidak ada tokemon bernama '),
+	write(Name), write('!'), nl, !.
+
+drop(Name) :-
+	inInventory(Name, Id),
+	Id = -1,
+	write('Anda tidak memiliki '),
+	write(Name), write('!'), nl, !.
+
+drop(Name) :-
+	inInventory(Name, Id),
+	Id \= -1,
+	deleteFromInv(Id), 
+	write('You have dropped '), write(Name), write('!'), nl, !.
+
+
+%% todo : how to differ 2 same pokemons : list first?
 
 attack :- 
 	\+inFight(_, _, _, _),
@@ -299,6 +334,11 @@ attack :-
 	writeStat(MyId),
 	writeStat(EnemyId),
 	checkIfEnemyDead(EnemyId), !.
+
+
+specialAttack :- 
+	\+inFight(_, _, _, _),
+	write('Anda tidak dalam battle saat ini.'), nl, !.
 
 specialAttack :- 
 	inFight(_, _, _, Can_Special),
@@ -329,11 +369,44 @@ dealDmg(Id, Dmg) :-
 checkIfEnemyDead(Id) :- 
 	stat_tokemon(Id, Name, Health, _),
 	Health =< 0,
-	write('You defeated '), write(Name), write('!'), nl, 
-	retract(inFight(_, _, _, _)), !.
+	write(Name),
+	write(' faints! Do you want to capture '),
+	write(Name),
+	write('? (capture/0 to capture'),
+	write(Name), write(', otherwise move away.'), nl,
+	retract(inFight(_, _, _, _)), 
+	retract(stat_tokemon(Id, Name, Health, Level)),
+	max_Health(Name, Level, Max_H),
+	assertz(stat_tokemon(Id, Name, Max_H, Level)), 
+	makeCanCapture(Id), !.
 
 %% check if enemy is defeated retract inFight
+%% as of now respawn, MUNGKIN GANTI!
 
+
+%% ================= CAPTURE =================
+makeCanCapture(Id) :- retract(mayCapture(_, _)), asserta(mayCapture(1, Id)).
+makeCannotCapture :- retract(mayCapture(_, _)), asserta(mayCapture(0, -1)).
+
+capture :-
+	mayCapture(X, _),
+	X=0,
+	write('Capture apaan atuh :('), nl, !.
+
+capture :-
+	mayCapture(X, _), X=1,
+	\+notMaxInv,
+	write('You cannot capture another Tokemon! You have to drop one first.'), nl, !.
+
+capture :-
+	mayCapture(X, Id), X=1,
+	notMaxInv,
+	stat_tokemon(Id, Name, _, _),
+	makeCannotCapture,
+	add2InvTokemon(Id),
+	write(Name), write(' is captured!'), nl, !.
+
+%% todo : check if full, add random chance of success
 
 %% ================= MAP =================
 readMap(InStream,Chars):-
