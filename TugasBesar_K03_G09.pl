@@ -124,6 +124,8 @@ max_Health(Nama, Level, H) :-
 	jenis_tokemon(Nama, _, Base, _, _, _), 
 	H is ceiling((Level-1) * (Base*0.1) + Base).
 
+%% todo : damage modifier dari base
+
 %% menambahkan satu pada tokemonCount untuk id
 incTokemonCount :- 
 	tokemonCount(X), 
@@ -289,7 +291,7 @@ pick(Name) :-
 	Id \= -1,
 	retract(inFight(EnemyId, _, _, Can_Special)),
 	asserta(inFight(EnemyId, Id, 0, Can_Special)),
-	write(Name), write(', I choose you!'), nl,
+	write(Name), write(', I choose you!'), nl, nl,
 	writeStat(Id),
 	writeStat(EnemyId), !.
 
@@ -307,7 +309,8 @@ drop(Name) :-
 drop(Name) :-
 	inInventory(Name, Id),
 	Id \= -1,
-	deleteFromInv(Id), 
+	deleteFromInv(Id),
+	retract(stat_tokemon(Id, _, _, _)),
 	write('You have dropped '), write(Name), write('!'), nl, !.
 
 
@@ -328,13 +331,11 @@ attack :-
 	stat_tokemon(MyId, MyName, _, _),
 	jenis_tokemon(MyName, _, _, AttackName, _, _),
 	normal_attack(AttackName, Dmg),
-	dealDmg(EnemyId, Dmg), nl,
-	write(AttackName), write('!!!'), nl,
-	write('You dealt '), write(Dmg), write(' damage to '), write(EnemyName), nl, 
-	writeStat(MyId),
-	writeStat(EnemyId),
-	checkIfEnemyDead(EnemyId), !.
-
+	dealDmg(EnemyId, Dmg),
+	nl, write(AttackName), write('!!!'), nl,
+	write('You dealt '), write(Dmg), write(' damage to '), write(EnemyName), write('!'), nl, 
+	(checkIfEnemyDead(EnemyId); enemyAttack, (writeStat(MyId), writeStat(EnemyId))), 
+	checkIfTokemonPemainDead(MyId), !.
 
 specialAttack :- 
 	\+inFight(_, _, _, _),
@@ -355,30 +356,52 @@ specialAttack :-
 	retract(inFight(_, _, _, _)), 
 	asserta(inFight(EnemyId, MyId, Can_Run, 0)),
 	write(SpecialName), write('!!!'), nl,
-	write('You dealt '), write(Dmg), write(' damage to '), write(EnemyName), nl, 
-	writeStat(MyId),
-	writeStat(EnemyId),
-	checkIfEnemyDead(EnemyId), !.
+	write('You dealt '), write(Dmg), write(' damage to '), write(EnemyName), write('!'), nl,
+	(checkIfEnemyDead(EnemyId); enemyAttack, (writeStat(MyId), writeStat(EnemyId))), 
+	checkIfTokemonPemainDead(MyId), !.
+%% todo : tipe pokemon as dmg modifier
 
+enemyAttack :- 
+	inFight(EnemyId, MyId, _, _),
+	stat_tokemon(EnemyId, EnemyName, _, _),
+	stat_tokemon(MyId, MyName, _, _),
+	jenis_tokemon(EnemyName, _, _, AttackName, _, _),
+	normal_attack(AttackName, Dmg),
+	dealDmg(MyId, Dmg),
+	nl, write(AttackName), write('!!!'), nl,
+	write('It dealt '), write(Dmg), write(' damage to '), write(MyName), write('!'), nl, nl, !.
+%% todo: enemy special attack
 
 dealDmg(Id, Dmg) :- 
 	retract(stat_tokemon(Id, EnemyName, Health, Lvl)),
 	NewHealth is Health-Dmg,
 	assertz(stat_tokemon(Id, EnemyName, NewHealth, Lvl)).
 
+%% mengecek jika lawanya sudah mati :(
 checkIfEnemyDead(Id) :- 
 	stat_tokemon(Id, Name, Health, _),
 	Health =< 0,
 	write(Name),
 	write(' faints! Do you want to capture '),
 	write(Name),
-	write('? (capture/0 to capture'),
+	write('? (capture/0 to capture '),
 	write(Name), write(', otherwise move away.'), nl,
 	retract(inFight(_, _, _, _)), 
 	retract(stat_tokemon(Id, Name, Health, Level)),
 	max_Health(Name, Level, Max_H),
 	assertz(stat_tokemon(Id, Name, Max_H, Level)), 
 	makeCanCapture(Id), !.
+
+%% mengecek jika tokemon yg dimiliki pemain mati
+checkIfTokemonPemainDead(Id) :- 
+	stat_tokemon(Id, Name, Health, _),
+	Health =< 0,
+	write('Yaaah, '), write(Name), write(' mati :(((('), nl,
+	write('Please pick another tokemon!'), nl,
+	inFight(EnemyId, _, Can_Run, _),
+	retract(inFight(_, _, _, _)), 
+	asserta(inFight(EnemyId, -1, Can_Run, 1)),
+	deleteFromInv(Id), retract(stat_tokemon(Id, _, _, _)), !.
 
 %% check if enemy is defeated retract inFight
 %% as of now respawn, MUNGKIN GANTI!
