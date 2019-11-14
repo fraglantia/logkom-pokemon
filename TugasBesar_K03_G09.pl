@@ -95,6 +95,11 @@ tipeModifier(leaves, leaves, 1.0).
 
 
 start :- 
+	retractall(pemain(_, _, _, _)),
+	retractall(stat_tokemon(_, _, _, _)),
+	retractall(inFight(_, _, _, _)),
+	retractall(mayCapture(_, _)),
+	retractall(tokemonCount(_)),
 	addPemain(akill, 7, 5),
 	asserta(tokemonCount(0)),
 	asserta(mayCapture(0, -1)),
@@ -103,6 +108,47 @@ start :-
 	add2InvTokemon(0), add2InvTokemon(1), add2InvTokemon(2), add2InvTokemon(3), add2InvTokemon(5).
 
 %% todo initialize tokemons
+
+%% SAVE/LOAD 
+%% note: filename harus pake kutip
+
+savefile(Filename) :-
+	open(Filename, write, Str),
+	writeFacts(Str),
+	close(Str).
+
+writeFacts(Str) :-
+	forall(pemain(Name, L, X, Y), (write(Str,'pemain('), write(Str,Name), write(Str,','), write(Str,L), write(Str,','), write(Str,X), write(Str,','), write(Str,Y), write(Str,').\n'))),
+	forall(mayCapture(YesNo, IdC), (write(Str,'mayCapture('), write(Str,YesNo), write(Str,','), write(Str,IdC), write(Str,').\n'))),
+	forall(inFight(EnemyId, MyId, Can_Run, Can_Special), (write(Str,'inFight('), write(Str,EnemyId), write(Str,','), write(Str,MyId), write(Str,','), write(Str,Can_Run), write(Str,','), write(Str,Can_Special), write(Str,').\n'))),
+	forall(tokemonCount(C), (write(Str,'tokemonCount('), write(Str,C), write(Str,').\n'))),
+	forall(stat_tokemon(Id,Nama,Health,Lvl), (write(Str,'stat_tokemon('), write(Str,Id), write(Str,','), write(Str,Nama), write(Str,','), write(Str,Health), write(Str,','), write(Str,Lvl), write(Str,').\n'))).
+
+loadfile(Filename) :-
+	open(Filename, read, Str),
+	retractall(pemain(_, _, _, _)),
+	retractall(stat_tokemon(_, _, _, _)),
+	retractall(inFight(_, _, _, _)),
+	retractall(mayCapture(_, _)),
+	retractall(tokemonCount(_)),
+	readFacts(Str,Facts),
+	close(Str),
+	process(Facts), nl, !.
+
+process([]) :- !.
+
+process([H|T]) :- 
+	H \= end_of_file,
+	asserta(H),
+	process(T).
+
+readFacts(Str, []):-
+	at_end_of_stream(Str), !.
+
+readFacts(Str, [H|T]):-
+	\+at_end_of_stream(Str),
+	read(Str, H),
+	readFacts(Str, T).
 
 addPemain(Nama, X, Y) :- asserta(pemain(Nama, [], X, Y)).
 
