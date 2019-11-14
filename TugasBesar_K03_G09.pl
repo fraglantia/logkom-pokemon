@@ -15,15 +15,16 @@
 %% special_attack(Nama_Special,Base_Damage).
 %% potion(Jumlah).
 %% jenis_tokemon(Nama,Tipe,Base_Health,Nama_Attack,Nama_Special,Legend_or_normal).
+%% tipeModifier(FromTipe, ToTipe, Modf).
 
-jenis_tokemon(missingno,entah,999,att,spec,0).
+%% jenis_tokemon(missingno,entah,999,att,spec,0).
 jenis_tokemon(karma-nder,fire,60,duarr,nmax,0).
 jenis_tokemon(kompor_gas,fire,120,bom,bitu,0).
 jenis_tokemon(tukangair,water,60,ciprat,sebor,0).
-jenis_tokemon(rerumputan,grass,60,lambai,bergoyang,1).
+jenis_tokemon(rerumputan,leaves,60,lambai,bergoyang,1).
 jenis_tokemon(sugiono,water,69,genjot,crot,1).
 jenis_tokemon(sesasasosa,fire,125,sekali,tujuhkali,1).
-jenis_tokemon(edukamon,grass,135,startup,bukalepek,1).
+jenis_tokemon(edukamon,leaves,135,startup,bukalepek,1).
 jenis_tokemon(abhaigimon,water,182,warga,turun,1).
 
 normal_attack(duarr,20).
@@ -42,6 +43,21 @@ special_attack(crot,69).
 special_attack(tujuhkali,77).
 special_attack(bukalepek,65).
 special_attack(turun,200).
+
+%% from fire
+tipeModifier(fire, fire, 1.0).
+tipeModifier(fire, water, 0.5).
+tipeModifier(fire, leaves, 1.5).
+%% from water
+tipeModifier(water, fire, 1.5).
+tipeModifier(water, water, 1.0).
+tipeModifier(water, leaves, 0.5).
+%% from water
+tipeModifier(leaves, fire, 0.5).
+tipeModifier(leaves, water, 1.5).
+tipeModifier(leaves, leaves, 1.0).
+
+
 
 /* --- Deklarasi Rules --- */
 %% start.
@@ -329,11 +345,14 @@ attack :-
 	inFight(EnemyId, MyId, _, _),
 	stat_tokemon(EnemyId, EnemyName, _, _),
 	stat_tokemon(MyId, MyName, _, _),
-	jenis_tokemon(MyName, _, _, AttackName, _, _),
+	jenis_tokemon(MyName, MyTipe, _, AttackName, _, _),
+	jenis_tokemon(EnemyName, EnemyTipe, _, _, _, _),
+	tipeModifier(MyTipe, EnemyTipe, Modf),
 	normal_attack(AttackName, Dmg),
-	dealDmg(EnemyId, Dmg),
+	NewDmg is floor(Dmg*Modf),
+	dealDmg(EnemyId, NewDmg),
 	nl, write(AttackName), write('!!!'), nl,
-	write('You dealt '), write(Dmg), write(' damage to '), write(EnemyName), write('!'), nl, 
+	write('You dealt '), write(NewDmg), write(' damage to '), write(EnemyName), write('!'), nl, 
 	(checkIfEnemyDead(EnemyId); enemyAttack, (writeStat(MyId), writeStat(EnemyId))), 
 	checkIfTokemonPemainDead(MyId), !.
 
@@ -350,26 +369,31 @@ specialAttack :-
 	inFight(EnemyId, MyId, Can_Run, _),
 	stat_tokemon(EnemyId, EnemyName, _, _),
 	stat_tokemon(MyId, MyName, _, _),
-	jenis_tokemon(MyName, _, _, _, SpecialName, _),
+	jenis_tokemon(MyName, MyTipe, _, _, SpecialName, _),
+	jenis_tokemon(EnemyName, EnemyTipe, _, _, _, _),
+	tipeModifier(MyTipe, EnemyTipe, Modf),
 	special_attack(SpecialName, Dmg),
-	dealDmg(EnemyId, Dmg), nl,
+	NewDmg is floor(Dmg*Modf),
+	dealDmg(EnemyId, NewDmg), nl,
 	retract(inFight(_, _, _, _)), 
 	asserta(inFight(EnemyId, MyId, Can_Run, 0)),
 	write(SpecialName), write('!!!'), nl,
-	write('You dealt '), write(Dmg), write(' damage to '), write(EnemyName), write('!'), nl,
+	write('You dealt '), write(NewDmg), write(' damage to '), write(EnemyName), write('!'), nl,
 	(checkIfEnemyDead(EnemyId); enemyAttack, (writeStat(MyId), writeStat(EnemyId))), 
 	checkIfTokemonPemainDead(MyId), !.
-%% todo : tipe pokemon as dmg modifier
 
 enemyAttack :- 
 	inFight(EnemyId, MyId, _, _),
 	stat_tokemon(EnemyId, EnemyName, _, _),
 	stat_tokemon(MyId, MyName, _, _),
-	jenis_tokemon(EnemyName, _, _, AttackName, _, _),
+	jenis_tokemon(EnemyName, EnemyTipe, _, AttackName, _, _),
+	jenis_tokemon(MyName, MyTipe, _, _, _, _),
+	tipeModifier(EnemyTipe, MyTipe, Modf),
 	normal_attack(AttackName, Dmg),
-	dealDmg(MyId, Dmg),
+	NewDmg is floor(Dmg*Modf),
+	dealDmg(MyId, NewDmg),
 	nl, write(AttackName), write('!!!'), nl,
-	write('It dealt '), write(Dmg), write(' damage to '), write(MyName), write('!'), nl, nl, !.
+	write('It dealt '), write(NewDmg), write(' damage to '), write(MyName), write('!'), nl, nl, !.
 %% todo: enemy special attack
 
 dealDmg(Id, Dmg) :- 
@@ -405,7 +429,6 @@ checkIfTokemonPemainDead(Id) :-
 
 %% check if enemy is defeated retract inFight
 %% as of now respawn, MUNGKIN GANTI!
-
 
 %% ================= CAPTURE =================
 makeCanCapture(Id) :- retract(mayCapture(_, _)), asserta(mayCapture(1, Id)).
@@ -513,6 +536,6 @@ status :-
 	write('Command ini hanya bisa dipakai setelah game dimulai.'), nl,
 	write('Gunakan command "start." untuk memulai game.'), nl, !.
 status :-
-	pemain(X,Inventory,_,_),
+	pemain(X,Inventory,_,_), nl,
 	write('[ ***** '), write(X), write('\'s  tokemon  ***** ]'), nl,
 	writeInventory(Inventory), !.
