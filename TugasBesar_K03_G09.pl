@@ -26,23 +26,43 @@ jenis_tokemon(sugiono,water,69,genjot,crot,1).
 jenis_tokemon(sesasasosa,fire,125,sekali,tujuhkali,1).
 jenis_tokemon(edukamon,leaves,135,startup,bukalepek,1).
 jenis_tokemon(abhaigimon,water,182,warga,turun,1).
+jenis_tokemon(martabak,earth,60,mamet,bowo,0).
+jenis_tokemon(mumu,wind,60,badai,topan,0).
+jenis_tokemon(gledek,lightning,60,halilintar,atta,0).
+jenis_tokemon(hiring,lightning,120,sekip,debat,1).
+jenis_tokemon(danus,earth,100,paid,promote,1).
+jenis_tokemon(tubes,wind,110,kelar,dong,1).
+
 
 normal_attack(duarr,20).
 normal_attack(ciprat,20).
 normal_attack(lambai,20).
+normal_attack(mamet,20).
+normal_attack(badai,20).
+normal_attack(halilintar,20).
 normal_attack(genjot,40).
 normal_attack(sekali,40).
 normal_attack(startup,40).
 normal_attack(warga,50).
 normal_attack(bom,30).
+normal_attack(sekip,40).
+normal_attack(paid,30).
+normal_attack(kelar,40).
+
 
 special_attack(nmax,30).
 special_attack(sebor,30).
 special_attack(bergoyang,30).
+special_attack(bowo,30).
+special_attack(topan,30).
+special_attack(atta,30).
 special_attack(crot,69).
 special_attack(tujuhkali,77).
 special_attack(bukalepek,65).
 special_attack(turun,200).
+special_attack(debat,60).
+special_attack(promote,60).
+special_attack(dong,70).
 
 %% from fire
 tipeModifier(fire, fire, 1.0).
@@ -57,6 +77,7 @@ tipeModifier(leaves, fire, 0.5).
 tipeModifier(leaves, water, 1.5).
 tipeModifier(leaves, leaves, 1.0).
 
+%%file water lightning earth leaves wind fire
 
 
 /* --- Deklarasi Rules --- */
