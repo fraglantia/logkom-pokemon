@@ -64,20 +64,51 @@ special_attack(debat,60).
 special_attack(promote,60).
 special_attack(dong,70).
 
+%%fire<water<lightning<earth<leaves<wind<fire
 %% from fire
 tipeModifier(fire, fire, 1.0).
 tipeModifier(fire, water, 0.5).
-tipeModifier(fire, leaves, 1.5).
+tipeModifier(fire, leaves, 1.0).
+tipeModifier(fire, lightning, 1.0).
+tipeModifier(fire, wind, 1.5).
+tipeModifier(fire, earth, 1.0).
 %% from water
 tipeModifier(water, fire, 1.5).
 tipeModifier(water, water, 1.0).
-tipeModifier(water, leaves, 0.5).
-%% from water
-tipeModifier(leaves, fire, 0.5).
-tipeModifier(leaves, water, 1.5).
+tipeModifier(water, leaves, 1.0).
+tipeModifier(water, lightning, 0.5).
+tipeModifier(water, wind, 1.0).
+tipeModifier(water, earth, 1.0).
+%% from leaves
+tipeModifier(leaves, fire, 1.0).
+tipeModifier(leaves, water, 1.0).
 tipeModifier(leaves, leaves, 1.0).
+tipeModifier(leaves, lightning, 1.0).
+tipeModifier(leaves, wind, 0.5).
+tipeModifier(leaves, earth, 1.5).
+%% from lightning
+tipeModifier(lightning, fire, 1.0).
+tipeModifier(lightning, water, 1.5).
+tipeModifier(lightning, leaves, 1.0).
+tipeModifier(lightning, lightning, 1.0).
+tipeModifier(lightning, wind, 1.0).
+tipeModifier(lightning, earth, 0.5).
+%% from wind
+tipeModifier(wind, fire, 0.5).
+tipeModifier(wind, water, 1.0).
+tipeModifier(wind, leaves, 1.5).
+tipeModifier(wind, lightning, 1.0).
+tipeModifier(wind, wind, 1.0).
+tipeModifier(wind, earth, 1.0).
+% %% from earth
+tipeModifier(earth, fire, 1.0).
+tipeModifier(earth, water, 1.0).
+tipeModifier(earth, leaves, 0.5).
+tipeModifier(earth, lightning, 1.5).
+tipeModifier(earth, wind, 1.0).
+tipeModifier(earth, earth, 1.0).
 
-%%file water lightning earth leaves wind fire
+
 
 
 /* --- Deklarasi Rules --- */
