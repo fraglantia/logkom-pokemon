@@ -157,6 +157,8 @@ start :-
 	asserta(mayCapture(0, -1)),
 	addTokemon(karma-nder, 1), addTokemon(karma-nder, 2), addTokemon(tukangair, 1), addTokemon(rerumputan, 1),
 	addTokemon(sesasasosa, 1), addTokemon(abhaigimon, 2), addTokemon(tukangair, 5), addTokemon(rerumputan, 7),
+	addTokemon(martabak, 1), addTokemon(mumu, 2), addTokemon(gledek, 1), addTokemon(hiring,3),
+	addTokemon(danus, 1), addTokemon(tubes,5),
 	add2InvTokemon(0), add2InvTokemon(1), add2InvTokemon(2), add2InvTokemon(3), add2InvTokemon(5).
 
 %% todo initialize tokemons
@@ -633,19 +635,19 @@ help :-
 	write('4. s : Bergerak kearah kanan.'),nl,
 	write('5. a : Bergerak kearah kiri.'),nl,
 	write('6. d : Bergerak kearah bawah.'),nl,
-	write('7. attack : Menyerang tokemon pada peta yang sama.'),nl,
+	write('7. status : Melihat status diri dan daftar pokemon yang dimiliki.'),nl,
 	write('8. help : Menampilkan ini lagi.'),nl,
-	write('9. status : Melihat status diri dan daftar pokemon yang dimiliki.'),nl,
-	write('10. quit : Keluar dari permainan.'),nl.
-	/*write('9. take(object) : Mengambil object pada petak.'),nl,
-	write('10. drop(object) : Membuang sebuah object dari inventory.'),nl,
-	write('11. use(object) : Menggunakan sebuah object yang dalam inventori.'),nl,
-	write('12. attack : Menyerang enemy dalam petak sama.'),nl,
-	write('13. status : Melihat status diri.'),nl,
-	write('14. save(filename) : Menyimpan permainan pemain.'),nl,
-	write('15. loads(filename) : Membuka save-an pemain.'),nl,
-	write('16. help : Menampilkan ini lagi.'),nl,
-	write('Catatan : Semua command di atas diakhiri titik (Misal : "help.")'), nl, !.*/
+	write('9. fight :Melawan pokemon liar yang ditemukan.'),nl,
+	write('10. attack : Menyerang tokemon yang sedang dilawan dengan normal attack.'),nl,
+	write('11. specialAttack : Menyerang tokemon yang sedang dilawan dengan special attack.'),nl,
+	write('12. pick(pokemon) : Menmanggil pokemon dari inventory.'),nl,
+	write('13. drop(pokemon) : Melepas pokemon yang dimiliki.'),nl,
+	write('14. capture : Menangkap pokemon yang sudah dikalahkan.'),nl,
+	write('15. run : Lariiiii.'),nl,
+	write('16. savefile(filename) : Menyimpan permainan pemain.'),nl,
+	write('17. loadfile(filename) : Membuka save-an pemain.'),nl,
+	write('18. quit : Keluar dari permainan.'),nl.
+
 
 
 writeAvailable([]) :- !.
@@ -683,3 +685,7 @@ status :-
 	pemain(X,Inventory,_,_), nl,
 	write('[ ***** '), write(X), write('\'s  tokemon  ***** ]'), nl,
 	writeInventory(Inventory), !.
+
+
+%% ================= QUIT =================
+quit :- halt.
