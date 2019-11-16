@@ -1,16 +1,16 @@
-XXXXXXXXXXXXXXXXXXXXXXXXXXX        
-X  o=====o  X - - - - - - XXXXXXXXX
-X  |G Y M|  +@- - - - -v- - - - - >
-X  |=====|  + -vX - -@- - - - - - >
-X  |[] []|  + - - - - - - - - - - >
-X  o==G==o  + - -v- - - - - - - - >
-X+++- - -++++ - - - - - - XXXXXXXXX
-X - - - - - - - - - - -v- X        
-X - - - - @@- - - -v- -v- X        
-X - - - - @ - - -v- - - - X        
-X - - - - - - - - -v- - - X        
-X - - - - - - -v- - - -v- X        
-X -@- - - XXXXXXXXXXXXXXXXX        
-X - - - - X                        
-X - - - - X                        
-XXX V V XXX                        
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                            
+X  o=====o  X - - - - - - - - XXXXXXXXX                    
+X  |G Y M|  X - - - - -v- - - - - - - >                    
+X  |=====|  X -v- - -@- - - - - - - - >                    
+X  |[] []|  X - - - - - - - v - - - - >                    
+X  o==G==o  X - -v- - - - - - - - - - >                    
+X+X+X - X+X+X - - - - - - - - XXXXXXXXX                    
+X - - - - - - - - - - -v- - - X                            
+X -v- - - @@- - - -v- -v- - - X                            
+X - - - - @v- - -v- - - - - - X                            
+X - - - - - - - - -v- - - - - X                            
+X - - - - - - -v- - - -v- - - X                            
+X -@- - - XXXXXXXXXXXXXXXXXXXXX                            
+X - - - - X                                                
+X - - - - X                                                
+XXX V V XXX                                                

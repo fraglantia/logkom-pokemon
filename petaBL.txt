@@ -1,0 +1,13 @@
+XXX ^ ^ XXXXXXXXXXXXXXXXXXX                                
+X - - -v- - - - - - - - - X        /\                      
+X -v- - - - - - - - -/\ - X  /\   /  \    XXXXXXXXXXXXXXXXX
+X - -v- - - - /\- - - - - X      / .  \   x - - /\- - - - X
+X - - - - - - - - /\- - - X               x - -/  \/\ - - X
+X - - - - - - - - - - - - XXXXXXXXXXXXXXXXX - /   /  \- - >
+X - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
+X - - - - - - - - - - - - - - - - - - - - - - - - - - v - >
+X - -/\ - - - - -/\ - - - - - - /\- - - - - - - - - - - - >
+X - /  \- - - - - - - - - -/\ -/  \ - - - - - - - - - - - >
+X - - - - -/\ - - - - - - /  \/    \- - -/\ - - - - - - - >
+X - - - - /  \- - - - - -/    \ - - - - - - -/\ - - -v- - X
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
