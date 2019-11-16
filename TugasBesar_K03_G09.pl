@@ -169,6 +169,7 @@ start :-
 	asserta(tokemonCount(0)),
 	asserta(mayCapture(0, -1)).
 
+
 %% todo initialize tokemons
 tokemonInit(kompor_gas).
 tokemonInit(tukangair).
@@ -191,6 +192,8 @@ savefile(Filename) :-
 	close(Str).
 
 writeFacts(Str) :-
+	forall(donePlayer(X), (write(Str,'donePlayer('), write(Str,X), write(Str,').\n'))),
+	forall(doneTokemon(X), (write(Str,'donePlayer('), write(Str,X), write(Str,').\n'))),
 	forall(pemain(Name, L, X, Y, Map), (write(Str,'pemain('), write(Str,Name), write(Str,','), write(Str,L), write(Str,','), write(Str,X), write(Str,','), write(Str,Y), write(Str,','), write(Str,Map),write(Str,').\n'))),
 	forall(mayCapture(YesNo, IdC), (write(Str,'mayCapture('), write(Str,YesNo), write(Str,','), write(Str,IdC), write(Str,').\n'))),
 	forall(inFight(EnemyId, MyId, Can_Run, Can_Special), (write(Str,'inFight('), write(Str,EnemyId), write(Str,','), write(Str,MyId), write(Str,','), write(Str,Can_Run), write(Str,','), write(Str,Can_Special), write(Str,').\n'))),
@@ -199,6 +202,8 @@ writeFacts(Str) :-
 
 loadfile(Filename) :-
 	open(Filename, read, Str),
+	retractall(donePlayer(_)),
+	retractall(doneTokemon(_)),
 	retractall(pemain(_, _, _, _, _)),
 	retractall(stat_tokemon(_, _, _, _)),
 	retractall(inFight(_, _, _, _)),
@@ -336,7 +341,7 @@ cekPeta(_, Xnext, Ynext, d, Xnew, Ynew) :-
 	Xnew is (Xnext-1),
 	Ynew is Ynext.
 
-getCharMap(Chars, X, Y, Symbol) :- Pos is (58*Y + 2*X), getChar(Chars, Symbol, Pos).
+getCharMap(Chars, X, Y, Symbol) :- Pos is (60*Y + 2*X), getChar(Chars, Symbol, Pos).
 
 w :- donePlayer(_), write('Anda belum memilih player!'),!.
 w :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
@@ -348,7 +353,7 @@ w :-
 	retract(pemain(_, _, _, _, _)),
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
-	map,
+	map, !,
     randomWildTokemon(Id),
 	meetWild(Id).
 
@@ -362,7 +367,7 @@ s :-
 	retract(pemain(_, _, _, _, _)), 
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
-	map,
+	map, !,
     randomWildTokemon(Id),
 	meetWild(Id).
 
@@ -376,7 +381,7 @@ a :-
 	retract(pemain(_, _, _, _, _)), 
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
-	map,
+	map, !,
     randomWildTokemon(Id),
 	meetWild(Id).
 
@@ -390,7 +395,7 @@ d :-
 	retract(pemain(_, _, _, _, _)), 
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
-	map,
+	map, !,
     randomWildTokemon(Id),
 	meetWild(Id).
 
