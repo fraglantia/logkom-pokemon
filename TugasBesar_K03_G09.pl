@@ -21,33 +21,58 @@
 jenis_tokemon(karma-nder,fire,60,duarr,nmax,0).
 jenis_tokemon(kompor_gas,fire,120,bom,bitu,0).
 jenis_tokemon(tukangair,water,60,ciprat,sebor,0).
-jenis_tokemon(rerumputan,leaves,60,lambai,bergoyang,1).
-jenis_tokemon(sugiono,water,69,genjot,crot,1).
+jenis_tokemon(rerumputan,leaves,60,lambai,bergoyang,0).
+jenis_tokemon(sugiono,water,69,genjot,crot,0).
 jenis_tokemon(sesasasosa,fire,125,sekali,tujuhkali,1).
-jenis_tokemon(edukamon,leaves,135,startup,bukalepek,1).
-jenis_tokemon(abhaigimon,water,182,warga,turun,1).
+jenis_tokemon(edukamon,leaves,135,startup,bukalepek,0).
+jenis_tokemon(abhaigimon,water,182,warga,turun,0).
+jenis_tokemon(martabak,earth,60,mamet,bowo,0).
+jenis_tokemon(mumu,wind,60,badai,topan,0).
+jenis_tokemon(gledek,lightning,60,halilintar,atta,0).
+jenis_tokemon(hiring,lightning,120,sekip,debat,0).
+jenis_tokemon(danus,earth,100,paid,promote,0).
+jenis_tokemon(tubes,wind,110,kelar,dong,1).
+
 
 normal_attack(duarr,20).
 normal_attack(ciprat,20).
 normal_attack(lambai,20).
+normal_attack(mamet,20).
+normal_attack(badai,20).
+normal_attack(halilintar,20).
 normal_attack(genjot,40).
 normal_attack(sekali,40).
 normal_attack(startup,40).
 normal_attack(warga,50).
 normal_attack(bom,30).
+normal_attack(sekip,40).
+normal_attack(paid,30).
+normal_attack(kelar,40).
+
 
 special_attack(nmax,30).
 special_attack(sebor,30).
 special_attack(bergoyang,30).
+special_attack(bowo,30).
+special_attack(topan,30).
+special_attack(atta,30).
 special_attack(crot,69).
 special_attack(tujuhkali,77).
 special_attack(bukalepek,65).
 special_attack(turun,200).
+special_attack(debat,60).
+special_attack(promote,60).
+special_attack(dong,70).
 
+%%fire<water<lightning<earth<leaves<wind<fire
 %% from fire
 tipeModifier(fire, fire, 1.0).
 tipeModifier(fire, water, 0.5).
 tipeModifier(fire, leaves, 1.5).
+tipeModifier(fire, leaves, 1.0).
+tipeModifier(fire, lightning, 1.0).
+tipeModifier(fire, wind, 1.5).
+tipeModifier(fire, earth, 1.0).
 %% from water
 tipeModifier(water, fire, 1.5).
 tipeModifier(water, water, 1.0).
@@ -55,7 +80,38 @@ tipeModifier(water, leaves, 0.5).
 %% from water
 tipeModifier(leaves, fire, 0.5).
 tipeModifier(leaves, water, 1.5).
+tipeModifier(water, leaves, 1.0).
+tipeModifier(water, lightning, 0.5).
+tipeModifier(water, wind, 1.0).
+tipeModifier(water, earth, 1.0).
+%% from leaves
+tipeModifier(leaves, fire, 1.0).
+tipeModifier(leaves, water, 1.0).
 tipeModifier(leaves, leaves, 1.0).
+tipeModifier(leaves, lightning, 1.0).
+tipeModifier(leaves, wind, 0.5).
+tipeModifier(leaves, earth, 1.5).
+%% from lightning
+tipeModifier(lightning, fire, 1.0).
+tipeModifier(lightning, water, 1.5).
+tipeModifier(lightning, leaves, 1.0).
+tipeModifier(lightning, lightning, 1.0).
+tipeModifier(lightning, wind, 1.0).
+tipeModifier(lightning, earth, 0.5).
+%% from wind
+tipeModifier(wind, fire, 0.5).
+tipeModifier(wind, water, 1.0).
+tipeModifier(wind, leaves, 1.5).
+tipeModifier(wind, lightning, 1.0).
+tipeModifier(wind, wind, 1.0).
+tipeModifier(wind, earth, 1.0).
+% %% from earth
+tipeModifier(earth, fire, 1.0).
+tipeModifier(earth, water, 1.0).
+tipeModifier(earth, leaves, 0.5).
+tipeModifier(earth, lightning, 1.5).
+tipeModifier(earth, wind, 1.0).
+tipeModifier(earth, earth, 1.0).
 
 % PETA
 getMap(tl,'petaTL.txt').
@@ -109,6 +165,8 @@ start :-
 	asserta(mayCapture(0, -1)),
 	addTokemon(karma-nder, 1), addTokemon(karma-nder, 2), addTokemon(tukangair, 1), addTokemon(rerumputan, 1),
 	addTokemon(sesasasosa, 1), addTokemon(abhaigimon, 2), addTokemon(tukangair, 5), addTokemon(rerumputan, 7),
+	addTokemon(martabak, 1), addTokemon(mumu, 2), addTokemon(gledek, 1), addTokemon(hiring,3),
+	addTokemon(danus, 1), addTokemon(tubes,5),
 	add2InvTokemon(0), add2InvTokemon(1), add2InvTokemon(2), add2InvTokemon(3), add2InvTokemon(5).
 
 %% todo initialize tokemons
@@ -570,7 +628,7 @@ replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (60*Y + 2*X), replace(Char
 
 map :-
 	pemain(_, _, X, Y, Map),
-	getMap(Map,Mapname)
+	getMap(Map,Mapname),
 	open(Mapname,read,Str), !,
 	readMap(Str, Chars),
 	%% 80 = charcode P
@@ -589,19 +647,18 @@ help :-
 	write('4. s : Bergerak kearah kanan.'),nl,
 	write('5. a : Bergerak kearah kiri.'),nl,
 	write('6. d : Bergerak kearah bawah.'),nl,
-	write('7. attack : Menyerang tokemon pada peta yang sama.'),nl,
+	write('7. status : Melihat status diri dan daftar pokemon yang dimiliki.'),nl,
 	write('8. help : Menampilkan ini lagi.'),nl,
-	write('9. status : Melihat status diri dan daftar pokemon yang dimiliki.'),nl,
-	write('10. quit : Keluar dari permainan.'),nl.
-	/*write('9. take(object) : Mengambil object pada petak.'),nl,
-	write('10. drop(object) : Membuang sebuah object dari inventory.'),nl,
-	write('11. use(object) : Menggunakan sebuah object yang dalam inventori.'),nl,
-	write('12. attack : Menyerang enemy dalam petak sama.'),nl,
-	write('13. status : Melihat status diri.'),nl,
-	write('14. save(filename) : Menyimpan permainan pemain.'),nl,
-	write('15. loads(filename) : Membuka save-an pemain.'),nl,
-	write('16. help : Menampilkan ini lagi.'),nl,
-	write('Catatan : Semua command di atas diakhiri titik (Misal : "help.")'), nl, !.*/
+	write('9. fight :Melawan pokemon liar yang ditemukan.'),nl,
+	write('10. attack : Menyerang tokemon yang sedang dilawan dengan normal attack.'),nl,
+	write('11. specialAttack : Menyerang tokemon yang sedang dilawan dengan special attack.'),nl,
+	write('12. pick(pokemon) : Menmanggil pokemon dari inventory.'),nl,
+	write('13. drop(pokemon) : Melepas pokemon yang dimiliki.'),nl,
+	write('14. capture : Menangkap pokemon yang sudah dikalahkan.'),nl,
+	write('15. run : Lariiiii.'),nl,
+	write('16. savefile(filename) : Menyimpan permainan pemain.'),nl,
+	write('17. loadfile(filename) : Membuka save-an pemain.'),nl,
+	write('18. quit : Keluar dari permainan.'),nl.
 
 
 writeAvailable([]) :- !.
@@ -639,3 +696,8 @@ status :-
 	pemain(X,Inventory,_,_,_), nl,
 	write('[ ***** '), write(X), write('\'s  tokemon  ***** ]'), nl,
 	writeInventory(Inventory), !.
+
+
+
+%% ================= QUIT =================
+quit :- halt. 
