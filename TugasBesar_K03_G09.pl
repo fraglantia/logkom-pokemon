@@ -108,7 +108,11 @@ tipeModifier(earth, lightning, 1.5).
 tipeModifier(earth, wind, 1.0).
 tipeModifier(earth, earth, 1.0).
 
-
+% PETA
+getMap(tl,'petaTL.txt').
+getMap(tr,'petaTR.txt').
+getMap(bl,'petaBl.txt').
+getMap(br,'petaBr.txt').
 
 
 /* --- Deklarasi Rules --- */

@@ -57,7 +57,7 @@ tipeModifier(leaves, fire, 0.5).
 tipeModifier(leaves, water, 1.5).
 tipeModifier(leaves, leaves, 1.0).
 
-
+% PETA
 getMap(tl,'petaTL.txt').
 getMap(tr,'petaTR.txt').
 getMap(bl,'petaBl.txt').
