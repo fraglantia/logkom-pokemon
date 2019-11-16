@@ -167,8 +167,7 @@ start :-
 	write('Siapa Anda? [choosePlayer(Nama)]: akill, jun-go, atau (Nama bebas).'),
 	asserta(doneTokemon(0)),
 	asserta(tokemonCount(0)),
-	asserta(mayCapture(0, -1)),
-	addTokemon(martabak, 1), addTokemon(sesasasosa, 100).
+	asserta(mayCapture(0, -1)).
 
 
 %% todo initialize tokemons
@@ -180,9 +179,12 @@ choosePlayer(Name) :-
 	retract(donePlayer(_)), 
 	(write(Name), write(' pilih tokemon Anda terlebih dahulu, [chooseTokemon(Nama)]: kompor_gas(Fire), tukangair(Water), atau lumud(Leaf)!')).
 chooseTokemon(_) :- donePlayer(_), write('Pilih player terlebih dahulu!'), !.
-chooseTokemon(_) :- (\+ tokemonInit(_)), write('Tokemon tidak ada dalam pilihan!'), !.
-chooseTokemon(Tokemon) :- addTokemon(Tokemon,1), add2InvTokemon(0), retract(doneTokemon(_)).
+chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada dalam pilihan!'), !.
+chooseTokemon(Tokemon) :- addTokemon(Tokemon,1), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
 
+addWildTokemon :- 
+	addTokemon(martabak, 1), 
+	addTokemon(sesasasosa, 100).
 
 %% SAVE/LOAD 
 %% note: filename harus pake kutip
