@@ -228,8 +228,8 @@ notMaxInv :-
 deleteFromInv(Id) :-
 	pemain(Name, L, X, Y, Map),
 	delete(L, Id, NewL),
-	retract(pemain(_, _, _, _, Map)),
-	asserta(pemain(Name, NewL, X, Y)).
+	retract(pemain(_, _, _, _, _)),
+	asserta(pemain(Name, NewL, X, Y, Map)).
 
 
 %% ================= MOVE =================
@@ -580,40 +580,6 @@ map :-
 	write(M),  nl,
 	!.
 
-map :-
-	pemain(_, _, X, Y, tr),
-	open('petaTR.txt',read,Str), !,
-	readMap(Str, Chars),
-	%% 80 = charcode P
-	replaceCoor(Chars, X, Y, 80, MapwithP),
-	atom_codes(M,MapwithP),
-	close(Str),
-	write(M),  nl,
-	!.
-
-map :-
-	pemain(_, _, X, Y, bl),
-	open('petaBL.txt',read,Str), !,
-	readMap(Str, Chars),
-	%% 80 = charcode P
-	replaceCoor(Chars, X, Y, 80, MapwithP),
-	atom_codes(M,MapwithP),
-	close(Str),
-	write(M),  nl,
-	!.
-
-map :-
-	pemain(_, _, X, Y, br),
-	open('petaBR.txt',read,Str), !,
-	readMap(Str, Chars),
-	%% 80 = charcode P
-	replaceCoor(Chars, X, Y, 80, MapwithP),
-	atom_codes(M,MapwithP),
-	close(Str),
-	write(M),  nl,
-	!.
-
-
 %% ================= HELP =================
 help :-
 	write('Daftar Command : '),nl,
@@ -666,10 +632,10 @@ writeStat(Id) :-
 
 %% ================= STAT =================
 status :-
-	\+pemain(_,_,_,_),
+	\+pemain(_,_,_,_,_),
 	write('Command ini hanya bisa dipakai setelah game dimulai.'), nl,
 	write('Gunakan command "start." untuk memulai game.'), nl, !.
 status :-
-	pemain(X,Inventory,_,_), nl,
+	pemain(X,Inventory,_,_,_), nl,
 	write('[ ***** '), write(X), write('\'s  tokemon  ***** ]'), nl,
 	writeInventory(Inventory), !.
