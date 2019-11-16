@@ -18,10 +18,10 @@
 %% tipeModifier(FromTipe, ToTipe, Modf).
 
 %% jenis_tokemon(missingno,entah,999,att,spec,0).
-jenis_tokemon(karma-nder,fire,60,duarr,nmax,0).
-jenis_tokemon(kompor_gas,fire,120,bom,bitu,0).
+jenis_tokemon(karma_nder,fire,60,duarr,nmax,0).
+jenis_tokemon(kompor_gas,fire,60,bom,bitu,0).
 jenis_tokemon(tukangair,water,60,ciprat,sebor,0).
-jenis_tokemon(lumud,leaf,100,kepelesed,badmud,0).
+jenis_tokemon(lumud,leaves,100,kepelesed,badmud,0).
 jenis_tokemon(rerumputan,leaves,60,lambai,bergoyang,0).
 jenis_tokemon(sugiono,water,69,genjot,crot,0).
 jenis_tokemon(sesasasosa,fire,125,sekali,tujuhkali,1).
@@ -36,34 +36,38 @@ jenis_tokemon(tubes,wind,110,kelar,dong,1).
 
 
 normal_attack(duarr,20).
+normal_attack(bom,30).
 normal_attack(ciprat,20).
+normal_attack(kepelesed,20).
 normal_attack(lambai,20).
-normal_attack(mamet,20).
-normal_attack(badai,20).
-normal_attack(halilintar,20).
 normal_attack(genjot,40).
 normal_attack(sekali,40).
 normal_attack(startup,40).
 normal_attack(warga,50).
-normal_attack(bom,30).
+normal_attack(mamet,20).
+normal_attack(badai,20).
+normal_attack(halilintar,20).
 normal_attack(sekip,40).
 normal_attack(paid,30).
 normal_attack(kelar,40).
 
 
 special_attack(nmax,30).
+special_attack(bitu,30).
 special_attack(sebor,30).
+special_attack(badmud,30).
 special_attack(bergoyang,30).
-special_attack(bowo,30).
-special_attack(topan,30).
-special_attack(atta,30).
-special_attack(crot,69).
+special_attack(crot,30).
 special_attack(tujuhkali,77).
 special_attack(bukalepek,65).
 special_attack(turun,200).
-special_attack(debat,60).
-special_attack(promote,60).
-special_attack(dong,70).
+special_attack(bowo,60).
+special_attack(topan,60).
+special_attack(atta,70).
+special_attack(debat,30).
+special_attack(promote,69).
+special_attack(dong,69).
+
 
 %%fire<water<lightning<earth<leaves<wind<fire
 %% from fire
@@ -120,6 +124,9 @@ getMap(tr,'petaTR.txt').
 getMap(bl,'petaBl.txt').
 getMap(br,'petaBr.txt').
 
+%% GYM LOCATION (X, Y, peta)
+gym_location(3,5,tl).
+
 /* --- Deklarasi Rules --- */
 %% start.
 %% help.
@@ -149,6 +156,7 @@ getMap(br,'petaBr.txt').
 :- dynamic(stat_tokemon/4).
 :- dynamic(donePlayer/1).
 :- dynamic(doneTokemon/1).
+:- dynamic(inGym/1).
 
 %% pemain(Nama,Inventory,Xpos,Ypos,Map).
 %% inFight(EnemyId, MyId, Can_Run, Can_Special). MyId if belom pick = -1, Can_Run 1/0, Can_Special 1/0
@@ -163,11 +171,15 @@ start :-
 	retractall(inFight(_, _, _, _)),
 	retractall(mayCapture(_, _)),
 	retractall(tokemonCount(_)),
+	retractall(donePlayer(_)),
+	retractall(doneTokemon(_)),
+	retractall(inGym(_)),
 	asserta(donePlayer(0)),
 	write('Siapa Anda? [choosePlayer(Nama)]: akill, jun-go, atau (Nama bebas).'),
 	asserta(doneTokemon(0)),
 	asserta(tokemonCount(0)),
-	asserta(mayCapture(0, -1)).
+	asserta(mayCapture(0, -1)),
+	asserta(inGym(0)).
 
 
 %% todo initialize tokemons
@@ -177,7 +189,7 @@ tokemonInit(lumud).
 choosePlayer(Name) :- 
 	addPemain(Name,10,1,tl), 
 	retract(donePlayer(_)), 
-	(write(Name), write(' pilih tokemon Anda terlebih dahulu, [chooseTokemon(Nama)]: kompor_gas(Fire), tukangair(Water), atau lumud(Leaf)!')).
+	(write(Name), write(' pilih tokemon Anda terlebih dahulu, [chooseTokemon(Nama)]: kompor_gas(Fire), tukangair(Water), atau lumud(leaves)!')).
 chooseTokemon(_) :- donePlayer(_), write('Pilih player terlebih dahulu!'), !.
 chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada dalam pilihan!'), !.
 chooseTokemon(Tokemon) :- addTokemon(Tokemon,1), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
@@ -196,17 +208,20 @@ savefile(Filename) :-
 
 writeFacts(Str) :-
 	forall(donePlayer(X), (write(Str,'donePlayer('), write(Str,X), write(Str,').\n'))),
-	forall(doneTokemon(X), (write(Str,'donePlayer('), write(Str,X), write(Str,').\n'))),
+	forall(doneTokemon(X), (write(Str,'doneTokemon('), write(Str,X), write(Str,').\n'))),
+	forall(inGym(X), (write(Str,'inGym('), write(Str,X), write(Str,').\n'))),
 	forall(pemain(Name, L, X, Y, Map), (write(Str,'pemain('), write(Str,Name), write(Str,','), write(Str,L), write(Str,','), write(Str,X), write(Str,','), write(Str,Y), write(Str,','), write(Str,Map),write(Str,').\n'))),
 	forall(mayCapture(YesNo, IdC), (write(Str,'mayCapture('), write(Str,YesNo), write(Str,','), write(Str,IdC), write(Str,').\n'))),
 	forall(inFight(EnemyId, MyId, Can_Run, Can_Special), (write(Str,'inFight('), write(Str,EnemyId), write(Str,','), write(Str,MyId), write(Str,','), write(Str,Can_Run), write(Str,','), write(Str,Can_Special), write(Str,').\n'))),
 	forall(tokemonCount(C), (write(Str,'tokemonCount('), write(Str,C), write(Str,').\n'))),
 	forall(stat_tokemon(Id,Nama,Health,Lvl), (write(Str,'stat_tokemon('), write(Str,Id), write(Str,','), write(Str,Nama), write(Str,','), write(Str,Health), write(Str,','), write(Str,Lvl), write(Str,').\n'))).
 
+
 loadfile(Filename) :-
 	open(Filename, read, Str),
 	retractall(donePlayer(_)),
 	retractall(doneTokemon(_)),
+	retractall(inGym(_)),
 	retractall(pemain(_, _, _, _, _)),
 	retractall(stat_tokemon(_, _, _, _)),
 	retractall(inFight(_, _, _, _)),
@@ -358,8 +373,9 @@ w :-
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
 	map, !,
-    randomWildTokemon(Id),
-	meetWild(Id).
+	handleGym,
+    (randomWildTokemon(Id),
+	meetWild(Id)).
 
 s :- donePlayer(_), write('Anda belum memilih player!'),!.
 s :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
@@ -372,8 +388,9 @@ s :-
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
 	map, !,
-    randomWildTokemon(Id),
-	meetWild(Id).
+	handleGym,
+    (randomWildTokemon(Id),
+	meetWild(Id)).
 
 a :- donePlayer(_), write('Anda belum memilih player!'),!.
 a :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
@@ -386,8 +403,9 @@ a :-
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
 	map, !,
-    randomWildTokemon(Id),
-	meetWild(Id).
+	handleGym,
+    (randomWildTokemon(Id),
+	meetWild(Id)).
 
 d :- donePlayer(_), write('Anda belum memilih player!'),!.
 d :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
@@ -400,8 +418,47 @@ d :-
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
 	map, !,
-    randomWildTokemon(Id),
-	meetWild(Id).
+	handleGym,
+    (randomWildTokemon(Id),
+	meetWild(Id)).
+
+%% ================= GYM & HEAL =================
+
+handleGym :- 
+	pemain(_, _, X, Y, Map1),
+	gym_location(A, B, Map2),
+	(X \= A; Y \= B; Map1 \= Map2),
+	retract(inGym(_)), 
+	asserta(inGym(0)), !.
+
+handleGym :-
+	pemain(_, _, X, Y, Map),
+	gym_location(X, Y, Map),
+	retract(inGym(_)),
+	write('Anda memasuki gym!'), nl,
+	asserta(inGym(1)).
+
+heal :- inGym(X), X = 0, write('Anda tidak sedang berada di gym!'), nl, !.
+heal :- 
+	inGym(X), X = 1,
+	pemain(_, L, _, _, _),
+	write('Nyawa tokemon anda kembali penuh!'),
+	healList(L).
+
+
+healList([]) :- !.
+healList([Id|T]) :-
+%% Id,Nama,Curr_Health,Level
+	stat_tokemon(Id, Nama, _, Level),
+	max_Health(Nama, Level, Max_H),
+	retract(stat_tokemon(Id, _, _, _)),
+	assertz(stat_tokemon(Id, Nama, Max_H, Level)),
+	healList(T).
+
+
+
+%% ================= GYM & HEAL =================
+
 
 %% RANDOMLY MEET TOKEMON
 %% random id from list of wild tokemons (not including legendary)
@@ -413,8 +470,8 @@ randomWildTokemon(Id) :-
 	nth0(N, L, Id).
 
 meetWild(Id) :-
-	%% 25%
-	randInterval(X, 1, 4), X=1,
+	%% 20%
+	randInterval(X, 1, 5), X=1,
 	stat_tokemon(Id, Nama, _, _),
 	write('A wild '), write(Nama), write(' appears!'), nl,
 	asserta(inFight(Id, -1, 1, 1)),
