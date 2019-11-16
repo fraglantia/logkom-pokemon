@@ -167,7 +167,8 @@ start :-
 	write('Siapa Anda? [choosePlayer(Nama)]: akill, jun-go, atau (Nama bebas).'),
 	asserta(doneTokemon(0)),
 	asserta(tokemonCount(0)),
-	asserta(mayCapture(0, -1)).
+	asserta(mayCapture(0, -1)),
+	addTokemon(martabak, 1), addTokemon(sesasasosa, 100).
 
 
 %% todo initialize tokemons
@@ -263,6 +264,7 @@ randInterval(X, A, B) :- random(R), X is floor((B-A+1)*R)+A.
 
 %% ================= STAT_TOKEMON =================
 wildTokemon(Id) :- pemain(_, L, _, _, _), \+isMember(Id, L).
+legendaryTokemon(Id) :- stat_tokemon(Id, Nama, _, _), jenis_tokemon(Nama, _, _, _, _, 1).
 
 %% H adalah max health dari tokemon Nama pada level Level
 max_Health(Nama, Level, H) :- 
@@ -400,9 +402,9 @@ d :-
 	meetWild(Id).
 
 %% RANDOMLY MEET TOKEMON
-%% random id from list of wild tokemons
+%% random id from list of wild tokemons (not including legendary)
 randomWildTokemon(Id) :-
-	findall(X, (stat_tokemon(X, _, _, _), wildTokemon(X)), L),
+	findall(X, (stat_tokemon(X, _, _, _), wildTokemon(X), \+legendaryTokemon(X)), L),
 	count(L, Len),
 	IdxMax is Len-1,
 	randInterval(N, 0, IdxMax),

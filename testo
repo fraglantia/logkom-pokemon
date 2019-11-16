@@ -1,4 +1,0 @@
-donePlayer(0).
-pemain(stif,[],10,1,tl).
-mayCapture(0,-1).
-tokemonCount(0).
