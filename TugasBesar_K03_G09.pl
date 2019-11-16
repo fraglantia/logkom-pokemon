@@ -21,6 +21,7 @@
 jenis_tokemon(karma-nder,fire,60,duarr,nmax,0).
 jenis_tokemon(kompor_gas,fire,120,bom,bitu,0).
 jenis_tokemon(tukangair,water,60,ciprat,sebor,0).
+jenis_tokemon(lumud,leaf,100,kepelesed,badmud,0).
 jenis_tokemon(rerumputan,leaves,60,lambai,bergoyang,0).
 jenis_tokemon(sugiono,water,69,genjot,crot,0).
 jenis_tokemon(sesasasosa,fire,125,sekali,tujuhkali,1).
@@ -146,6 +147,8 @@ getMap(br,'petaBr.txt').
 :- dynamic(mayCapture/2).
 :- dynamic(tokemonCount/1).
 :- dynamic(stat_tokemon/4).
+:- dynamic(donePlayer/1).
+:- dynamic(doneTokemon/1).
 
 %% pemain(Nama,Inventory,Xpos,Ypos,Map).
 %% inFight(EnemyId, MyId, Can_Run, Can_Special). MyId if belom pick = -1, Can_Run 1/0, Can_Special 1/0
@@ -160,16 +163,24 @@ start :-
 	retractall(inFight(_, _, _, _)),
 	retractall(mayCapture(_, _)),
 	retractall(tokemonCount(_)),
-	addPemain(akill, 10, 1, tl),
+	asserta(donePlayer(0)),
+	write('Siapa Anda? [choosePlayer(Nama)]: akill, jun-go, atau (Nama bebas).'),
+	asserta(doneTokemon(0)),
 	asserta(tokemonCount(0)),
-	asserta(mayCapture(0, -1)),
-	addTokemon(karma-nder, 1), addTokemon(karma-nder, 2), addTokemon(tukangair, 1), addTokemon(rerumputan, 1),
-	addTokemon(sesasasosa, 1), addTokemon(abhaigimon, 2), addTokemon(tukangair, 5), addTokemon(rerumputan, 7),
-	addTokemon(martabak, 1), addTokemon(mumu, 2), addTokemon(gledek, 1), addTokemon(hiring,3),
-	addTokemon(danus, 1), addTokemon(tubes,5),
-	add2InvTokemon(0), add2InvTokemon(1), add2InvTokemon(2), add2InvTokemon(3), add2InvTokemon(5).
+	asserta(mayCapture(0, -1)).
 
 %% todo initialize tokemons
+tokemonInit(kompor_gas).
+tokemonInit(tukangair).
+tokemonInit(lumud).
+choosePlayer(Name) :- 
+	addPemain(Name,10,1,tl), 
+	retract(donePlayer(_)), 
+	(write(Name), write(' pilih tokemon Anda terlebih dahulu, [chooseTokemon(Nama)]: kompor_gas(Fire), tukangair(Water), atau lumud(Leaf)!')).
+chooseTokemon(_) :- donePlayer(_), write('Pilih player terlebih dahulu!'), !.
+chooseTokemon(_) :- (\+ tokemonInit(_)), write('Tokemon tidak ada dalam pilihan!'), !.
+chooseTokemon(Tokemon) :- addTokemon(Tokemon,1), add2InvTokemon(0), retract(doneTokemon(_)).
+
 
 %% SAVE/LOAD 
 %% note: filename harus pake kutip
@@ -327,7 +338,8 @@ cekPeta(_, Xnext, Ynext, d, Xnew, Ynew) :-
 
 getCharMap(Chars, X, Y, Symbol) :- Pos is (58*Y + 2*X), getChar(Chars, Symbol, Pos).
 
-
+w :- donePlayer(_), write('Anda belum memilih player!'),!.
+w :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
 w :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 w :-
 	pemain(Name, L, X, Y, Map),
@@ -336,9 +348,12 @@ w :-
 	retract(pemain(_, _, _, _, _)),
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
+	map,
     randomWildTokemon(Id),
 	meetWild(Id).
 
+s :- donePlayer(_), write('Anda belum memilih player!'),!.
+s :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
 s :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 s :- 
 	pemain(Name, L, X, Y, Map),
@@ -351,6 +366,8 @@ s :-
     randomWildTokemon(Id),
 	meetWild(Id).
 
+a :- donePlayer(_), write('Anda belum memilih player!'),!.
+a :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
 a :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 a :- 
 	pemain(Name, L, X, Y, Map),
@@ -363,6 +380,8 @@ a :-
     randomWildTokemon(Id),
 	meetWild(Id).
 
+d :- donePlayer(_), write('Anda belum memilih player!'),!.
+d :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
 d :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 d :- 
 	pemain(Name, L, X, Y, Map),
@@ -371,7 +390,7 @@ d :-
 	retract(pemain(_, _, _, _, _)), 
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
-	map, !.
+	map,
     randomWildTokemon(Id),
 	meetWild(Id).
 
@@ -626,6 +645,8 @@ checkChar(Char,[Char|Chars],InStream):-
 %% (X, Y) = 24*Y + 2*X
 replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (60*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
 
+map :- donePlayer(_), write('Anda belum memilih player!'),!.
+map :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
 map :-
 	pemain(_, _, X, Y, Map),
 	getMap(Map,Mapname),
