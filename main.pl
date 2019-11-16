@@ -58,6 +58,10 @@ tipeModifier(leaves, water, 1.5).
 tipeModifier(leaves, leaves, 1.0).
 
 
+getMap(tl,'petaTL.txt').
+getMap(tr,'petaTR.txt').
+getMap(bl,'petaBl.txt').
+getMap(br,'petaBr.txt').
 
 /* --- Deklarasi Rules --- */
 %% start.
@@ -81,13 +85,13 @@ tipeModifier(leaves, leaves, 1.0).
 
 %% START
 
-:- dynamic(pemain/4).
+:- dynamic(pemain/5).
 :- dynamic(inFight/4).
 :- dynamic(mayCapture/2).
 :- dynamic(tokemonCount/1).
 :- dynamic(stat_tokemon/4).
 
-%% pemain(Nama,Inventory,Xpos,Ypos).
+%% pemain(Nama,Inventory,Xpos,Ypos,Map).
 %% inFight(EnemyId, MyId, Can_Run, Can_Special). MyId if belom pick = -1, Can_Run 1/0, Can_Special 1/0
 %% mayCapture(Yes/No, Id) 1/0
 %% tokemonCount(Counter).
@@ -95,12 +99,12 @@ tipeModifier(leaves, leaves, 1.0).
 
 
 start :- 
-	retractall(pemain(_, _, _, _)),
+	retractall(pemain(_, _, _, _,_)),
 	retractall(stat_tokemon(_, _, _, _)),
 	retractall(inFight(_, _, _, _)),
 	retractall(mayCapture(_, _)),
 	retractall(tokemonCount(_)),
-	addPemain(akill, 10, 12),
+	addPemain(akill, 10, 1, tl),
 	asserta(tokemonCount(0)),
 	asserta(mayCapture(0, -1)),
 	addTokemon(karma-nder, 1), addTokemon(karma-nder, 2), addTokemon(tukangair, 1), addTokemon(rerumputan, 1),
@@ -118,7 +122,7 @@ savefile(Filename) :-
 	close(Str).
 
 writeFacts(Str) :-
-	forall(pemain(Name, L, X, Y), (write(Str,'pemain('), write(Str,Name), write(Str,','), write(Str,L), write(Str,','), write(Str,X), write(Str,','), write(Str,Y), write(Str,').\n'))),
+	forall(pemain(Name, L, X, Y, Map), (write(Str,'pemain('), write(Str,Name), write(Str,','), write(Str,L), write(Str,','), write(Str,X), write(Str,','), write(Str,Y), write(Str,','), write(Str,Map),write(Str,').\n'))),
 	forall(mayCapture(YesNo, IdC), (write(Str,'mayCapture('), write(Str,YesNo), write(Str,','), write(Str,IdC), write(Str,').\n'))),
 	forall(inFight(EnemyId, MyId, Can_Run, Can_Special), (write(Str,'inFight('), write(Str,EnemyId), write(Str,','), write(Str,MyId), write(Str,','), write(Str,Can_Run), write(Str,','), write(Str,Can_Special), write(Str,').\n'))),
 	forall(tokemonCount(C), (write(Str,'tokemonCount('), write(Str,C), write(Str,').\n'))),
@@ -126,7 +130,7 @@ writeFacts(Str) :-
 
 loadfile(Filename) :-
 	open(Filename, read, Str),
-	retractall(pemain(_, _, _, _)),
+	retractall(pemain(_, _, _, _, _)),
 	retractall(stat_tokemon(_, _, _, _)),
 	retractall(inFight(_, _, _, _)),
 	retractall(mayCapture(_, _)),
@@ -150,7 +154,7 @@ readFacts(Str, [H|T]):-
 	read(Str, H),
 	readFacts(Str, T).
 
-addPemain(Nama, X, Y) :- asserta(pemain(Nama, [], X, Y)).
+addPemain(Nama, X, Y, Map) :- asserta(pemain(Nama, [], X, Y, Map)).
 
 %% ================= UTILITY =================
 %% DEBUG PRINT LIST
@@ -170,6 +174,11 @@ count([_|T],N) :-
 replace([_|T], X, 0, [X|T]).
 replace([H|T], X, Pos, [H|B]) :- Pos > 0, Posmin1 is Pos-1, replace(T, X, Posmin1, B).
 
+%% GET CHAR FOR MAP
+getChar([H|_], X, 0) :- X is H.
+getChar([_|T], X, Pos) :- Pos > 0, Posmin1 is Pos-1, getChar(T, X, Posmin1).
+
+
 %% ISLISTMEMBER
 isMember(X, [X|_]) :- !.
 isMember(X, [_|T]):- isMember(X, T).
@@ -179,7 +188,7 @@ randInterval(X, X, X) :- !.
 randInterval(X, A, B) :- random(R), X is floor((B-A+1)*R)+A.
 
 %% ================= STAT_TOKEMON =================
-wildTokemon(Id) :- pemain(_, L, _, _), \+isMember(Id, L).
+wildTokemon(Id) :- pemain(_, L, _, _, _), \+isMember(Id, L).
 
 %% H adalah max health dari tokemon Nama pada level Level
 max_Health(Nama, Level, H) :- 
@@ -204,68 +213,109 @@ addTokemon(Nama, Level) :-
 
 %% menambahkan tokemon dengan id Id ke inventory pemain
 add2InvTokemon(Id) :- 
-	pemain(Name, L, X, Y),
+	pemain(Name, L, X, Y, Map),
 	append(L, [Id], Lnew),
-	retract(pemain(_, _, _, _)),
-	asserta(pemain(Name, Lnew, X, Y)).
+	retract(pemain(_, _, _, _, _)),
+	asserta(pemain(Name, Lnew, X, Y, Map)).
 
 %$ ================= INVENTORY =================
 notMaxInv :-
-	pemain(_, L, _, _),
+	pemain(_, L, _, _, _),
 	count(L, N),
 	%% maxinventory(X),
 	N<6.
 
 deleteFromInv(Id) :-
-	pemain(Name, L, X, Y),
+	pemain(Name, L, X, Y, Map),
 	delete(L, Id, NewL),
-	retract(pemain(_, _, _, _)),
+	retract(pemain(_, _, _, _, Map)),
 	asserta(pemain(Name, NewL, X, Y)).
 
 
 %% ================= MOVE =================
+getAscii(Symbol,X,Y,Map) :-
+	getMap(Map,Mapname),
+	open(Mapname,read,Str), !,
+	readMap(Str,Chars),
+	getCharMap(Chars, X, Y, Symbol).
+
+cekAscii(Symbol,X) :- Symbol == X.
+
+cekPeta(Map, Xnext, Ynext, _, Xnew, Ynew) :-
+	getAscii(Symbol,Xnext,Ynext,Map),
+	\+cekAscii(Symbol,88),
+	Xnew is Xnext,
+	Ynew is Ynext.
+
+cekPeta(_, Xnext, Ynext, w, Xnew, Ynew) :-
+	write('*thunk*'), nl,
+	Xnew is Xnext,
+	Ynew is (Ynext+1).
+
+cekPeta(_, Xnext, Ynext, s, Xnew, Ynew) :-
+	write('*thunk*'), nl,
+	Xnew is Xnext,
+	Ynew is (Ynext-1).
+
+cekPeta(_, Xnext, Ynext, a, Xnew, Ynew) :-
+	write('*thunk*'), nl,
+	Xnew is (Xnext+1),
+	Ynew is Ynext.
+
+cekPeta(_, Xnext, Ynext, d, Xnew, Ynew) :-
+	write('*thunk*'), nl,
+	Xnew is (Xnext-1),
+	Ynew is Ynext.
+
+getCharMap(Chars, X, Y, Symbol) :- Pos is (36*Y + 2*X), getChar(Chars, Symbol, Pos).
+
+
 w :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 w :-
-	pemain(Name, L, X, Y), Ynew is (Y-1),
-	retract(pemain(_, _, _, _)),
-	asserta(pemain(Name, L, X, Ynew)),
+	pemain(Name, L, X, Y, Map),
+	Ynext is (Y-1),
+	cekPeta(Map, X, Ynext, w, Xnew, Ynew),
+	retract(pemain(_, _, _, _, _)),
+	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
-	map.
-    %randomWildTokemon(Id),
-	%meetWild(Id).
-
-a :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
-a :- 
-	pemain(Name, L, X, Y),
-	Xnew is (X-1), 
-	retract(pemain(_, _, _, _)), 
-	asserta(pemain(Name, L, Xnew, Y)),
-	makeCannotCapture,
-	map.
-    %randomWildTokemon(Id),
-	%meetWild(Id).
+    randomWildTokemon(Id),
+	meetWild(Id).
 
 s :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 s :- 
-	pemain(Name, L, X, Y),
-	Ynew is (Y+1), 
-	retract(pemain(_, _, _, _)), 
-	asserta(pemain(Name, L, X, Ynew)),
+	pemain(Name, L, X, Y, Map),
+	Ynext is (Y+1), 
+	cekPeta(Map, X, Ynext, s, Xnew, Ynew),
+	retract(pemain(_, _, _, _, _)), 
+	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
-	map.
-    %randomWildTokemon(Id),
-	%meetWild(Id).
+	map,
+    randomWildTokemon(Id),
+	meetWild(Id).
+
+a :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
+a :- 
+	pemain(Name, L, X, Y, Map),
+	Xnext is (X-1), 
+	cekPeta(Map, Xnext, Y, a, Xnew, Ynew),
+	retract(pemain(_, _, _, _, _)), 
+	asserta(pemain(Name, L, Xnew, Ynew, Map)),
+	makeCannotCapture,
+	map,
+    randomWildTokemon(Id),
+	meetWild(Id).
 
 d :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 d :- 
-	pemain(Name, L, X, Y),
-	Xnew is (X+1), 
-	retract(pemain(_, _, _, _)), 
-	asserta(pemain(Name, L, Xnew, Y)),
+	pemain(Name, L, X, Y, Map),
+	Xnext is (X+1), 
+	cekPeta(Map, Xnext, Y, d, Xnew, Ynew),
+	retract(pemain(_, _, _, _, _)), 
+	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
-	map.
-    %randomWildTokemon(Id),
-	%meetWild(Id).
+	map, !.
+    randomWildTokemon(Id),
+	meetWild(Id).
 
 %% RANDOMLY MEET TOKEMON
 %% random id from list of wild tokemons
@@ -299,7 +349,7 @@ fight :-
 	asserta(inFight(Id, -1, 0, Can_Special)),
 	stat_tokemon(Id, Nama, _, _),
 	write('Anda melawan '), write(Nama), write('!!'), nl,
-	pemain(_, L, _, _),
+	pemain(_, L, _, _, _),
 	write('Choose your Tokemon!'), nl,
 	write('Available Tokemons: ['), writeAvailable(L), write(']'), nl, !.
 
@@ -516,14 +566,48 @@ checkChar(Char,[Char|Chars],InStream):-
 	checkChar(NextChar,Chars,InStream).
 
 %% (X, Y) = 24*Y + 2*X
-replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (40*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
+replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (36*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
 
 map :-
-	open('petaTL.txt',read,Str), !,
+	pemain(_, _, X, Y, Map),
+	getMap(Map,Mapname)
+	open(Mapname,read,Str), !,
 	readMap(Str, Chars),
-	pemain(_, _, X, Y),
 	%% 80 = charcode P
-	replaceCoor(Chars, X, Y, 219, MapwithP),
+	replaceCoor(Chars, X, Y, 80, MapwithP),
+	atom_codes(M,MapwithP),
+	close(Str),
+	write(M),  nl,
+	!.
+
+map :-
+	pemain(_, _, X, Y, tr),
+	open('petaTR.txt',read,Str), !,
+	readMap(Str, Chars),
+	%% 80 = charcode P
+	replaceCoor(Chars, X, Y, 80, MapwithP),
+	atom_codes(M,MapwithP),
+	close(Str),
+	write(M),  nl,
+	!.
+
+map :-
+	pemain(_, _, X, Y, bl),
+	open('petaBL.txt',read,Str), !,
+	readMap(Str, Chars),
+	%% 80 = charcode P
+	replaceCoor(Chars, X, Y, 80, MapwithP),
+	atom_codes(M,MapwithP),
+	close(Str),
+	write(M),  nl,
+	!.
+
+map :-
+	pemain(_, _, X, Y, br),
+	open('petaBR.txt',read,Str), !,
+	readMap(Str, Chars),
+	%% 80 = charcode P
+	replaceCoor(Chars, X, Y, 80, MapwithP),
 	atom_codes(M,MapwithP),
 	close(Str),
 	write(M),  nl,

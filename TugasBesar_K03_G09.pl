@@ -276,43 +276,88 @@ deleteFromInv(Id) :-
 
 
 %% ================= MOVE =================
+getAscii(Symbol,X,Y,Map) :-
+	getMap(Map,Mapname),
+	open(Mapname,read,Str), !,
+	readMap(Str,Chars),
+	getCharMap(Chars, X, Y, Symbol).
+
+cekAscii(Symbol,X) :- Symbol == X.
+
+cekPeta(Map, Xnext, Ynext, _, Xnew, Ynew) :-
+	getAscii(Symbol,Xnext,Ynext,Map),
+	\+cekAscii(Symbol,88),
+	Xnew is Xnext,
+	Ynew is Ynext.
+
+cekPeta(_, Xnext, Ynext, w, Xnew, Ynew) :-
+	write('*thunk*'), nl,
+	Xnew is Xnext,
+	Ynew is (Ynext+1).
+
+cekPeta(_, Xnext, Ynext, s, Xnew, Ynew) :-
+	write('*thunk*'), nl,
+	Xnew is Xnext,
+	Ynew is (Ynext-1).
+
+cekPeta(_, Xnext, Ynext, a, Xnew, Ynew) :-
+	write('*thunk*'), nl,
+	Xnew is (Xnext+1),
+	Ynew is Ynext.
+
+cekPeta(_, Xnext, Ynext, d, Xnew, Ynew) :-
+	write('*thunk*'), nl,
+	Xnew is (Xnext-1),
+	Ynew is Ynext.
+
+getCharMap(Chars, X, Y, Symbol) :- Pos is (36*Y + 2*X), getChar(Chars, Symbol, Pos).
+
+
 w :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 w :-
-	pemain(Name, L, X, Y), Ynew is (Y-1),
-	retract(pemain(_, _, _, _)),
-	asserta(pemain(Name, L, X, Ynew)),
+	pemain(Name, L, X, Y, Map),
+	Ynext is (Y-1),
+	cekPeta(Map, X, Ynext, w, Xnew, Ynew),
+	retract(pemain(_, _, _, _, _)),
+	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
-	randomWildTokemon(Id),
-	meetWild(Id).
-
-a :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
-a :- 
-	pemain(Name, L, X, Y),
-	Xnew is (X-1), 
-	retract(pemain(_, _, _, _)), 
-	asserta(pemain(Name, L, Xnew, Y)),
-	makeCannotCapture,
-	randomWildTokemon(Id),
+    randomWildTokemon(Id),
 	meetWild(Id).
 
 s :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 s :- 
-	pemain(Name, L, X, Y),
-	Ynew is (Y+1), 
-	retract(pemain(_, _, _, _)), 
-	asserta(pemain(Name, L, X, Ynew)),
+	pemain(Name, L, X, Y, Map),
+	Ynext is (Y+1), 
+	cekPeta(Map, X, Ynext, s, Xnew, Ynew),
+	retract(pemain(_, _, _, _, _)), 
+	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
-	randomWildTokemon(Id),
+	map,
+    randomWildTokemon(Id),
+	meetWild(Id).
+
+a :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
+a :- 
+	pemain(Name, L, X, Y, Map),
+	Xnext is (X-1), 
+	cekPeta(Map, Xnext, Y, a, Xnew, Ynew),
+	retract(pemain(_, _, _, _, _)), 
+	asserta(pemain(Name, L, Xnew, Ynew, Map)),
+	makeCannotCapture,
+	map,
+    randomWildTokemon(Id),
 	meetWild(Id).
 
 d :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 d :- 
-	pemain(Name, L, X, Y),
-	Xnew is (X+1), 
-	retract(pemain(_, _, _, _)), 
-	asserta(pemain(Name, L, Xnew, Y)),
+	pemain(Name, L, X, Y, Map),
+	Xnext is (X+1), 
+	cekPeta(Map, Xnext, Y, d, Xnew, Ynew),
+	retract(pemain(_, _, _, _, _)), 
+	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
-	randomWildTokemon(Id),
+	map, !.
+    randomWildTokemon(Id),
 	meetWild(Id).
 
 %% RANDOMLY MEET TOKEMON
@@ -564,12 +609,13 @@ checkChar(Char,[Char|Chars],InStream):-
 	checkChar(NextChar,Chars,InStream).
 
 %% (X, Y) = 24*Y + 2*X
-replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (24*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
+replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (36*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
 
 map :-
-	open('peta.txt',read,Str), !,
+	pemain(_, _, X, Y, Map),
+	getMap(Map,Mapname)
+	open(Mapname,read,Str), !,
 	readMap(Str, Chars),
-	pemain(_, _, X, Y),
 	%% 80 = charcode P
 	replaceCoor(Chars, X, Y, 80, MapwithP),
 	atom_codes(M,MapwithP),
