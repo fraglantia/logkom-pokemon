@@ -121,11 +121,17 @@ tipeModifier(earth, earth, 1.0).
 % PETA
 getMap(tl,'petaTL.txt').
 getMap(tr,'petaTR.txt').
-getMap(bl,'petaBl.txt').
-getMap(br,'petaBr.txt').
+getMap(bl,'petaBL.txt').
+getMap(br,'petaBR.txt').
 
 %% GYM LOCATION (X, Y, peta)
 gym_location(3,5,tl).
+
+%% RELATIVE LOC COORDINATE CHANGE (peta, X, Y)
+relative_coor(tl, 0, 0).
+relative_coor(tr, -19, 0).
+relative_coor(bl, 0, -16).
+relative_coor(br, -29, -13).
 
 /* --- Deklarasi Rules --- */
 %% start.
@@ -195,7 +201,7 @@ chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada da
 chooseTokemon(Tokemon) :- addTokemon(Tokemon,1), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
 
 addWildTokemon :- 
-	addTokemon(martabak, 1), 
+	%% addTokemon(martabak, 1), 
 	addTokemon(sesasasosa, 100).
 
 %% SAVE/LOAD 
@@ -335,7 +341,10 @@ getAscii(Symbol,X,Y,Map) :-
 cekAscii(Symbol,X) :- Symbol == X.
 
 cekPeta(Map, Xnext, Ynext, _, Xnew, Ynew) :-
-	getAscii(Symbol,Xnext,Ynext,Map),
+	%% relative offsets
+	relative_coor(Map, Xoffs, Yoffs),
+	Xrel is Xnext+Xoffs, Yrel is Ynext+Yoffs,
+	getAscii(Symbol,Xrel,Yrel,Map),
 	\+cekAscii(Symbol,88),
 	Xnew is Xnext,
 	Ynew is Ynext.
@@ -372,6 +381,7 @@ w :-
 	retract(pemain(_, _, _, _, _)),
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
+	handleMapChange,
 	map, !,
 	handleGym,
     (randomWildTokemon(Id),
@@ -387,6 +397,7 @@ s :-
 	retract(pemain(_, _, _, _, _)), 
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
+	handleMapChange,
 	map, !,
 	handleGym,
     (randomWildTokemon(Id),
@@ -402,6 +413,7 @@ a :-
 	retract(pemain(_, _, _, _, _)), 
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
+	handleMapChange,
 	map, !,
 	handleGym,
     (randomWildTokemon(Id),
@@ -417,6 +429,7 @@ d :-
 	retract(pemain(_, _, _, _, _)), 
 	asserta(pemain(Name, L, Xnew, Ynew, Map)),
 	makeCannotCapture,
+	handleMapChange,
 	map, !,
 	handleGym,
     (randomWildTokemon(Id),
@@ -719,11 +732,37 @@ map :-
 	open(Mapname,read,Str), !,
 	readMap(Str, Chars),
 	%% 80 = charcode P
-	replaceCoor(Chars, X, Y, 80, MapwithP),
+	relative_coor(Map, Xoffs, Yoffs),
+	Xrel is X+Xoffs, Yrel is Y+Yoffs,
+	replaceCoor(Chars, Xrel, Yrel, 80, MapwithP),
 	atom_codes(M,MapwithP),
 	close(Str),
 	write(M),  nl,
 	!.
+
+handleMapChange :-
+	pemain(_, _, X, Y, _),
+	X>=0, X=<19, Y>=0, Y=<16,
+	retract(pemain(Nama, Inv, X, Y, _)), 
+	asserta(pemain(Nama, Inv, X, Y, tl)), !.
+
+handleMapChange :-
+	pemain(_, _, X, Y, _),
+	X>=20, X=<50, Y>=0, Y=<13,
+	retract(pemain(Nama, Inv, X, Y, _)), 
+	asserta(pemain(Nama, Inv, X, Y, tr)), !.
+
+handleMapChange :-
+	pemain(_, _, X, Y, _),
+	X>=0, X=<28, Y>=17, Y=<30,
+	retract(pemain(Nama, Inv, X, Y, _)), 
+	asserta(pemain(Nama, Inv, X, Y, bl)), !.
+
+handleMapChange :-
+	pemain(_, _, X, Y, _),
+	X>=29, X=<50, Y>=14, Y=<30,
+	retract(pemain(Nama, Inv, X, Y, _)), 
+	asserta(pemain(Nama, Inv, X, Y, br)), !.
 
 %% ================= HELP =================
 help :-
