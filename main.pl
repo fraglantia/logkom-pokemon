@@ -230,8 +230,9 @@ w :-
 	retract(pemain(_, _, _, _)),
 	asserta(pemain(Name, L, X, Ynew)),
 	makeCannotCapture,
-	randomWildTokemon(Id),
-	meetWild(Id).
+	map.
+    %randomWildTokemon(Id),
+	%meetWild(Id).
 
 a :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 a :- 
@@ -240,8 +241,9 @@ a :-
 	retract(pemain(_, _, _, _)), 
 	asserta(pemain(Name, L, Xnew, Y)),
 	makeCannotCapture,
-	randomWildTokemon(Id),
-	meetWild(Id).
+	map.
+    %randomWildTokemon(Id),
+	%meetWild(Id).
 
 s :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 s :- 
@@ -250,8 +252,9 @@ s :-
 	retract(pemain(_, _, _, _)), 
 	asserta(pemain(Name, L, X, Ynew)),
 	makeCannotCapture,
-	randomWildTokemon(Id),
-	meetWild(Id).
+	map.
+    %randomWildTokemon(Id),
+	%meetWild(Id).
 
 d :- inFight(_, _, _, _), write('Anda sedang melawan Tokemon!'), !.
 d :- 
@@ -260,8 +263,9 @@ d :-
 	retract(pemain(_, _, _, _)), 
 	asserta(pemain(Name, L, Xnew, Y)),
 	makeCannotCapture,
-	randomWildTokemon(Id),
-	meetWild(Id).
+	map.
+    %randomWildTokemon(Id),
+	%meetWild(Id).
 
 %% RANDOMLY MEET TOKEMON
 %% random id from list of wild tokemons
@@ -512,14 +516,14 @@ checkChar(Char,[Char|Chars],InStream):-
 	checkChar(NextChar,Chars,InStream).
 
 %% (X, Y) = 24*Y + 2*X
-replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (24*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
+replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (40*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
 
 map :-
-	open('peta.txt',read,Str), !,
+	open('petaTL.txt',read,Str), !,
 	readMap(Str, Chars),
 	pemain(_, _, X, Y),
 	%% 80 = charcode P
-	replaceCoor(Chars, X, Y, 80, MapwithP),
+	replaceCoor(Chars, X, Y, 219, MapwithP),
 	atom_codes(M,MapwithP),
 	close(Str),
 	write(M),  nl,
