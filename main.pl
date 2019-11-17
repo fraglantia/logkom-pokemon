@@ -80,7 +80,8 @@ start :-
 	retractall(inLegend(_)),
 	asserta(donePlayer(0)),
 	title,
-	write('Siapa Anda? choosePlayer/1: akill, jun-go, atau (Nama bebas).'),
+	write('Siapa Anda?'), nl,
+	write('choosePlayer/1: akill, jun-go, atau (Nama bebas).'),
 	asserta(doneTokemon(0)),
 	asserta(tokemonCount(0)),
 	asserta(mayCapture(0, -1)),
@@ -113,10 +114,10 @@ chooseTokemon(Tokemon) :- addTokemon(Tokemon,1,0), add2InvTokemon(0), retract(do
 addWildTokemon :- 
 	%% add legendaries at (FIX ID 1 AND 2)
 	%% add legendaries at (FIX ID 1 AND 2)
-	addTokemon(tubes, 50, 0),
-	addTokemon(sesasasosa, 50, 0),
-	addTokemon(karma-nder, 1, 0),
-	addTokemon(karma-nder, 7,0),
+	addTokemon(tubes, 25, 0),
+	addTokemon(sesasasosa, 25, 0),
+	addTokemon(karma_nder, 1, 0),
+	addTokemon(karma_nder, 7,0),
 	addTokemon(kompor_gas, 5, 0),
 	addTokemon(lumud, 2, 0),
 	addTokemon(lumud, 5, 0),
@@ -134,7 +135,6 @@ addWildTokemon :-
 	addTokemon(abhaigimon, 16, 0),
 	addTokemon(abhaigimon, 10, 0),
 	addTokemon(martabak, 1, 0), 
-	addTokemon(sesasasosa, 100, 0),
 	addTokemon(martabak, 20, 0),
 	addTokemon(mumu, 9, 0),
 	addTokemon(mumu, 10, 0),
@@ -232,8 +232,8 @@ randInterval(X, X, X) :- !.
 randInterval(X, A, B) :- random(R), X is floor((B-A+1)*R)+A.
 
 %% todo Bedain linux dan windows
-%% cls :- shell(cls).
-cls :- shell(clear).
+cls :- shell(clear), !.
+cls :- shell(cls), !.
 
 %% ================= STAT_TOKEMON =================
 
@@ -306,7 +306,7 @@ heal :- inGym(X), X = 0, write('Anda tidak sedang berada di gym!'), nl, !.
 heal :- 
 	inGym(X), X = 1,
 	pemain(_, L, _, _, _),
-	write('Nyawa tokemon anda kembali penuh!'),
+	write('Nyawa tokemon Anda kembali penuh!'),
 	healList(L).
 
 
@@ -359,8 +359,8 @@ randomWildTokemon(Id) :-
 meetWild(Id) :-
 	%% 20%
 	randInterval(X, 1, 5), X=1,
-	stat_tokemon(Id, Nama, _, _, _, _),
-	write('A wild '), write(Nama), write(' appears!'), nl,
+	stat_tokemon(Id, Nama, _, Level, _, _),
+	write('A wild '), write(Nama), write(' (lv.'), write(Level), write(') appears!'), nl,
 	asserta(inFight(Id, -1, 1, 1)),
 	write('Fight or Run?'), nl.
 
