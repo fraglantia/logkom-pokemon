@@ -69,7 +69,7 @@
 %% stat_tokemon(Id,Nama,Curr_Health,Level,Exp,ExpMax).
 %% inLegend(X), X=0 -> NO, X=1 -> LEAVES, X=2 -> WATER
 
-start :- 
+start :-
 	retractall(pemain(_, _, _, _, _)),
 	retractall(inFight(_, _, _, _)),
 	retractall(mayCapture(_, _)),
@@ -106,16 +106,16 @@ title :-
 tokemonInit(karma_nder).
 tokemonInit(tukangair).
 tokemonInit(lumud).
-choosePlayer(Name) :- 
-	addPemain(Name,10,9,tl), 
-	retract(donePlayer(_)), 
+choosePlayer(Name) :-
+	addPemain(Name,10,9,tl),
+	retract(donePlayer(_)),
 	(write(Name), write(' pilih tokemon Anda terlebih dahulu!'), nl,
 	write('chooseTokemon/1: karma_nder (Fire), tukangair (Water), atau lumud (Leaf)!')).
 chooseTokemon(_) :- donePlayer(_), write('Pilih player terlebih dahulu!'), !.
 chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada dalam pilihan!'), !.
 chooseTokemon(Tokemon) :- addTokemon(Tokemon,1,0), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
 
-addWildTokemon :- 
+addWildTokemon :-
 	%% add legendaries at (FIX ID 1 AND 2)
 	addTokemon(tubes, 25, 0),
 	addTokemon(sesasasosa, 25, 0),
@@ -137,7 +137,7 @@ addWildTokemon :-
 	addTokemon(edukamon, 20, 0),
 	addTokemon(abhaigimon, 16, 0),
 	addTokemon(abhaigimon, 10, 0),
-	addTokemon(martabak, 1, 0), 
+	addTokemon(martabak, 1, 0),
 	addTokemon(martabak, 20, 0),
 	addTokemon(mumu, 9, 0),
 	addTokemon(mumu, 10, 0),
@@ -151,7 +151,7 @@ addWildTokemon :-
 	addTokemon(danus, 2, 0),
 	addTokemon(danus, 10, 0).
 
-%% SAVE/LOAD 
+%% SAVE/LOAD
 %% note: filename harus pake kutip
 
 savefile(Filename) :-
@@ -188,12 +188,12 @@ loadfile(Filename) :-
 	retractall(legendKillCount(_)),
 	readFacts(Str,Facts),
 	close(Str),
-	process(Facts), nl, 
+	process(Facts), nl,
 	!.
 
 process([]) :- !.
 
-process([H|T]) :- 
+process([H|T]) :-
 	H \= end_of_file,
 	asserta(H),
 	process(T).
@@ -250,29 +250,29 @@ wildTokemon(Id) :- pemain(_, L, _, _, _), \+isMember(Id, L).
 legendaryTokemon(Id) :- stat_tokemon(Id, Nama, _, _, _, _), jenis_tokemon(Nama, _, _, _, _, 1).
 
 %% H adalah max health dari tokemon Nama pada level Level
-max_Health(Nama, Level, H) :- 
-	jenis_tokemon(Nama, _, Base, _, _, _), 
+max_Health(Nama, Level, H) :-
+	jenis_tokemon(Nama, _, Base, _, _, _),
 	H is ceiling((Level-1) * (Base*0.1) + Base).
 
 %% todo : damage modifier dari base
 
 %% menambahkan satu pada tokemonCount untuk id
-incTokemonCount :- 
-	tokemonCount(X), 
-	Xnew is (X+1), 
-	retract(tokemonCount(_)), 
+incTokemonCount :-
+	tokemonCount(X),
+	Xnew is (X+1),
+	retract(tokemonCount(_)),
 	asserta(tokemonCount(Xnew)).
 
 %% menambahkan tokemon Nama dengan level Level dengan id tokemoncount
-addTokemon(Nama, Level, Exp) :- 
-	tokemonCount(Id), 
+addTokemon(Nama, Level, Exp) :-
+	tokemonCount(Id),
 	max_Health(Nama, Level, H),
 	ExpMax is 100 + (50*(Level-1)),
-	assertz(stat_tokemon(Id, Nama, H, Level, Exp, ExpMax)), 
+	assertz(stat_tokemon(Id, Nama, H, Level, Exp, ExpMax)),
 	incTokemonCount.
 
 %% menambahkan tokemon dengan id Id ke inventory pemain
-add2InvTokemon(Id) :- 
+add2InvTokemon(Id) :-
 	pemain(Name, L, X, Y, Map),
 	append(L, [Id], Lnew),
 	retract(pemain(_, _, _, _, _)),
@@ -302,18 +302,18 @@ maxList([H|T], X) :-
 	maxList(T, Tmax),
 	X is max(H, Tmax).
 
-maxLvlInv(X) :- 
+maxLvlInv(X) :-
 	pemain(_, L, _, _, _),
 	getLvlList(L, LvlList),
 	maxList(LvlList, X).
 
 %% ================= GYM & HEAL =================
 
-handleGym :- 
+handleGym :-
 	pemain(_, _, X, Y, _),
 	gym_location(A, B, Map),
 	(X \= A; Y \= B, Map \= tl),
-	retract(inGym(_)), 
+	retract(inGym(_)),
 	asserta(inGym(0)), !.
 
 handleGym :-
@@ -327,7 +327,7 @@ handleGym :-
 %askHeal
 
 heal :- inGym(X), X = 0, write('Anda tidak sedang berada di gym!'), nl, !.
-heal :- 
+heal :-
 	inGym(X), X = 1,
 	pemain(_, L, _, _, _),
 	write('Nyawa tokemon Anda kembali penuh!'),
@@ -358,10 +358,10 @@ handleLegend :-
 	write('Anda bertemu Legendary Water!'), nl,
 	asserta(inLegend(2)), meetLegend(2), !.
 
-handleLegend :- 
+handleLegend :-
 	pemain(_, _, X, Y, _),
 	((X \= 43, Y \= 3); (X \= 44, Y \= 24)),
-	retract(inLegend(_)), 
+	retract(inLegend(_)),
 	asserta(inLegend(0)), !.
 
 meetLegend(Id) :-
@@ -412,18 +412,20 @@ help :-
 	write('18. quit : Keluar dari permainan.'),nl.
 
 writeAvailable([]) :- !.
-writeAvailable([A]) :- 
+writeAvailable([A]) :-
+	write('Id:'),write(A),write(' '),
 	writeName(A).
-writeAvailable([H|T]) :- 
+writeAvailable([H|T]) :-
+	write('Id:'),write(H),write(' '),
 	writeName(H), write(', '),
 	writeAvailable(T).
 
 writeInventory([]) :- !.
-writeInventory([H|T]) :- 
-	writeStat(H), 
+writeInventory([H|T]) :-
+	writeStat(H),
 	writeInventory(T).
 
-writeName(Id) :- 
+writeName(Id) :-
 	stat_tokemon(Id, Nama, _, _, _, _),
 	write(Nama).
 
@@ -450,7 +452,7 @@ status :-
 
 
 %% ================= QUIT =================
-quit :- halt. 
+quit :- halt.
 
 
 %% ================= END CONDITION =================
@@ -458,20 +460,20 @@ quit :- halt.
 %% ================= LOSE =================
 
 checkLose :-
-	pemain(_, [], _, _, _), 
+	pemain(_, [], _, _, _),
 	write('YOU LOSE!'), nl,
 	halt, !.
 
-checkLose :- 
+checkLose :-
 	pemain(_, L, _, _, _),
 	L \= [], !.
 
 %% ================= WIN =================
 
 
-checkWin :- 
+checkWin :-
 	legendKillCount(X),
-	X >= 2, 
+	X >= 2,
 	write('YOU WIN!'), nl,
 	halt, !.
 

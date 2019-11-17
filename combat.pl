@@ -1,14 +1,14 @@
 %% All combat functions are handled here
 
 %% ================= FIGHT =================
-fight :- 
+fight :-
 	\+inFight(_, _, _, _),
 	write('Tidak ada tokemon yang bisa anda lawan.'), nl, !.
 fight :-
 	inFight(_, MyId, _, _),
 	MyId \= -1,
 	write('Ini kan lagi berantem :('), nl, !.
-fight :- 
+fight :-
 	inFight(Id, _, _, Can_Special),
 	retract(inFight(_, _, _, _)),
 	asserta(inFight(Id, -1, 0, Can_Special)),
@@ -19,13 +19,13 @@ fight :-
 	write('Available Tokemons: ['), writeAvailable(L), write(']'), nl, 
 	write('pick/1'), nl, !.
 
-run :- 
+run :-
 	\+inFight(_, _, _, _),
 	write('Lari dari apa atuh :('), nl, !.
-run :- 
+run :-
 	inFight(_, _, 0, _),
 	write('Gak bisa lari :('), nl, !.
-run :- 
+run :-
 	%% 50%
 	randInterval(X, 1, 2),
 	runRandom(X).
@@ -34,7 +34,7 @@ runRandom(X) :- X=1, retract(inFight(_, _, _, _)), write('You sucessfully escape
 runRandom(X) :- X=2, write('You failed to run!'), nl, fight.
 
 %% cari Name di Inventory ambil yg pertama if none Id = -1
-inInventory(Name, Id) :- 
+inInventory(Name, Id) :-
 	findall(X, (stat_tokemon(X, _, _, _, _, _), \+wildTokemon(X)), L),
 	searchNameInList(Name, L, Id).
 
@@ -57,18 +57,18 @@ pick(_) :-
 	MyId \= -1,
 	write('Anda sudah pick tokemon!'), nl, !.
 
-pick(Name) :-
-	\+jenis_tokemon(Name, _, _, _, _, _),
-	write('Tidak ada tokemon bernama '),
-	write(Name), write('!'), nl, !.
+%%pick(Id) :-
+%%	\+jenis_tokemon(Name, _, _, _, _, _),
+%%	write('Tidak ada tokemon bernama '),
+%%	write(Name), write('!'), nl, !.
 
-pick(Name) :-
+pick(Id) :-
 	inInventory(Name, Id),
 	Id = -1,
 	write('Anda tidak memiliki '),
 	write(Name), write('!'), nl, !.
 
-pick(Name) :-
+pick(Id) :-
 	inInventory(Name, Id),
 	Id \= -1,
 	retract(inFight(EnemyId, _, _, Can_Special)),
@@ -93,22 +93,22 @@ drop(Name) :-
 	Id \= -1,
 	deleteFromInv(Id),
 	retract(stat_tokemon(Id, _, _, _, _, _)),
-	write('You have dropped '), write(Name), write('!'), nl, 
+	write('You have dropped '), write(Name), write('!'), nl,
 	checkLose, !.
 
 
 %% todo : how to differ 2 same pokemons : list first?
 
-attack :- 
+attack :-
 	\+inFight(_, _, _, _),
 	write('Anda tidak dalam battle saat ini.'), nl, !.
 
 attack :-
 	inFight(_, MyId, _, _),
 	MyId = -1,
-	write('Anda belum pick tokemon!'), nl, !.	
+	write('Anda belum pick tokemon!'), nl, !.
 
-attack :- 
+attack :-
 	inFight(EnemyId, MyId, _, _),
 	stat_tokemon(EnemyId, EnemyName, _, _, _, _),
 	stat_tokemon(MyId, MyName, _, Level, _, _),
@@ -121,19 +121,19 @@ attack :-
 	dealDmg(EnemyId, NewDmg),
 	nl, write(AttackName), write('!!!'), nl,
 	write('You dealt '), write(NewDmg), write(' damage to '), write(EnemyName), write('!'), nl,
-	(checkIfEnemyDead(EnemyId)); (((\+ X=2, enemyAttack); (X=2, enemyspecialAttack)), (inFight(EnemyId, MyId, _, _), writeStat(MyId), writeStat(EnemyId))), 
+	(checkIfEnemyDead(EnemyId)); ((((\+ X=2), enemyAttack); (X=2, enemyspecialAttack)), (inFight(EnemyId, MyId, _, _), writeStat(MyId), writeStat(EnemyId))),
 	checkIfTokemonPemainDead(MyId), !.
 
-specialAttack :- 
+specialAttack :-
 	\+inFight(_, _, _, _),
 	write('Anda tidak dalam battle saat ini.'), nl, !.
 
-specialAttack :- 
+specialAttack :-
 	inFight(_, _, _, Can_Special),
 	Can_Special = 0,
 	write('Sudah menggunakan special attack !!'), nl, !.
 
-specialAttack :- 
+specialAttack :-
 	inFight(EnemyId, MyId, Can_Run, _),
 	stat_tokemon(EnemyId, EnemyName, _, _, _, _),
 	stat_tokemon(MyId, MyName, _, Level, _, _),
@@ -144,14 +144,14 @@ specialAttack :-
 	randInterval(X, 1, 10),
 	NewDmg is floor(Dmg*Modf*Level),
 	dealDmg(EnemyId, NewDmg), nl,
-	retract(inFight(_, _, _, _)), 
+	retract(inFight(_, _, _, _)),
 	asserta(inFight(EnemyId, MyId, Can_Run, 0)),
 	write(SpecialName), write('!!!'), nl,
 	write('You dealt '), write(NewDmg), write(' damage to '), write(EnemyName), write('!'), nl,
-	(checkIfEnemyDead(EnemyId)); (((\+ X=2, enemyAttack); (X=2, enemyspecialAttack)), (inFight(EnemyId, MyId, _, _), writeStat(MyId), writeStat(EnemyId))), 
+	(checkIfEnemyDead(EnemyId)); ((((\+ X=2), enemyAttack); (X=2, enemyspecialAttack)), (inFight(EnemyId, MyId, _, _), writeStat(MyId), writeStat(EnemyId))),
 	checkIfTokemonPemainDead(MyId), !.
 
-enemyAttack :- 
+enemyAttack :-
 	inFight(EnemyId, MyId, _, _),
 	stat_tokemon(EnemyId, EnemyName, _, Level, _, _),
 	stat_tokemon(MyId, MyName, _, _, _, _),
@@ -180,13 +180,13 @@ enemyspecialAttack :-
 	write('It dealt '), write(NewDmg1), write(' damage to '), write(MyName), write('!'), nl, nl, !.
 
 
-dealDmg(Id, Dmg) :- 
+dealDmg(Id, Dmg) :-
 	retract(stat_tokemon(Id, EnemyName, Health, Lvl, Exp, ExpMax)),
 	NewHealth is Health-Dmg,
 	assertz(stat_tokemon(Id, EnemyName, NewHealth, Lvl, Exp, ExpMax)).
 
 %% mengecek jika lawanya sudah mati :(
-checkIfEnemyDead(Id) :- 
+checkIfEnemyDead(Id) :-
 	stat_tokemon(Id, Name, Health, _, _, _),
 	Health =< 0,
 	handleLegendDead(Id),
@@ -195,7 +195,7 @@ checkIfEnemyDead(Id) :-
 	write(Name),
 	write('? (capture/0 to capture '),
 	write(Name), write(', otherwise move away.'), nl,
-	retract(inFight(_, IdUp, _, _)), 
+	retract(inFight(_, IdUp, _, _)),
 	retract(stat_tokemon(Id, Name, Health, Level, Exp, ExpMax)),
 	max_Health(Name, Level, Max_H),
 	assertz(stat_tokemon(Id, Name, Max_H, Level, Exp, ExpMax)),
@@ -212,14 +212,14 @@ handleLegendDead(Id) :-
 handleLegendDead(_) :- !.
 
 %% mengecek jika tokemon yg dimiliki pemain mati
-checkIfTokemonPemainDead(Id) :- 
+checkIfTokemonPemainDead(Id) :-
 	stat_tokemon(Id, Name, Health, _, _, _),
 	Health =< 0,
 	write('Yaaah, '), write(Name), write(' mati :(((('), nl,
 	inFight(EnemyId, _, Can_Run, _),
-	retract(inFight(_, _, _, _)), 
+	retract(inFight(_, _, _, _)),
 	asserta(inFight(EnemyId, -1, Can_Run, 1)),
-	deleteFromInv(Id), retract(stat_tokemon(Id, _, _, _, _, _)), 
+	deleteFromInv(Id), retract(stat_tokemon(Id, _, _, _, _, _)),
 	checkLose,
 	write('Please pick another tokemon!'), nl, !.
 
