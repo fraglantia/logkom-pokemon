@@ -7,7 +7,7 @@ X  o==G==o  X - -v- - - - - - - - - - >
 X+X+X - X+X+X - - - - - - - - XXXXXXXXX                    
 X - - - - - - - - - - -v- - - X                            
 X -v- - - @@- - - -v- -v- - - X                            
-X - - - - @v- - -v- - - - - - X                            
+X - - - - v@- - -v- - - - - - X                            
 X - - - - - - - - -v- - - - - X                            
 X - - - - - - -v- - - -v- - - X                            
 X -@- - - XXXXXXXXXXXXXXXXXXXXX                            

@@ -17,14 +17,14 @@
 %% jenis_tokemon(Nama,Tipe,Base_Health,Nama_Attack,Nama_Special,Legend_or_normal).
 %% tipeModifier(FromTipe, ToTipe, Modf).
 
-%% jenis_tokemon(missingno,entah,999,att,spec,0).
+jenis_tokemon(missingno,entah,999,att,spec,0).
 jenis_tokemon(karma_nder,fire,60,duarr,nmax,0).
 jenis_tokemon(kompor_gas,fire,60,bom,bitu,0).
 jenis_tokemon(tukangair,water,60,ciprat,sebor,0).
 jenis_tokemon(lumud,leaves,100,kepelesed,badmud,0).
 jenis_tokemon(rerumputan,leaves,60,lambai,bergoyang,0).
 jenis_tokemon(sugiono,water,69,genjot,crot,0).
-jenis_tokemon(sesasasosa,fire,125,sekali,tujuhkali,1).
+jenis_tokemon(sesasasosa,leaves,125,sekali,tujuhkali,1).
 jenis_tokemon(edukamon,leaves,135,startup,bukalepek,0).
 jenis_tokemon(abhaigimon,water,182,warga,turun,0).
 jenis_tokemon(martabak,earth,60,mamet,bowo,0).
@@ -32,9 +32,10 @@ jenis_tokemon(mumu,wind,60,badai,topan,0).
 jenis_tokemon(gledek,lightning,60,halilintar,atta,0).
 jenis_tokemon(hiring,lightning,120,sekip,debat,0).
 jenis_tokemon(danus,earth,100,paid,promote,0).
-jenis_tokemon(tubes,wind,110,kelar,dong,1).
+jenis_tokemon(tubes,water,110,kelar,dong,1).
 
 
+normal_attack(att,99).
 normal_attack(duarr,20).
 normal_attack(bom,30).
 normal_attack(ciprat,20).
@@ -51,9 +52,9 @@ normal_attack(sekip,40).
 normal_attack(paid,30).
 normal_attack(kelar,40).
 
-
+special_attack(spec,-99).
 special_attack(nmax,30).
-special_attack(bitu,30).
+special_attack(bitu,40).
 special_attack(sebor,30).
 special_attack(badmud,30).
 special_attack(bergoyang,30).
@@ -170,7 +171,6 @@ relative_coor(br, -29, -13).
 %% tokemonCount(Counter).
 %% stat_tokemon(Id,Nama,Curr_Health,Level).
 
-
 start :- 
 	retractall(pemain(_, _, _, _,_)),
 	retractall(stat_tokemon(_, _, _, _)),
@@ -181,21 +181,31 @@ start :-
 	retractall(doneTokemon(_)),
 	retractall(inGym(_)),
 	asserta(donePlayer(0)),
+	title,
 	write('Siapa Anda? [choosePlayer(Nama)]: akill, jun-go, atau (Nama bebas).'),
 	asserta(doneTokemon(0)),
 	asserta(tokemonCount(0)),
 	asserta(mayCapture(0, -1)),
 	asserta(inGym(0)).
 
+title :-
+	open('title.txt',read,Str), !,
+	readMap(Str, CharT),
+	atom_codes(T,CharT),
+	close(Str),
+	cls,
+	write(T),  nl,
+	!.
+
 
 %% todo initialize tokemons
-tokemonInit(kompor_gas).
+tokemonInit(karma_nder).
 tokemonInit(tukangair).
 tokemonInit(lumud).
 choosePlayer(Name) :- 
-	addPemain(Name,10,1,tl), 
+	addPemain(Name,10,9,tl), 
 	retract(donePlayer(_)), 
-	(write(Name), write(' pilih tokemon Anda terlebih dahulu, [chooseTokemon(Nama)]: kompor_gas(Fire), tukangair(Water), atau lumud(leaves)!')).
+	(write(Name), write(' pilih tokemon Anda terlebih dahulu, [chooseTokemon(Nama)]: karma_nder(Fire), tukangair(Water), atau lumud(leaves)!')).
 chooseTokemon(_) :- donePlayer(_), write('Pilih player terlebih dahulu!'), !.
 chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada dalam pilihan!'), !.
 chooseTokemon(Tokemon) :- addTokemon(Tokemon,1), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
@@ -346,6 +356,10 @@ cekPeta(Map, Xnext, Ynext, _, Xnew, Ynew) :-
 	Xrel is Xnext+Xoffs, Yrel is Ynext+Yoffs,
 	getAscii(Symbol,Xrel,Yrel,Map),
 	\+cekAscii(Symbol,88),
+	\+cekAscii(Symbol,61),
+	\+cekAscii(Symbol,64),
+	\+cekAscii(Symbol,47),
+	\+cekAscii(Symbol,92),
 	Xnew is Xnext,
 	Ynew is Ynext.
 
@@ -450,6 +464,8 @@ handleGym :-
 	retract(inGym(_)),
 	write('Anda memasuki gym!'), nl,
 	asserta(inGym(1)).
+
+%askHeal
 
 heal :- inGym(X), X = 0, write('Anda tidak sedang berada di gym!'), nl, !.
 heal :- 
@@ -724,6 +740,8 @@ checkChar(Char,[Char|Chars],InStream):-
 %% (X, Y) = 24*Y + 2*X
 replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (60*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
 
+cls :- shell(cls).
+
 map :- donePlayer(_), write('Anda belum memilih player!'),!.
 map :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
 map :-
@@ -737,6 +755,7 @@ map :-
 	replaceCoor(Chars, Xrel, Yrel, 80, MapwithP),
 	atom_codes(M,MapwithP),
 	close(Str),
+	cls,
 	write(M),  nl,
 	!.
 

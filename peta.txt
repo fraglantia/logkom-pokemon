@@ -10,3 +10,4 @@ X - - - - x x x - - - X
 X - - - - - - - - - - X
 X - - - - - - - - - - X
 XXXXXXXXXXXXXXXXXXXXXXX
+← → ↑ ↓
