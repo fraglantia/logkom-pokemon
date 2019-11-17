@@ -164,12 +164,14 @@ relative_coor(br, -29, -13).
 :- dynamic(donePlayer/1).
 :- dynamic(doneTokemon/1).
 :- dynamic(inGym/1).
+:- dynamic(inLegend/1).
 
 %% pemain(Nama,Inventory,Xpos,Ypos,Map).
 %% inFight(EnemyId, MyId, Can_Run, Can_Special). MyId if belom pick = -1, Can_Run 1/0, Can_Special 1/0
 %% mayCapture(Yes/No, Id) 1/0
 %% tokemonCount(Counter).
 %% stat_tokemon(Id,Nama,Curr_Health,Level).
+%% inLegend(X), X=0 -> NO, X=1 -> LEAVES, X=2 -> WATER
 
 start :- 
 	retractall(pemain(_, _, _, _,_)),
@@ -180,13 +182,15 @@ start :-
 	retractall(donePlayer(_)),
 	retractall(doneTokemon(_)),
 	retractall(inGym(_)),
+	retractall(inLegend(_)),
 	asserta(donePlayer(0)),
 	title,
 	write('Siapa Anda? [choosePlayer(Nama)]: akill, jun-go, atau (Nama bebas).'),
 	asserta(doneTokemon(0)),
 	asserta(tokemonCount(0)),
 	asserta(mayCapture(0, -1)),
-	asserta(inGym(0)).
+	asserta(inGym(0)),
+	asserta(inLegend(0)).
 
 title :-
 	open('title.txt',read,Str), !,
@@ -211,8 +215,10 @@ chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada da
 chooseTokemon(Tokemon) :- addTokemon(Tokemon,1), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
 
 addWildTokemon :- 
-	%% addTokemon(martabak, 1), 
-	addTokemon(sesasasosa, 100).
+	%% add legendaries at (FIX ID 1 AND 2)
+	addTokemon(sesasasosa, 100),
+	addTokemon(tubes, 100).
+	%% addTokemon(martabak, 1).
 
 %% SAVE/LOAD 
 %% note: filename harus pake kutip
@@ -397,8 +403,8 @@ w :-
 	makeCannotCapture,
 	handleMapChange,
 	map, !,
-	handleGym,
-    (inGym(0), randomWildTokemon(Id),
+	handleGym, handleLegend,
+    (inGym(0), inLegend(0), randomWildTokemon(Id),
 	meetWild(Id)).
 
 s :- donePlayer(_), write('Anda belum memilih player!'),!.
@@ -413,8 +419,8 @@ s :-
 	makeCannotCapture,
 	handleMapChange,
 	map, !,
-	handleGym,
-    (inGym(0), randomWildTokemon(Id),
+	handleGym, handleLegend,
+    (inGym(0), inLegend(0), randomWildTokemon(Id),
 	meetWild(Id)).
 
 a :- donePlayer(_), write('Anda belum memilih player!'),!.
@@ -429,8 +435,8 @@ a :-
 	makeCannotCapture,
 	handleMapChange,
 	map, !,
-	handleGym,
-	(inGym(0), randomWildTokemon(Id),
+	handleGym, handleLegend,
+    (inGym(0), inLegend(0), randomWildTokemon(Id),
 	meetWild(Id)).
 
 d :- donePlayer(_), write('Anda belum memilih player!'),!.
@@ -445,8 +451,8 @@ d :-
 	makeCannotCapture,
 	handleMapChange,
 	map, !,
-	handleGym,
-    (inGym(0), randomWildTokemon(Id),
+	handleGym, handleLegend,
+    (inGym(0), inLegend(0), randomWildTokemon(Id),
 	meetWild(Id)).
 
 
@@ -486,8 +492,34 @@ healList([Id|T]) :-
 	healList(T).
 
 
-
 %% ================= GYM & HEAL =================
+
+
+%% ================= LEGEND =================
+
+handleLegend :-
+	pemain(_, _, 43, 3, _),
+	retract(inLegend(_)),
+	write('Anda bertemu Legendary Leaves!'), nl,
+	asserta(inLegend(1)), meetLegend(1), !.
+
+handleLegend :-
+	pemain(_, _, 44, 24, _),
+	retract(inLegend(_)),
+	write('Anda bertemu Legendary Water!'), nl,
+	asserta(inLegend(2)), meetLegend(2), !.
+
+handleLegend :- 
+	pemain(_, _, X, Y, _),
+	((X \= 43, Y \= 3); (X \= 44, Y \= 24)),
+	retract(inLegend(_)), 
+	asserta(inLegend(0)), !.
+
+meetLegend(Id) :-
+	asserta(inFight(Id, -1, 1, 1)),
+	write('Fight or Run?'), nl.
+
+%% ================= LEGEND =================
 
 
 %% RANDOMLY MEET TOKEMON
