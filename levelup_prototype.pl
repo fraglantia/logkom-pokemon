@@ -185,8 +185,39 @@ chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada da
 chooseTokemon(Tokemon) :- addTokemon(Tokemon,1,0), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
 
 addWildTokemon :- 
+	addTokemon(tubes, 50, 0),
+	addTokemon(sesasasosa, 50, 0),
+	addTokemon(karma-nder, 1, 0),
+	addTokemon(karma-nder, 7,0),
+	addTokemon(kompor_gas, 5, 0),
+	addTokemon(lumud, 2, 0),
+	addTokemon(lumud, 5, 0),
+	addTokemon(tukangair, 2, 0),
+	addTokemon(tukangair, 5, 0),
+	addTokemon(tukangair, 10, 0),
+	addTokemon(tukangair, 3, 0),
+	addTokemon(rerumputan, 7, 0),
+	addTokemon(rerumputan, 20, 0),
+	addTokemon(rerumputan, 10, 0),
+	addTokemon(sugiono, 1, 0),
+	addTokemon(sugiono, 69, 0),
+	addTokemon(edukamon, 5, 0),
+	addTokemon(edukamon, 20, 0),
+	addTokemon(abhaigimon, 16, 0),
+	addTokemon(abhaigimon, 10, 0),
 	addTokemon(martabak, 1, 0), 
-	addTokemon(sesasasosa, 100, 0).
+	addTokemon(martabak, 20, 0),
+	addTokemon(mumu, 9, 0),
+	addTokemon(mumu, 10, 0),
+	addTokemon(mumu, 13,0),
+	addTokemon(gledek, 1, 0),
+	addTokemon(gledek, 7, 0),
+	addTokemon(gledek, 10, 0),
+	addTokemon(hiring, 3, 0),
+	addTokemon(hiring, 6, 0),
+	addTokemon(hiring, 10, 0),
+	addTokemon(danus, 2, 0),
+	addTokemon(danus, 10, 0).
 
 %% SAVE/LOAD 
 %% note: filename harus pake kutip
