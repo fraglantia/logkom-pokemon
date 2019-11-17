@@ -203,7 +203,7 @@ tokemonInit(karma_nder).
 tokemonInit(tukangair).
 tokemonInit(lumud).
 choosePlayer(Name) :- 
-	addPemain(Name,10,9,tl), 
+	addPemain(Name,3,5,tl), 
 	retract(donePlayer(_)), 
 	(write(Name), write(' pilih tokemon Anda terlebih dahulu, [chooseTokemon(Nama)]: karma_nder(Fire), tukangair(Water), atau lumud(leaves)!')).
 chooseTokemon(_) :- donePlayer(_), write('Pilih player terlebih dahulu!'), !.
@@ -211,7 +211,7 @@ chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada da
 chooseTokemon(Tokemon) :- addTokemon(Tokemon,1), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
 
 addWildTokemon :- 
-	%% addTokemon(martabak, 1), 
+	addTokemon(martabak, 1), 
 	addTokemon(sesasasosa, 100).
 
 %% SAVE/LOAD 
@@ -398,7 +398,7 @@ w :-
 	handleMapChange,
 	map, !,
 	handleGym,
-    (randomWildTokemon(Id),
+    (inGym(0), randomWildTokemon(Id),
 	meetWild(Id)).
 
 s :- donePlayer(_), write('Anda belum memilih player!'),!.
@@ -414,7 +414,7 @@ s :-
 	handleMapChange,
 	map, !,
 	handleGym,
-    (randomWildTokemon(Id),
+    (inGym(0), randomWildTokemon(Id),
 	meetWild(Id)).
 
 a :- donePlayer(_), write('Anda belum memilih player!'),!.
@@ -430,7 +430,7 @@ a :-
 	handleMapChange,
 	map, !,
 	handleGym,
-    (randomWildTokemon(Id),
+	(inGym(0), randomWildTokemon(Id),
 	meetWild(Id)).
 
 d :- donePlayer(_), write('Anda belum memilih player!'),!.
@@ -446,8 +446,9 @@ d :-
 	handleMapChange,
 	map, !,
 	handleGym,
-    (randomWildTokemon(Id),
+    (inGym(0), randomWildTokemon(Id),
 	meetWild(Id)).
+
 
 %% ================= GYM & HEAL =================
 
@@ -740,7 +741,7 @@ checkChar(Char,[Char|Chars],InStream):-
 %% (X, Y) = 24*Y + 2*X
 replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (60*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
 
-cls :- shell(cls).
+cls :- shell(cls); shell(clear).
 
 map :- donePlayer(_), write('Anda belum memilih player!'),!.
 map :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
