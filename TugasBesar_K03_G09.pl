@@ -219,8 +219,8 @@ chooseTokemon(Tokemon) :- addTokemon(Tokemon,1,0), add2InvTokemon(0), retract(do
 addWildTokemon :- 
 	%% add legendaries at (FIX ID 1 AND 2)
 	addTokemon(sesasasosa, 100, 0),
-	addTokemon(tubes, 100, 0),
-	addTokemon(martabak, 1, 0).
+	addTokemon(tubes, 100, 0).
+	%% addTokemon(martabak, 1, 0).
 
 %% SAVE/LOAD 
 %% note: filename harus pake kutip
@@ -677,7 +677,8 @@ drop(Name) :-
 	Id \= -1,
 	deleteFromInv(Id),
 	retract(stat_tokemon(Id, _, _, _, _, _)),
-	write('You have dropped '), write(Name), write('!'), nl, !.
+	write('You have dropped '), write(Name), write('!'), nl, 
+	checkLose, !.
 
 
 %% todo : how to differ 2 same pokemons : list first?
@@ -772,14 +773,31 @@ checkIfTokemonPemainDead(Id) :-
 	stat_tokemon(Id, Name, Health, _, _, _),
 	Health =< 0,
 	write('Yaaah, '), write(Name), write(' mati :(((('), nl,
-	write('Please pick another tokemon!'), nl,
 	inFight(EnemyId, _, Can_Run, _),
 	retract(inFight(_, _, _, _)), 
 	asserta(inFight(EnemyId, -1, Can_Run, 1)),
-	deleteFromInv(Id), retract(stat_tokemon(Id, _, _, _, _, _)), !.
+	deleteFromInv(Id), retract(stat_tokemon(Id, _, _, _, _, _)), 
+	checkLose,
+	write('Please pick another tokemon!'), nl, !.
 
 %% check if enemy is defeated retract inFight
 %% as of now respawn, MUNGKIN GANTI!
+
+%% ================= LOSE =================
+
+checkLose :-
+	pemain(_, [], _, _, _), 
+	write('YOU LOSE!'), nl,
+	halt, !.
+
+checkLose :- 
+	pemain(_, L, _, _, _),
+	L \= [], !.
+
+
+
+
+%% ================= LOSE =================
 
 %% ================= CAPTURE =================
 makeCanCapture(Id) :- retract(mayCapture(_, _)), asserta(mayCapture(1, Id)).
