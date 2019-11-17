@@ -796,9 +796,6 @@ checkLose :-
 
 
 
-
-%% ================= LOSE =================
-
 %% ================= CAPTURE =================
 makeCanCapture(Id) :- retract(mayCapture(_, _)), asserta(mayCapture(1, Id)).
 makeCannotCapture :- retract(mayCapture(_, _)), asserta(mayCapture(0, -1)).
@@ -904,7 +901,6 @@ help :-
 	write('16. savefile(filename) : Menyimpan permainan pemain.'),nl,
 	write('17. loadfile(filename) : Membuka save-an pemain.'),nl,
 	write('18. quit : Keluar dari permainan.'),nl.
-
 
 writeAvailable([]) :- !.
 writeAvailable([A]) :- 

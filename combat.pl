@@ -1,4 +1,4 @@
-%% All combat functions are handle here
+%% All combat functions are handled here
 
 %% ================= FIGHT =================
 fight :- 
@@ -12,7 +12,7 @@ fight :-
 	inFight(Id, _, _, Can_Special),
 	retract(inFight(_, _, _, _)),
 	asserta(inFight(Id, -1, 0, Can_Special)),
-	stat_tokemon(Id, Nama, _, _),
+	stat_tokemon(Id, Nama, _, _, _, _),
 	write('Anda melawan '), write(Nama), write('!!'), nl,
 	pemain(_, L, _, _, _),
 	write('Choose your Tokemon!'), nl,
@@ -34,14 +34,14 @@ runRandom(X) :- X=2, write('You failed to run!'), nl, fight.
 
 %% cari Name di Inventory ambil yg pertama if none Id = -1
 inInventory(Name, Id) :- 
-	findall(X, (stat_tokemon(X, _, _, _), \+wildTokemon(X)), L),
+	findall(X, (stat_tokemon(X, _, _, _, _, _), \+wildTokemon(X)), L),
 	searchNameInList(Name, L, Id).
 
 
 searchNameInList(_, [], -1) :- !.
 
 searchNameInList(Name, [Id|_], Id) :-
-	stat_tokemon(Id, Name, _, _), !.
+	stat_tokemon(Id, Name, _, _, _, _), !.
 
 searchNameInList(Name, [_|T], Id) :-
 	searchNameInList(Name, T, Id).
@@ -91,8 +91,9 @@ drop(Name) :-
 	inInventory(Name, Id),
 	Id \= -1,
 	deleteFromInv(Id),
-	retract(stat_tokemon(Id, _, _, _)),
-	write('You have dropped '), write(Name), write('!'), nl, !.
+	retract(stat_tokemon(Id, _, _, _, _, _)),
+	write('You have dropped '), write(Name), write('!'), nl, 
+	checkLose, !.
 
 
 %% todo : how to differ 2 same pokemons : list first?
@@ -108,13 +109,13 @@ attack :-
 
 attack :- 
 	inFight(EnemyId, MyId, _, _),
-	stat_tokemon(EnemyId, EnemyName, _, _),
-	stat_tokemon(MyId, MyName, _, _),
+	stat_tokemon(EnemyId, EnemyName, _, _, _, _),
+	stat_tokemon(MyId, MyName, _, Level, _, _),
 	jenis_tokemon(MyName, MyTipe, _, AttackName, _, _),
 	jenis_tokemon(EnemyName, EnemyTipe, _, _, _, _),
 	tipeModifier(MyTipe, EnemyTipe, Modf),
 	normal_attack(AttackName, Dmg),
-	NewDmg is floor(Dmg*Modf),
+	NewDmg is floor(Dmg*Modf*Level),
 	dealDmg(EnemyId, NewDmg),
 	nl, write(AttackName), write('!!!'), nl,
 	write('You dealt '), write(NewDmg), write(' damage to '), write(EnemyName), write('!'), nl, 
@@ -132,13 +133,13 @@ specialAttack :-
 
 specialAttack :- 
 	inFight(EnemyId, MyId, Can_Run, _),
-	stat_tokemon(EnemyId, EnemyName, _, _),
-	stat_tokemon(MyId, MyName, _, _),
+	stat_tokemon(EnemyId, EnemyName, _, _, _, _),
+	stat_tokemon(MyId, MyName, _, Level, _, _),
 	jenis_tokemon(MyName, MyTipe, _, _, SpecialName, _),
 	jenis_tokemon(EnemyName, EnemyTipe, _, _, _, _),
 	tipeModifier(MyTipe, EnemyTipe, Modf),
 	special_attack(SpecialName, Dmg),
-	NewDmg is floor(Dmg*Modf),
+	NewDmg is floor(Dmg*Modf*Level),
 	dealDmg(EnemyId, NewDmg), nl,
 	retract(inFight(_, _, _, _)), 
 	asserta(inFight(EnemyId, MyId, Can_Run, 0)),
@@ -149,48 +150,50 @@ specialAttack :-
 
 enemyAttack :- 
 	inFight(EnemyId, MyId, _, _),
-	stat_tokemon(EnemyId, EnemyName, _, _),
-	stat_tokemon(MyId, MyName, _, _),
+	stat_tokemon(EnemyId, EnemyName, _, Level, _, _),
+	stat_tokemon(MyId, MyName, _, _, _, _),
 	jenis_tokemon(EnemyName, EnemyTipe, _, AttackName, _, _),
 	jenis_tokemon(MyName, MyTipe, _, _, _, _),
 	tipeModifier(EnemyTipe, MyTipe, Modf),
 	normal_attack(AttackName, Dmg),
-	NewDmg is floor(Dmg*Modf),
-	dealDmg(MyId, NewDmg),
+	NewDmg is floor(Dmg*Modf*Level),
+	NewDmg1 is div(NewDmg,2),
+	dealDmg(MyId, NewDmg1),
 	nl, write(AttackName), write('!!!'), nl,
-	write('It dealt '), write(NewDmg), write(' damage to '), write(MyName), write('!'), nl, nl, !.
+	write('It dealt '), write(NewDmg1), write(' damage to '), write(MyName), write('!'), nl, nl, !.
 %% todo: enemy special attack
 
 dealDmg(Id, Dmg) :- 
-	retract(stat_tokemon(Id, EnemyName, Health, Lvl)),
+	retract(stat_tokemon(Id, EnemyName, Health, Lvl, Exp, ExpMax)),
 	NewHealth is Health-Dmg,
-	assertz(stat_tokemon(Id, EnemyName, NewHealth, Lvl)).
+	assertz(stat_tokemon(Id, EnemyName, NewHealth, Lvl, Exp, ExpMax)).
 
 %% mengecek jika lawanya sudah mati :(
 checkIfEnemyDead(Id) :- 
-	stat_tokemon(Id, Name, Health, _),
+	stat_tokemon(Id, Name, Health, _, _, _),
 	Health =< 0,
 	write(Name),
 	write(' faints! Do you want to capture '),
 	write(Name),
 	write('? (capture/0 to capture '),
 	write(Name), write(', otherwise move away.'), nl,
-	retract(inFight(_, _, _, _)), 
-	retract(stat_tokemon(Id, Name, Health, Level)),
+	retract(inFight(_, IdUp, _, _)), 
+	retract(stat_tokemon(Id, Name, Health, Level, Exp, ExpMax)),
 	max_Health(Name, Level, Max_H),
-	assertz(stat_tokemon(Id, Name, Max_H, Level)), 
-	makeCanCapture(Id), !.
+	assertz(stat_tokemon(Id, Name, Max_H, Level, Exp, ExpMax)), 
+	makeCanCapture(Id), ExpUp is Level*20, asserta(tokemonExpUp(IdUp,ExpUp)), !.
 
 %% mengecek jika tokemon yg dimiliki pemain mati
 checkIfTokemonPemainDead(Id) :- 
-	stat_tokemon(Id, Name, Health, _),
+	stat_tokemon(Id, Name, Health, _, _, _),
 	Health =< 0,
 	write('Yaaah, '), write(Name), write(' mati :(((('), nl,
-	write('Please pick another tokemon!'), nl,
 	inFight(EnemyId, _, Can_Run, _),
 	retract(inFight(_, _, _, _)), 
 	asserta(inFight(EnemyId, -1, Can_Run, 1)),
-	deleteFromInv(Id), retract(stat_tokemon(Id, _, _, _)), !.
+	deleteFromInv(Id), retract(stat_tokemon(Id, _, _, _, _, _)), 
+	checkLose,
+	write('Please pick another tokemon!'), nl, !.
 
 %% check if enemy is defeated retract inFight
 %% as of now respawn, MUNGKIN GANTI!
@@ -212,10 +215,9 @@ capture :-
 capture :-
 	mayCapture(X, Id), X=1,
 	notMaxInv,
-	stat_tokemon(Id, Name, _, _),
+	stat_tokemon(Id, Name, _, _, _, _),
 	makeCannotCapture,
-	add2InvTokemon(Id),
+	add2InvTokemon(Id), retract(tokemonExpUp(_,_)),
 	write(Name), write(' is captured!'), nl, !.
 
 %% todo : check if full, add random chance of success
-

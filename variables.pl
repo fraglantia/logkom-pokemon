@@ -32,10 +32,9 @@ jenis_tokemon(tubes,water,110,kelar,dong,1).
 
 
 
-
 %% normal_attack(Nama_Attack,Base_Damage).
 normal_attack(att,99).
-normal_attack(duarr,20).
+normal_attack(duarr,30).
 normal_attack(bom,30).
 normal_attack(ciprat,20).
 normal_attack(kepelesed,20).
@@ -51,10 +50,9 @@ normal_attack(sekip,40).
 normal_attack(paid,30).
 normal_attack(kelar,40).
 
-
 %% special_attack(Nama_Special,Base_Damage).
 special_attack(spec,-99).
-special_attack(nmax,30).
+special_attack(nmax,40).
 special_attack(bitu,40).
 special_attack(sebor,30).
 special_attack(badmud,30).
@@ -69,7 +67,6 @@ special_attack(atta,70).
 special_attack(debat,30).
 special_attack(promote,69).
 special_attack(dong,69).
-
 
 %% tipeModifier(FromTipe, ToTipe, Modf).
 %%fire<water<lightning<earth<leaves<wind<fire
@@ -117,10 +114,10 @@ tipeModifier(wind, leaves, 1.5).
 tipeModifier(wind, wind, 1.0).
 
 % MAPS (Location, Filename)
-getMap(tl,'../assets/petaTL.txt').
-getMap(tr,'../assets/petaTR.txt').
-getMap(bl,'../assets/petaBL.txt').
-getMap(br,'../assets/petaBR.txt').
+getMap(tl,'assets/petaTL.txt').
+getMap(tr,'assets/petaTR.txt').
+getMap(bl,'assets/petaBL.txt').
+getMap(br,'assets/petaBR.txt').
 
 %% GYM LOCATION (X, Y, peta)
 gym_location(3,5,tl).
