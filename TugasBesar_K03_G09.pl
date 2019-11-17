@@ -120,10 +120,10 @@ tipeModifier(earth, wind, 1.0).
 tipeModifier(earth, earth, 1.0).
 
 % PETA
-getMap(tl,'petaTL.txt').
-getMap(tr,'petaTR.txt').
-getMap(bl,'petaBL.txt').
-getMap(br,'petaBR.txt').
+getMap(tl,'assets/petaTL.txt').
+getMap(tr,'assets/petaTR.txt').
+getMap(bl,'assets/petaBL.txt').
+getMap(br,'assets/petaBR.txt').
 
 %% GYM LOCATION (X, Y, peta)
 gym_location(3,5,tl).
@@ -189,7 +189,7 @@ start :-
 	asserta(inGym(0)).
 
 title :-
-	open('title.txt',read,Str), !,
+	open('assets/title.txt',read,Str), !,
 	readMap(Str, CharT),
 	atom_codes(T,CharT),
 	close(Str),
