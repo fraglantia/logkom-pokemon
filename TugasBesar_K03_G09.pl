@@ -418,8 +418,8 @@ w :-
 	makeCannotCapture,
 	handleMapChange,
 	map, !,
-	handleGym,
-    (inGym(0), randomWildTokemon(Id),
+	handleGym, handleLegend,
+    (inGym(0), inLegend(0), randomWildTokemon(Id),
 	meetWild(Id)).
 
 s :- donePlayer(_), write('Anda belum memilih player!'),!.
@@ -444,8 +444,8 @@ s :-
 	makeCannotCapture,
 	handleMapChange,
 	map, !,
-	handleGym,
-    (inGym(0), randomWildTokemon(Id),
+	handleGym, handleLegend,
+    (inGym(0), inLegend(0), randomWildTokemon(Id),
 	meetWild(Id)).
 
 a :- donePlayer(_), write('Anda belum memilih player!'),!.
@@ -470,8 +470,8 @@ a :-
 	makeCannotCapture,
 	handleMapChange,
 	map, !,
-	handleGym,
-	(inGym(0), randomWildTokemon(Id),
+	handleGym, handleLegend,
+    (inGym(0), inLegend(0), randomWildTokemon(Id),
 	meetWild(Id)).
 
 d :- donePlayer(_), write('Anda belum memilih player!'),!.
@@ -496,8 +496,8 @@ d :-
 	makeCannotCapture,
 	handleMapChange,
 	map, !,
-	handleGym,
-    (inGym(0), randomWildTokemon(Id),
+	handleGym, handleLegend,
+    (inGym(0), inLegend(0), randomWildTokemon(Id),
 	meetWild(Id)).
 
 
