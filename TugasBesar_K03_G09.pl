@@ -125,8 +125,8 @@ getMap(tr,'petaTR.txt').
 getMap(bl,'petaBL.txt').
 getMap(br,'petaBR.txt').
 
-%% GYM LOCATION (X, Y, peta)
-gym_location(3,5,tl).
+%% GYM LOCATION (X, Y)
+gym_location(3,5).
 
 %% RELATIVE LOC COORDINATE CHANGE (peta, X, Y)
 relative_coor(tl, 0, 0).
@@ -203,7 +203,7 @@ tokemonInit(karma_nder).
 tokemonInit(tukangair).
 tokemonInit(lumud).
 choosePlayer(Name) :- 
-	addPemain(Name,3,5,tl), 
+	addPemain(Name,10,1,tl), 
 	retract(donePlayer(_)), 
 	(write(Name), write(' pilih tokemon Anda terlebih dahulu, [chooseTokemon(Nama)]: karma_nder(Fire), tukangair(Water), atau lumud(leaves)!')).
 chooseTokemon(_) :- donePlayer(_), write('Pilih player terlebih dahulu!'), !.
@@ -211,7 +211,7 @@ chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada da
 chooseTokemon(Tokemon) :- addTokemon(Tokemon,1), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
 
 addWildTokemon :- 
-	addTokemon(martabak, 1), 
+	%% addTokemon(martabak, 1), 
 	addTokemon(sesasasosa, 100).
 
 %% SAVE/LOAD 
@@ -453,15 +453,15 @@ d :-
 %% ================= GYM & HEAL =================
 
 handleGym :- 
-	pemain(_, _, X, Y, Map1),
-	gym_location(A, B, Map2),
-	(X \= A; Y \= B; Map1 \= Map2),
+	pemain(_, _, X, Y, _),
+	gym_location(A, B),
+	(X \= A; Y \= B),
 	retract(inGym(_)), 
 	asserta(inGym(0)), !.
 
 handleGym :-
-	pemain(_, _, X, Y, Map),
-	gym_location(X, Y, Map),
+	pemain(_, _, X, Y, _),
+	gym_location(X, Y),
 	retract(inGym(_)),
 	write('Anda memasuki gym!'), nl,
 	asserta(inGym(1)).
@@ -741,7 +741,10 @@ checkChar(Char,[Char|Chars],InStream):-
 %% (X, Y) = 24*Y + 2*X
 replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (60*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
 
-cls :- shell(cls); shell(clear).
+
+%% MAKE ONE COMMENT
+%% cls :- shell(cls).
+cls :- shell(clear).
 
 map :- donePlayer(_), write('Anda belum memilih player!'),!.
 map :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.

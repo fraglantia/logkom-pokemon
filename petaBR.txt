@@ -7,13 +7,13 @@
 XXX @ - - - - - - -@@ - - - - -@- - - XX        S       S  
 X -v- - - - - - - - -@@ - - - - - - - XX                  S
 X - - - - - - - - - - - - - -@- - - XXX  . S     .    S    
-< - - - - - - - - -XXXXX- - - - - XX S . S         <><   
+< - - - - - - - - -XXXXX- - - - - XX S . S         <><     
 < - - @@- - - - -XX  S XX - - - -XX . S        S           
 < - - - - - - - X    .  XX- - L -XX       S              . 
 < - - - - - - -XX   S     XX- - XX              .    S     
 < - -v- - - - -XX.    ><>   XXX       S    .               
-< - - - -@- - X                  .              S         
-X -v- - - - - - X     .                     S            .
+< - - - -@- - X                  .              S          
+X -v- - - - - - X     .                     S            . 
 XXXXXXXXXXXXXXXXX           S      <><             .       
                  S                      S                  
                    S   .       S                .          
