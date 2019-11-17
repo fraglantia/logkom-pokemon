@@ -405,7 +405,7 @@ w :-
 	write('Yeay Exp '), write(Name), write(' naik +'), write(ExpUp), write('!'), nl,
 	asserta(stat_tokemon(Id,Name,H,Level,ExpNew,ExpMax)), retract(tokemonExpUp(Id,ExpUp))), !.
 w :- 
-	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,H,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
+	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,_,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
 	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), LevelUp is (Level + 1), max_Health(Name,LevelUp, HNew),
 	write('Tokemon '), write(Name), write(' naik level menjadi level '), write(LevelUp), write('!'),
 	asserta(stat_tokemon(Id,Name,HNew,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
@@ -431,7 +431,7 @@ s :-
 	write('Yeay Exp '), write(Name), write(' naik +'), write(ExpUp), write('!'), nl,
 	asserta(stat_tokemon(Id,Name,H,Level,ExpNew,ExpMax)), retract(tokemonExpUp(Id,ExpUp))), !.
 s :- 
-	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,H,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
+	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,_,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
 	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), LevelUp is (Level + 1), max_Health(Name,LevelUp, HNew),
 	write('Tokemon '), write(Name), write(' naik level menjadi level '), write(LevelUp), write('!'),
 	asserta(stat_tokemon(Id,Name,HNew,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
@@ -457,7 +457,7 @@ a :-
 	write('Yeay Exp '), write(Name), write(' naik +'), write(ExpUp), write('!'), nl,
 	asserta(stat_tokemon(Id,Name,H,Level,ExpNew,ExpMax)), retract(tokemonExpUp(Id,ExpUp))), !.
 a :- 
-	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,H,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
+	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,_,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
 	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), LevelUp is (Level + 1), max_Health(Name,LevelUp, HNew),
 	write('Tokemon '), write(Name), write(' naik level menjadi level '), write(LevelUp), write('!'),
 	asserta(stat_tokemon(Id,Name,HNew,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
@@ -483,7 +483,7 @@ d :-
 	write('Yeay Exp '), write(Name), write(' naik +'), write(ExpUp), write('!'), nl,
 	asserta(stat_tokemon(Id,Name,H,Level,ExpNew,ExpMax)), retract(tokemonExpUp(Id,ExpUp))), !.
 d :- 
-	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,H,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
+	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,_,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
 	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), LevelUp is (Level + 1), max_Health(Name,LevelUp, HNew),
 	write('Tokemon '), write(Name), write(' naik level menjadi level '), write(LevelUp), write('!'),
 	asserta(stat_tokemon(Id,Name,HNew,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
