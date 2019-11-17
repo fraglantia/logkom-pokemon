@@ -189,6 +189,7 @@ dealDmg(Id, Dmg) :-
 checkIfEnemyDead(Id) :- 
 	stat_tokemon(Id, Name, Health, _, _, _),
 	Health =< 0,
+	handleLegendDead(Id),
 	write(Name),
 	write(' faints! Do you want to capture '),
 	write(Name),
@@ -199,6 +200,16 @@ checkIfEnemyDead(Id) :-
 	max_Health(Name, Level, Max_H),
 	assertz(stat_tokemon(Id, Name, Max_H, Level, Exp, ExpMax)),
 	makeCanCapture(Id), ExpUp is Level*20, asserta(tokemonExpUp(IdUp,ExpUp)), fail, !.
+
+handleLegendDead(Id) :-
+	(Id = 1 ; Id = 2),
+	legendKillCount(X),
+	Xnew is X+1,
+	retract(legendKillCount(_)),
+	asserta(legendKillCount(Xnew)),
+	checkWin, !.
+
+handleLegendDead(_) :- !.
 
 %% mengecek jika tokemon yg dimiliki pemain mati
 checkIfTokemonPemainDead(Id) :- 

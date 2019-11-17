@@ -60,6 +60,7 @@
 :- dynamic(inGym/1).
 :- dynamic(tokemonExpUp/2).
 :- dynamic(inLegend/1).
+:- dynamic(legendKillCount/1).
 
 %% pemain(Nama,Inventory,Xpos,Ypos,Map).
 %% inFight(EnemyId, MyId, Can_Run, Can_Special). MyId if belom pick = -1, Can_Run 1/0, Can_Special 1/0
@@ -79,6 +80,7 @@ start :-
 	retractall(inGym(_)),
 	retractall(tokemonExpUp(_, _)),
 	retractall(inLegend(_)),
+	retractall(legendKillCount(_)),
 	asserta(donePlayer(0)),
 	title,
 	write('Siapa Anda?'), nl,
@@ -87,7 +89,8 @@ start :-
 	asserta(tokemonCount(0)),
 	asserta(mayCapture(0, -1)),
 	asserta(inGym(0)),
-	asserta(inLegend(0)).
+	asserta(inLegend(0)),
+	asserta(legendKillCount(0)).
 
 title :-
 	open('assets/title.txt',read,Str), !,
@@ -166,7 +169,8 @@ writeFacts(Str) :-
 	forall(doneTokemon(X), (write(Str,'doneTokemon('), write(Str,X), write(Str,').\n'))),
 	forall(inGym(X), (write(Str,'inGym('), write(Str,X), write(Str,').\n'))),
 	forall(tokemonExpUp(X, Y), (write(Str,'tokemonExpUp('), write(Str,X), write(Str,','), write(Str,Y), write(Str,').\n'))),
-	forall(inLegend(X), (write(Str,'inLegend('), write(Str,X), write(Str,').\n'))).
+	forall(inLegend(X), (write(Str,'inLegend('), write(Str,X), write(Str,').\n'))),
+	forall(legendKillCount(X), (write(Str,'legendKillCount('), write(Str,X), write(Str,').\n'))).
 
 
 loadfile(Filename) :-
@@ -181,6 +185,7 @@ loadfile(Filename) :-
 	retractall(inGym(_)),
 	retractall(tokemonExpUp(_, _)),
 	retractall(inLegend(_)),
+	retractall(legendKillCount(_)),
 	readFacts(Str,Facts),
 	close(Str),
 	process(Facts), nl, 
@@ -460,3 +465,14 @@ checkLose :-
 checkLose :- 
 	pemain(_, L, _, _, _),
 	L \= [], !.
+
+%% ================= WIN =================
+
+
+checkWin :- 
+	legendKillCount(X),
+	X >= 2, 
+	write('YOU WIN!'), nl,
+	halt, !.
+
+checkWin :- !.
