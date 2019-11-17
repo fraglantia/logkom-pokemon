@@ -69,14 +69,15 @@
 %% inLegend(X), X=0 -> NO, X=1 -> LEAVES, X=2 -> WATER
 
 start :- 
-	retractall(pemain(_, _, _, _,_)),
-	retractall(stat_tokemon(_, _, _, _, _, _)),
+	retractall(pemain(_, _, _, _, _)),
 	retractall(inFight(_, _, _, _)),
 	retractall(mayCapture(_, _)),
 	retractall(tokemonCount(_)),
+	retractall(stat_tokemon(_, _, _, _, _, _)),
 	retractall(donePlayer(_)),
 	retractall(doneTokemon(_)),
 	retractall(inGym(_)),
+	retractall(tokemonExpUp(_, _)),
 	retractall(inLegend(_)),
 	asserta(donePlayer(0)),
 	title,
@@ -112,7 +113,6 @@ chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada da
 chooseTokemon(Tokemon) :- addTokemon(Tokemon,1,0), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
 
 addWildTokemon :- 
-	%% add legendaries at (FIX ID 1 AND 2)
 	%% add legendaries at (FIX ID 1 AND 2)
 	addTokemon(tubes, 25, 0),
 	addTokemon(sesasasosa, 25, 0),
@@ -157,26 +157,30 @@ savefile(Filename) :-
 	close(Str).
 
 writeFacts(Str) :-
+	forall(pemain(Name, L, X, Y, Map), (write(Str,'pemain('), write(Str,Name), write(Str,','), write(Str,L), write(Str,','), write(Str,X), write(Str,','), write(Str,Y), write(Str,','), write(Str,Map),write(Str,').\n'))),
+	forall(inFight(EnemyId, MyId, Can_Run, Can_Special), (write(Str,'inFight('), write(Str,EnemyId), write(Str,','), write(Str,MyId), write(Str,','), write(Str,Can_Run), write(Str,','), write(Str,Can_Special), write(Str,').\n'))),
+	forall(mayCapture(YesNo, IdC), (write(Str,'mayCapture('), write(Str,YesNo), write(Str,','), write(Str,IdC), write(Str,').\n'))),
+	forall(tokemonCount(C), (write(Str,'tokemonCount('), write(Str,C), write(Str,').\n'))),
+	forall(stat_tokemon(Id,Nama,Health,Lvl,Exp,ExpMax), (write(Str,'stat_tokemon('), write(Str,Id), write(Str,','), write(Str,Nama), write(Str,','), write(Str,Health), write(Str,','), write(Str,Lvl), write(Str,','), write(Str,Exp), write(Str,','), write(Str,ExpMax), write(Str,').\n'))),
 	forall(donePlayer(X), (write(Str,'donePlayer('), write(Str,X), write(Str,').\n'))),
 	forall(doneTokemon(X), (write(Str,'doneTokemon('), write(Str,X), write(Str,').\n'))),
 	forall(inGym(X), (write(Str,'inGym('), write(Str,X), write(Str,').\n'))),
-	forall(pemain(Name, L, X, Y, Map), (write(Str,'pemain('), write(Str,Name), write(Str,','), write(Str,L), write(Str,','), write(Str,X), write(Str,','), write(Str,Y), write(Str,','), write(Str,Map),write(Str,').\n'))),
-	forall(mayCapture(YesNo, IdC), (write(Str,'mayCapture('), write(Str,YesNo), write(Str,','), write(Str,IdC), write(Str,').\n'))),
-	forall(inFight(EnemyId, MyId, Can_Run, Can_Special), (write(Str,'inFight('), write(Str,EnemyId), write(Str,','), write(Str,MyId), write(Str,','), write(Str,Can_Run), write(Str,','), write(Str,Can_Special), write(Str,').\n'))),
-	forall(tokemonCount(C), (write(Str,'tokemonCount('), write(Str,C), write(Str,').\n'))),
-	forall(stat_tokemon(Id,Nama,Health,Lvl,Exp,ExpMax), (write(Str,'stat_tokemon('), write(Str,Id), write(Str,','), write(Str,Nama), write(Str,','), write(Str,Health), write(Str,','), write(Str,Lvl), write(Str,','), write(Str,Exp), write(Str,','), write(Str,ExpMax), write(Str,').\n'))).
+	forall(tokemonExpUp(X, Y), (write(Str,'tokemonExpUp('), write(Str,X), write(Str,','), write(Str,Y), write(Str,').\n'))),
+	forall(inLegend(X), (write(Str,'inLegend('), write(Str,X), write(Str,').\n'))).
 
 
 loadfile(Filename) :-
 	open(Filename, read, Str),
-	retractall(donePlayer(_)),
-	retractall(doneTokemon(_)),
-	retractall(inGym(_)),
 	retractall(pemain(_, _, _, _, _)),
-	retractall(stat_tokemon(_, _, _, _, _, _)),
 	retractall(inFight(_, _, _, _)),
 	retractall(mayCapture(_, _)),
 	retractall(tokemonCount(_)),
+	retractall(stat_tokemon(_, _, _, _, _, _)),
+	retractall(donePlayer(_)),
+	retractall(doneTokemon(_)),
+	retractall(inGym(_)),
+	retractall(tokemonExpUp(_, _)),
+	retractall(inLegend(_)),
 	readFacts(Str,Facts),
 	close(Str),
 	process(Facts), nl, 
