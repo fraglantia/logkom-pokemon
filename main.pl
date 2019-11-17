@@ -324,7 +324,6 @@ handleGym :-
 	write('Silakan gunakan heal/0 untuk mengembalikan nyawa tokemon Anda!'), nl,
 	asserta(inGym(1)).
 
-%askHeal
 
 heal :- inGym(X), X = 0, write('Anda tidak sedang berada di gym!'), nl, !.
 heal :-
@@ -349,13 +348,13 @@ healList([Id|T]) :-
 handleLegend :-
 	pemain(_, _, 43, 3, _),
 	retract(inLegend(_)),
-	write('Anda bertemu Legendary Leaves!'), nl,
+	write('Anda bertemu Legendary Tokemon tipe Leaves!'), nl,
 	asserta(inLegend(1)), meetLegend(1), !.
 
 handleLegend :-
 	pemain(_, _, 44, 24, _),
 	retract(inLegend(_)),
-	write('Anda bertemu Legendary Water!'), nl,
+	write('Anda bertemu Legendary Tokemon tipe Water!'), nl,
 	asserta(inLegend(2)), meetLegend(2), !.
 
 handleLegend :-
@@ -392,15 +391,15 @@ meetWild(Id) :-
 %% ================= HELP =================
 help :-
 	write('Daftar Command : '),nl,
-	write('1. start : Memulai permainan.'),nl,
-	write('2. map   : Menampilkan peta.'),nl,
-	write('3. w : Bergerak kearah atas.'),nl,
-	write('4. s : Bergerak kearah kanan.'),nl,
-	write('5. a : Bergerak kearah kiri.'),nl,
-	write('6. d : Bergerak kearah bawah.'),nl,
-	write('7. status  : Melihat status diri dan daftar pokemon yang dimiliki.'),nl,
-	write('8. help    : Menampilkan daftar command yang dapat digunakan.'),nl,
-	write('9. fight   : Melawan pokemon liar yang ditemukan.'),nl,
+	write(' 1. start : Memulai permainan.'),nl,
+	write(' 2. map   : Menampilkan peta.'),nl,
+	write(' 3. w : Bergerak kearah atas.'),nl,
+	write(' 4. s : Bergerak kearah kanan.'),nl,
+	write(' 5. a : Bergerak kearah kiri.'),nl,
+	write(' 6. d : Bergerak kearah bawah.'),nl,
+	write(' 7. status : Melihat status diri dan daftar pokemon yang dimiliki.'),nl,
+	write(' 8. help   : Menampilkan daftar command yang dapat digunakan.'),nl,
+	write(' 9. fight  : Melawan pokemon liar yang ditemukan.'),nl,
 	write('10. attack : Menyerang tokemon yang sedang dilawan dengan normal attack.'),nl,
 	write('11. specialAttack : Menyerang tokemon yang sedang dilawan dengan special attack.'),nl,
 	write('12. pick(tokemon) : Menmanggil pokemon dari inventory.'),nl,
@@ -469,7 +468,6 @@ checkLose :-
 	L \= [], !.
 
 %% ================= WIN =================
-
 
 checkWin :-
 	legendKillCount(X),
