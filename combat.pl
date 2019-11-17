@@ -17,7 +17,7 @@ fight :-
 	pemain(_, L, _, _, _),
 	write('Choose your Tokemon!'), nl,
 	write('Available Tokemons: ['), writeAvailable(L), write(']'), nl, 
-	write('pick/1'), nl, !.
+	write('pick/2 : ID,NamaTokemon'), nl, !.
 
 run :-
 	\+inFight(_, _, _, _),
@@ -48,27 +48,27 @@ searchNameInList(Name, [_|T], Id) :-
 	searchNameInList(Name, T, Id).
 
 
-pick(_) :-
+pick(_,_) :-
 	\+inFight(_, _, _, _),
 	write('Anda tidak dalam battle saat ini.'), nl, !.
 
-pick(_) :-
+pick(_,_) :-
 	inFight(_, MyId, _, _),
 	MyId \= -1,
 	write('Anda sudah pick tokemon!'), nl, !.
 
-%%pick(Id) :-
-%%	\+jenis_tokemon(Name, _, _, _, _, _),
-%%	write('Tidak ada tokemon bernama '),
-%%	write(Name), write('!'), nl, !.
-
-pick(Id) :-
-	inInventory(Name, Id),
-	Id = -1,
-	write('Anda tidak memiliki '),
+pick(_,Name) :-
+	\+jenis_tokemon(Name, _, _, _, _, _),
+	write('Tidak ada tokemon bernama '),
 	write(Name), write('!'), nl, !.
 
-pick(Id) :-
+pick(Idt,Name) :-
+	inInventory(Name, Id),
+	(Id = -1; \+ Id == Idt),
+	write('Anda tidak memiliki '),
+	write(Name), write(' dengan ID: '), write(Idt), write('!'), nl, !.
+
+pick(Id,Name) :-
 	inInventory(Name, Id),
 	Id \= -1,
 	retract(inFight(EnemyId, _, _, Can_Special)),
@@ -77,18 +77,18 @@ pick(Id) :-
 	writeStat(Id),
 	writeStat(EnemyId), !.
 
-drop(Name) :-
+drop(_,Name) :-
 	\+jenis_tokemon(Name, _, _, _, _, _),
 	write('Tidak ada tokemon bernama '),
 	write(Name), write('!'), nl, !.
 
-drop(Name) :-
+drop(Idt,Name) :-
 	inInventory(Name, Id),
-	Id = -1,
+	(Id = -1; \+ Id == Idt),
 	write('Anda tidak memiliki '),
-	write(Name), write('!'), nl, !.
+	write(Name), write(' dengan ID: '), write(Idt), write('!'), nl, !.
 
-drop(Name) :-
+drop(Id,Name) :-
 	inInventory(Name, Id),
 	Id \= -1,
 	deleteFromInv(Id),
@@ -116,12 +116,11 @@ attack :-
 	jenis_tokemon(EnemyName, EnemyTipe, _, _, _, _),
 	tipeModifier(MyTipe, EnemyTipe, Modf),
 	normal_attack(AttackName, Dmg),
-	randInterval(X, 1, 10),
 	NewDmg is floor(Dmg*Modf*Level),
 	dealDmg(EnemyId, NewDmg),
 	nl, write(AttackName), write('!!!'), nl,
 	write('You dealt '), write(NewDmg), write(' damage to '), write(EnemyName), write('!'), nl,
-	(checkIfEnemyDead(EnemyId)); ((((\+ X=2), enemyAttack); (X=2, enemyspecialAttack)), (inFight(EnemyId, MyId, _, _), writeStat(MyId), writeStat(EnemyId))),
+	(checkIfEnemyDead(EnemyId)); (randInterval(X, 1, 8), ((((\+ X==2), enemyAttack); (X==2, enemyspecialAttack)), (inFight(EnemyId, MyId, _, _), writeStat(MyId), writeStat(EnemyId)))),
 	checkIfTokemonPemainDead(MyId), !.
 
 specialAttack :-
@@ -141,14 +140,13 @@ specialAttack :-
 	jenis_tokemon(EnemyName, EnemyTipe, _, _, _, _),
 	tipeModifier(MyTipe, EnemyTipe, Modf),
 	special_attack(SpecialName, Dmg),
-	randInterval(X, 1, 10),
 	NewDmg is floor(Dmg*Modf*Level),
 	dealDmg(EnemyId, NewDmg), nl,
 	retract(inFight(_, _, _, _)),
 	asserta(inFight(EnemyId, MyId, Can_Run, 0)),
 	write(SpecialName), write('!!!'), nl,
 	write('You dealt '), write(NewDmg), write(' damage to '), write(EnemyName), write('!'), nl,
-	(checkIfEnemyDead(EnemyId)); ((((\+ X=2), enemyAttack); (X=2, enemyspecialAttack)), (inFight(EnemyId, MyId, _, _), writeStat(MyId), writeStat(EnemyId))),
+	(checkIfEnemyDead(EnemyId)); (randInterval(X, 1, 8), ((((\+ X==2), enemyAttack); (X==2, enemyspecialAttack)), (inFight(EnemyId, MyId, _, _), writeStat(MyId), writeStat(EnemyId)))),
 	checkIfTokemonPemainDead(MyId), !.
 
 enemyAttack :-
@@ -176,7 +174,7 @@ enemyspecialAttack :-
 	NewDmg is floor(Dmg*Modf*Level*0.4),
 	NewDmg1 is div(NewDmg,2),
 	dealDmg(MyId, NewDmg1),
-	nl, write(SpecialName), write('!!!'), nl,
+	nl, write('Musuh menggunakan special attack!'), nl, write(SpecialName), write('!!!'), nl,
 	write('It dealt '), write(NewDmg1), write(' damage to '), write(MyName), write('!'), nl, nl, !.
 
 

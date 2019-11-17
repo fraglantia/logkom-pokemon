@@ -413,10 +413,10 @@ help :-
 
 writeAvailable([]) :- !.
 writeAvailable([A]) :-
-	write('Id:'),write(A),write(' '),
+	write('ID:'),write(A),write(' - '),
 	writeName(A).
 writeAvailable([H|T]) :-
-	write('Id:'),write(H),write(' '),
+	write('ID:'),write(H),write(' - '),
 	writeName(H), write(', '),
 	writeAvailable(T).
 
@@ -433,7 +433,7 @@ writeStat(Id) :-
 	stat_tokemon(Id, Nama, Curr_H, Level,Exp,ExpMax),
 	jenis_tokemon(Nama, Tipe, _, _, _, _),
 	max_Health(Nama, Level, Max_H),
-	write(Nama), nl,
+	write('ID: '),write(Id),write(' - '),write(Nama), nl,
 	write('Level: '), write(Level), nl,
 	write('Health: '), write(Curr_H), write('/'), write(Max_H), nl,
 	write('Type: '), write(Tipe), nl,
