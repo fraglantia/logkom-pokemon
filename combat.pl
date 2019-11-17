@@ -115,11 +115,12 @@ attack :-
 	jenis_tokemon(EnemyName, EnemyTipe, _, _, _, _),
 	tipeModifier(MyTipe, EnemyTipe, Modf),
 	normal_attack(AttackName, Dmg),
+	randInterval(X, 1, 4),
 	NewDmg is floor(Dmg*Modf*Level),
 	dealDmg(EnemyId, NewDmg),
 	nl, write(AttackName), write('!!!'), nl,
 	write('You dealt '), write(NewDmg), write(' damage to '), write(EnemyName), write('!'), nl, 
-	(checkIfEnemyDead(EnemyId); enemyAttack, (writeStat(MyId), writeStat(EnemyId))), 
+	(checkIfEnemyDead(EnemyId)); (((\+ X=2, enemyAttack); (X=2, enemyspecialAttack)), (writeStat(MyId), writeStat(EnemyId))), 
 	checkIfTokemonPemainDead(MyId), !.
 
 specialAttack :- 
@@ -139,13 +140,14 @@ specialAttack :-
 	jenis_tokemon(EnemyName, EnemyTipe, _, _, _, _),
 	tipeModifier(MyTipe, EnemyTipe, Modf),
 	special_attack(SpecialName, Dmg),
+	randInterval(X, 1, 4),
 	NewDmg is floor(Dmg*Modf*Level),
 	dealDmg(EnemyId, NewDmg), nl,
 	retract(inFight(_, _, _, _)), 
 	asserta(inFight(EnemyId, MyId, Can_Run, 0)),
 	write(SpecialName), write('!!!'), nl,
 	write('You dealt '), write(NewDmg), write(' damage to '), write(EnemyName), write('!'), nl,
-	(checkIfEnemyDead(EnemyId); enemyAttack, (writeStat(MyId), writeStat(EnemyId))), 
+	(checkIfEnemyDead(EnemyId)); (((\+ X=2, enemyAttack); (X=2, enemyspecialAttack)), (writeStat(MyId), writeStat(EnemyId))), 
 	checkIfTokemonPemainDead(MyId), !.
 
 enemyAttack :- 
@@ -162,6 +164,20 @@ enemyAttack :-
 	nl, write(AttackName), write('!!!'), nl,
 	write('It dealt '), write(NewDmg1), write(' damage to '), write(MyName), write('!'), nl, nl, !.
 %% todo: enemy special attack
+enemyspecialAttack :-
+	inFight(EnemyId, MyId, _, _),
+	stat_tokemon(EnemyId, EnemyName, _, Level, _, _),
+	stat_tokemon(MyId, MyName, _, _, _, _),
+	jenis_tokemon(EnemyName, EnemyTipe, _, _, SpecialName, _),
+	jenis_tokemon(MyName, MyTipe, _, _, _, _),
+	tipeModifier(EnemyTipe, MyTipe, Modf),
+	special_attack(SpecialName, Dmg),
+	NewDmg is floor(Dmg*Modf*Level),
+	NewDmg1 is div(NewDmg,2),
+	dealDmg(MyId, NewDmg1),
+	nl, write(SpecialName), write('!!!'), nl,
+	write('It dealt '), write(NewDmg1), write(' damage to '), write(MyName), write('!'), nl, nl, !.
+
 
 dealDmg(Id, Dmg) :- 
 	retract(stat_tokemon(Id, EnemyName, Health, Lvl, Exp, ExpMax)),
