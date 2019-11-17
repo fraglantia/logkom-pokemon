@@ -197,8 +197,8 @@ checkIfEnemyDead(Id) :-
 	retract(inFight(_, IdUp, _, _)), 
 	retract(stat_tokemon(Id, Name, Health, Level, Exp, ExpMax)),
 	max_Health(Name, Level, Max_H),
-	assertz(stat_tokemon(Id, Name, Max_H, Level, Exp, ExpMax)), 
-	makeCanCapture(Id), ExpUp is Level*20, asserta(tokemonExpUp(IdUp,ExpUp)), !.
+	assertz(stat_tokemon(Id, Name, Max_H, Level, Exp, ExpMax)),
+	makeCanCapture(Id), ExpUp is Level*20, asserta(tokemonExpUp(IdUp,ExpUp)), fail, !.
 
 %% mengecek jika tokemon yg dimiliki pemain mati
 checkIfTokemonPemainDead(Id) :- 

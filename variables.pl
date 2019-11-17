@@ -14,10 +14,10 @@
 %% Static Variables
 %% jenis_tokemon(Nama, Tipe, Base_Health, Nama_Attack, Nama_Special, Legend_or_normal).
 jenis_tokemon(missingno,entah,999,att,spec,0).
-jenis_tokemon(karma_nder,fire,60,duarr,nmax,0).
-jenis_tokemon(kompor_gas,fire,60,bom,bitu,0).
-jenis_tokemon(tukangair,water,60,ciprat,sebor,0).
+jenis_tokemon(karma_nder,fire,100,duarr,nmax,0).
+jenis_tokemon(tukangair,water,100,ciprat,sebor,0).
 jenis_tokemon(lumud,leaves,100,kepelesed,badmud,0).
+jenis_tokemon(kompor_gas,fire,60,bom,bitu,0).
 jenis_tokemon(rerumputan,leaves,60,lambai,bergoyang,0).
 jenis_tokemon(sugiono,water,69,genjot,crot,0).
 jenis_tokemon(edukamon,leaves,135,startup,bukalepek,0).
@@ -25,19 +25,19 @@ jenis_tokemon(abhaigimon,water,182,warga,turun,0).
 jenis_tokemon(martabak,earth,60,mamet,bowo,0).
 jenis_tokemon(mumu,wind,60,badai,topan,0).
 jenis_tokemon(gledek,lightning,60,halilintar,atta,0).
-jenis_tokemon(hiring,lightning,120,sekip,debat,0).
-jenis_tokemon(danus,earth,100,paid,promote,0).
-jenis_tokemon(sesasasosa,leaves,125,sekali,tujuhkali,1).
-jenis_tokemon(tubes,water,110,kelar,dapetA,1).
+jenis_tokemon(hiring,lightning,80,sekip,debat,0).
+jenis_tokemon(danus,earth,90,paid,promote,0).
+jenis_tokemon(sesasasosa,leaves,150,sekali,tujuhkali,1).
+jenis_tokemon(tubes,water,150,kelar,dapetA,1).
 
 
 
 %% normal_attack(Nama_Attack,Base_Damage).
 normal_attack(att,99).
-normal_attack(duarr,10).
+normal_attack(duarr,15).
+normal_attack(ciprat,15).
+normal_attack(kepelesed,15).
 normal_attack(bom,15).
-normal_attack(ciprat,10).
-normal_attack(kepelesed,10).
 normal_attack(lambai,10).
 normal_attack(genjot,20).
 normal_attack(startup,15).
@@ -53,9 +53,9 @@ normal_attack(kelar,30).
 %% special_attack(Nama_Special,Base_Damage).
 special_attack(spec,-99).
 special_attack(nmax,70).
-special_attack(bitu,90).
 special_attack(sebor,70).
 special_attack(badmud,70).
+special_attack(bitu,90).
 special_attack(bergoyang,90).
 special_attack(crot,69).
 special_attack(bukalepek,95).

@@ -283,6 +283,20 @@ deleteFromInv(Id) :-
 	retract(pemain(_, _, _, _, _)),
 	asserta(pemain(Name, NewL, X, Y, Map)).
 
+getLvlList([],[]) :- !.
+getLvlList([Id|InvTail],[Lvl|LvlTail]) :-
+	stat_tokemon(Id,_,_,Lvl,_,_),
+	getLvlList(InvTail,LvlTail).
+
+maxList([], 0) :- !.
+maxList([H|T], X) :-
+	maxList(T, Tmax),
+	X is max(H, Tmax).
+
+maxLvlInv(X) :- 
+	pemain(_, L, _, _, _),
+	getLvlList(L, LvlList),
+	maxList(LvlList, X).
 
 %% ================= GYM & HEAL =================
 
@@ -298,6 +312,7 @@ handleGym :-
 	gym_location(X, Y, Map),
 	retract(inGym(_)),
 	write('Anda memasuki gym!'), nl,
+	write('Silakan gunakan heal/0 untuk mengembalikan nyawa tokemon Anda!'), nl,
 	asserta(inGym(1)).
 
 %askHeal
@@ -350,7 +365,7 @@ meetLegend(Id) :-
 %% RANDOMLY MEET TOKEMON
 %% random id from list of wild tokemons (not including legendary)
 randomWildTokemon(Id) :-
-	findall(X, (stat_tokemon(X, _, _, _, _, _), wildTokemon(X), \+legendaryTokemon(X)), L),
+	findall(X, (stat_tokemon(X, _, _, Lvl, _, _), wildTokemon(X), \+legendaryTokemon(X), (maxLvlInv(MaxLvl), Lvl < MaxLvl+2) ), L),
 	count(L, Len),
 	IdxMax is Len-1,
 	randInterval(N, 0, IdxMax),
