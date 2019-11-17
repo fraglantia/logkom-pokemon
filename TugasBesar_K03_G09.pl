@@ -36,7 +36,7 @@ jenis_tokemon(tubes,water,110,kelar,dong,1).
 
 
 normal_attack(att,99).
-normal_attack(duarr,20).
+normal_attack(duarr,30).
 normal_attack(bom,30).
 normal_attack(ciprat,20).
 normal_attack(kepelesed,20).
@@ -53,7 +53,7 @@ normal_attack(paid,30).
 normal_attack(kelar,40).
 
 special_attack(spec,-99).
-special_attack(nmax,30).
+special_attack(nmax,40).
 special_attack(bitu,40).
 special_attack(sebor,30).
 special_attack(badmud,30).
@@ -219,8 +219,8 @@ chooseTokemon(Tokemon) :- addTokemon(Tokemon,1,0), add2InvTokemon(0), retract(do
 addWildTokemon :- 
 	%% add legendaries at (FIX ID 1 AND 2)
 	addTokemon(sesasasosa, 100, 0),
-	addTokemon(tubes, 100, 0).
-	%% addTokemon(martabak, 1, 0).
+	addTokemon(tubes, 100, 0),
+	addTokemon(martabak, 1, 0).
 
 %% SAVE/LOAD 
 %% note: filename harus pake kutip
@@ -406,9 +406,9 @@ w :-
 	asserta(stat_tokemon(Id,Name,H,Level,ExpNew,ExpMax)), retract(tokemonExpUp(Id,ExpUp))), !.
 w :- 
 	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,H,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
-	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), Hup is (H + 10), LevelUp is (Level + 1),  
+	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), LevelUp is (Level + 1), max_Health(Name,LevelUp, HNew),
 	write('Tokemon '), write(Name), write(' naik level menjadi level '), write(LevelUp), write('!'),
-	asserta(stat_tokemon(Id,Name,Hup,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
+	asserta(stat_tokemon(Id,Name,HNew,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
 w :-
 	pemain(Name, L, X, Y, Map),
 	Ynext is (Y-1),
@@ -432,9 +432,9 @@ s :-
 	asserta(stat_tokemon(Id,Name,H,Level,ExpNew,ExpMax)), retract(tokemonExpUp(Id,ExpUp))), !.
 s :- 
 	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,H,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
-	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), Hup is (H + 10), LevelUp is (Level + 1),  
+	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), LevelUp is (Level + 1), max_Health(Name,LevelUp, HNew),
 	write('Tokemon '), write(Name), write(' naik level menjadi level '), write(LevelUp), write('!'),
-	asserta(stat_tokemon(Id,Name,Hup,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
+	asserta(stat_tokemon(Id,Name,HNew,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
 s :- 
 	pemain(Name, L, X, Y, Map),
 	Ynext is (Y+1), 
@@ -458,9 +458,9 @@ a :-
 	asserta(stat_tokemon(Id,Name,H,Level,ExpNew,ExpMax)), retract(tokemonExpUp(Id,ExpUp))), !.
 a :- 
 	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,H,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
-	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), Hup is (H + 10), LevelUp is (Level + 1),  
+	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), LevelUp is (Level + 1), max_Health(Name,LevelUp, HNew),
 	write('Tokemon '), write(Name), write(' naik level menjadi level '), write(LevelUp), write('!'),
-	asserta(stat_tokemon(Id,Name,Hup,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
+	asserta(stat_tokemon(Id,Name,HNew,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
 a :- 
 	pemain(Name, L, X, Y, Map),
 	Xnext is (X-1), 
@@ -484,9 +484,9 @@ d :-
 	asserta(stat_tokemon(Id,Name,H,Level,ExpNew,ExpMax)), retract(tokemonExpUp(Id,ExpUp))), !.
 d :- 
 	tokemonExpUp(Id,ExpUp),(retract(stat_tokemon(Id,Name,H,Level,Exp,ExpMax)), ExpTemp is (Exp + ExpUp),
-	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), Hup is (H + 10), LevelUp is (Level + 1),  
+	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), LevelUp is (Level + 1), max_Health(Name,LevelUp, HNew),
 	write('Tokemon '), write(Name), write(' naik level menjadi level '), write(LevelUp), write('!'),
-	asserta(stat_tokemon(Id,Name,Hup,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
+	asserta(stat_tokemon(Id,Name,HNew,LevelUp,ExpNew,ExpMaxNew)), retract(tokemonExpUp(Id,ExpUp))), !.
 d :- 
 	pemain(Name, L, X, Y, Map),
 	Xnext is (X+1), 
