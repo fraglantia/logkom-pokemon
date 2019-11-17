@@ -92,7 +92,7 @@ title :-
 	readMap(Str, CharT),
 	atom_codes(T,CharT),
 	close(Str),
-	cls,
+	%cls,
 	write(T),  nl,
 	!.
 
@@ -147,7 +147,8 @@ loadfile(Filename) :-
 	retractall(tokemonCount(_)),
 	readFacts(Str,Facts),
 	close(Str),
-	process(Facts), nl, !.
+	process(Facts), nl, 
+	!.
 
 process([]) :- !.
 
@@ -342,12 +343,12 @@ help :-
 	write('5. a : Bergerak kearah kiri.'),nl,
 	write('6. d : Bergerak kearah bawah.'),nl,
 	write('7. status  : Melihat status diri dan daftar pokemon yang dimiliki.'),nl,
-	write('8. help    : Menampilkan tampilan help lagi.'),nl,
+	write('8. help    : Menampilkan daftar command yang dapat digunakan.'),nl,
 	write('9. fight   : Melawan pokemon liar yang ditemukan.'),nl,
 	write('10. attack : Menyerang tokemon yang sedang dilawan dengan normal attack.'),nl,
 	write('11. specialAttack : Menyerang tokemon yang sedang dilawan dengan special attack.'),nl,
-	write('12. pick(pokemon) : Menmanggil pokemon dari inventory.'),nl,
-	write('13. drop(pokemon) : Melepas pokemon yang dimiliki.'),nl,
+	write('12. pick(tokemon) : Menmanggil pokemon dari inventory.'),nl,
+	write('13. drop(tokemon) : Melepas pokemon yang dimiliki.'),nl,
 	write('14. capture : Menangkap pokemon yang sudah dikalahkan.'),nl,
 	write('15. run     : Lariiiii.'),nl,
 	write('16. savefile(filename) : Menyimpan permainan pemain.'),nl,

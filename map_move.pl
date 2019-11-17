@@ -29,7 +29,7 @@ map :-
 	replaceCoor(Chars, Xrel, Yrel, 80, MapwithP),
 	atom_codes(M,MapwithP),
 	close(Str),
-	cls,
+	%cls,
 	write(M),  nl,
 	!.
 
@@ -154,7 +154,7 @@ s :-
 	map, !,
 	handleGym, handleLegend,
     (inGym(0), inLegend(0), randomWildTokemon(Id),
-	meetWild(Id)).
+	meetWild(Id)),
 	%mn, gapenting 
 	!.
 
