@@ -96,7 +96,6 @@ drop(Id,Name) :-
 	write('You have dropped '), write(Name), write('!'), nl,
 	checkLose, !.
 
-
 %% todo : how to differ 2 same pokemons : list first?
 
 attack :-

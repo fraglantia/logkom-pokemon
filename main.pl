@@ -69,7 +69,7 @@
 %% mayCapture(Yes/No, Id) 1/0
 %% tokemonCount(Counter).
 %% stat_tokemon(Id,Nama,Curr_Health,Level,Exp,ExpMax).
-%% inLegend(X), X=0 -> NO, X=1 -> LEAF, X=2 -> WATER
+%% inLegend(X), X=0 -> NO, X=1 -> LEAVES, X=2 -> WATER
 
 start :-
 	retractall(pemain(_, _, _, _, _)),
@@ -123,7 +123,7 @@ choosePlayer(Name) :-
 	addPemain(Name,10,9,tl),
 	retract(donePlayer(_)),
 	(write(Name), write(' pilih tokemon Anda terlebih dahulu!'), nl,
-	write('chooseTokemon/1: karma_nder (Fire), tukangair (Water), atau lumud (Leaf)!')).
+	write('chooseTokemon/1: karma_nder (Fire), tukangair (Water), atau lumud (Leaves)!')).
 chooseTokemon(_) :- donePlayer(_), write('Pilih player terlebih dahulu!'), !.
 chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada dalam pilihan!'), !.
 chooseTokemon(Tokemon) :- addTokemon(Tokemon,3,0), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
@@ -364,7 +364,7 @@ healList([Id|T]) :-
 handleLegend :-
 	(pemain(_, _, 43, 3, _), statLegend1(0)),
 	retract(inLegend(_)),
-	write('Anda bertemu Legendary Tokemon tipe LEAF!'), nl,
+	write('Anda bertemu Legendary Tokemon tipe Leaves!'), nl,
 	asserta(inLegend(1)), meetLegend(1), !.
 
 handleLegend :-
