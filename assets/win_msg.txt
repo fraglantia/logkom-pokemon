@@ -1,0 +1,1 @@
+	write('YOU WIN! Anda telah mengalahkan dua tokemon legendary milik pemimpin Sparta, Ibeyou. Para prajurit Sparta kabur dengan rasa takut dari Logkombia. Negara Logkombia sudah bebas dari kekuasaan Sparta yang kejam. YEAY!!!'), nl,

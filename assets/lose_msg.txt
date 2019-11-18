@@ -1,0 +1,1 @@
+	write('GET REKT NOOB! YOU LOSE!!, tokemon yang anda miliki mati semua:( Innalillahi... Coba lagi yuk..'), nl,
