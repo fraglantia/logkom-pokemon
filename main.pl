@@ -158,7 +158,7 @@ addWildTokemon :-
 	addTokemon(danus, 2, 0),
 	addTokemon(danus, 10, 0).
 
-%% SAVE/LOAD
+%% ==========  SAVE/LOAD  ==========
 %% note: filename harus pake kutip
 
 savefile(Filename) :-
