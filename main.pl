@@ -128,7 +128,7 @@ win_msg :-
 tokemonInit(karma_nder).
 tokemonInit(tukangair).
 tokemonInit(lumud).
-%tokemonInit(missingno).
+tokemonInit(missingno).
 choosePlayer(Name) :-
 	addPemain(Name,10,9,tl),
 	retract(donePlayer(_)),

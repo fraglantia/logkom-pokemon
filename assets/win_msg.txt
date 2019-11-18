@@ -1,1 +1,15 @@
-	write('YOU WIN! Anda telah mengalahkan dua tokemon legendary milik pemimpin Sparta, Ibeyou. Para prajurit Sparta kabur dengan rasa takut dari Logkombia. Negara Logkombia sudah bebas dari kekuasaan Sparta yang kejam. YEAY!!!'), nl,
+[] ===================================================================================== []
+                       __     ______  _    _  __          _______ _   _ 
+                       \ \   / / __ \| |  | | \ \        / /_   _| \ | |
+                        \ \_/ / |  | | |  | |  \ \  /\  / /  | | |  \| |
+                         \   /| |  | | |  | |   \ \/  \/ /   | | | . ` |
+                          | | | |__| | |__| |    \  /\  /   _| |_| |\  |
+                          |_|  \____/ \____/      \/  \/   |_____|_| \_|
+                                                  
+[] ===================================================================================== []
+
+	Anda telah mengalahkan dua tokemon legendary milik pemimpin Sparta, Ibeyou.
+   Para prajurit Sparta kabur dengan rasa takut dari Logkombia. Negara Logkombia sudah
+   bebas dari kekuasaan Sparta yang kejam. YEAY!!!
+
+[] ===================================================================================== []
