@@ -205,7 +205,8 @@ checkIfEnemyDead(Id) :-
 	makeCanCapture(Id), ExpUp is Level*20, asserta(tokemonExpUp(IdUp,ExpUp)), fail, !.
 
 handleLegendDead(Id) :-
-	(Id = 1 ; Id = 2),
+	((Id = 1, retract(statLegend1(_)), asserta(statLegend1(1)));
+	 (Id = 2, retract(statLegend2(_)), asserta(statLegend2(1)))),
 	legendKillCount(X),
 	Xnew is X+1,
 	retract(legendKillCount(_)),

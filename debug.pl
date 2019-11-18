@@ -61,6 +61,9 @@
 :- dynamic(tokemonExpUp/2).
 :- dynamic(inLegend/1).
 :- dynamic(legendKillCount/1).
+:- dynamic(statLegend1/1).
+:- dynamic(statLegend2/1).
+
 
 %% pemain(Nama,Inventory,Xpos,Ypos,Map).
 %% inFight(EnemyId, MyId, Can_Run, Can_Special). MyId if belom pick = -1, Can_Run 1/0, Can_Special 1/0
@@ -81,23 +84,29 @@ start :-
 	retractall(tokemonExpUp(_, _)),
 	retractall(inLegend(_)),
 	retractall(legendKillCount(_)),
+    retractall(statLegend1(_)),
+	retractall(statLegend2(_)),
 	title,
 	write('######## DEBUG MODE ########'), nl,
-	write('Anda adalah akill, pokemon Anda adalah karma_nder level 100'), nl,
-	addPemain(akill,10,9,tl),
+	write('Anda adalah akill, pokemon Anda adalah lumud level 100'), nl,
+	%addPemain(akill,10,9,tl),
+	%addPemain(akill,18,21,bl),
+	addPemain(akill,44,24,br),
 	asserta(tokemonCount(0)),
 	asserta(mayCapture(0, -1)),
 	asserta(inGym(0)),
 	asserta(inLegend(0)),
-    addTokemon(karma_nder,100,0), add2InvTokemon(0), addWildTokemon,
-	asserta(legendKillCount(0)), !.
+    addTokemon(lumud,100,0), add2InvTokemon(0), addWildTokemon,
+	asserta(legendKillCount(0)),
+	asserta(statLegend1(0)),
+	asserta(statLegend2(0)), !.
 
 title :-
 	open('assets/title.txt',read,Str), !,
 	readMap(Str, CharT),
 	atom_codes(T,CharT),
 	close(Str),
-	%cls,
+	cls,
 	write(T),  nl,
 	!.
 
@@ -241,9 +250,8 @@ isMember(X, [_|T]):- isMember(X, T).
 randInterval(X, X, X) :- !.
 randInterval(X, A, B) :- random(R), X is floor((B-A+1)*R)+A.
 
-%% todo Bedain linux dan windows
-cls :- shell(clear), !.
-cls :- shell(cls), !.
+%% CLEAR SCREEN
+cls :- (shell(clear);shell(cls)), !.
 
 %% ================= STAT_TOKEMON =================
 
@@ -347,13 +355,13 @@ healList([Id|T]) :-
 %% ================= LEGEND =================
 
 handleLegend :-
-	pemain(_, _, 43, 3, _),
+	(pemain(_, _, 43, 3, tr), statLegend1(0)),
 	retract(inLegend(_)),
 	write('Anda bertemu Legendary Tokemon tipe Leaves!'), nl,
 	asserta(inLegend(1)), meetLegend(1), !.
 
 handleLegend :-
-	pemain(_, _, 44, 24, _),
+	(pemain(_, _, 44, 24, br), statLegend2(0)),
 	retract(inLegend(_)),
 	write('Anda bertemu Legendary Tokemon tipe Water!'), nl,
 	asserta(inLegend(2)), meetLegend(2), !.
@@ -448,7 +456,10 @@ status :-
 status :-
 	pemain(X,Inventory,_,_,_), nl,
 	write('[ ***** '), write(X), write('\'s  tokemon  ***** ]'), nl,
-	writeInventory(Inventory), !.
+    writeInventory(Inventory), nl,
+	((statLegend1(1), write('You have defeated the Legendary Tokemon, tubes!'), nl);
+	(statLegend2(1), write('You have defeated the Legendary Tokemon, sesasasosa!'), nl)),
+    !.
 
 
 %% ================= QUIT =================

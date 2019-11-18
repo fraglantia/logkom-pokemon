@@ -29,7 +29,7 @@ map :-
 	replaceCoor(Chars, Xrel, Yrel, 80, MapwithP),
 	atom_codes(M,MapwithP),
 	close(Str),
-	%cls,
+	cls,
 	write(M),  nl,
 	!.
 
@@ -153,9 +153,8 @@ s :-
 	handleMapChange,
 	map, !,
 	handleGym, handleLegend,
-    (inGym(0), inLegend(0), randomWildTokemon(Id),
-	meetWild(Id)),
-	%mn, gapenting 
+    (inGym(0), inLegend(0), (mn; (randomWildTokemon(Id),
+	meetWild(Id)))),
 	!.
 
 a :- donePlayer(_), write('Anda belum memilih player!'),!.
@@ -219,7 +218,6 @@ mn :-
 	pemain(_, _, X, Y, Map), !,
 	Map = bl, X=18, Y=20,
 	assertz(stat_tokemon(999,missingno,999,999)),
-	%retract(inFight(_, _, _, _)),
 	asserta(inFight(999, -1, 0, 1)),
 	nl, write('Anda melawan ############!'), nl,
 	sleep(1), write('.'), sleep(1), write('.'), sleep(1), write('.'), sleep(1), nl, nl,
@@ -229,4 +227,5 @@ mn :-
 	sleep(3),
 	pemain(_, L, _, _, _),
 	write('Choose your Tokemon!'), nl,
-	write('Available Tokemons: ['), writeAvailable(L), write(']'), nl, !.
+	write('Available Tokemons: ['), writeAvailable(L), write(']'), nl, 
+	write('pick/2 : ID,NamaTokemon'), nl, !.

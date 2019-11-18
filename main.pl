@@ -61,6 +61,8 @@
 :- dynamic(tokemonExpUp/2).
 :- dynamic(inLegend/1).
 :- dynamic(legendKillCount/1).
+:- dynamic(statLegend1/1).
+:- dynamic(statLegend2/1).
 
 %% pemain(Nama,Inventory,Xpos,Ypos,Map).
 %% inFight(EnemyId, MyId, Can_Run, Can_Special). MyId if belom pick = -1, Can_Run 1/0, Can_Special 1/0
@@ -81,6 +83,8 @@ start :-
 	retractall(tokemonExpUp(_, _)),
 	retractall(inLegend(_)),
 	retractall(legendKillCount(_)),
+	retractall(statLegend1(_)),
+	retractall(statLegend2(_)),
 	asserta(donePlayer(0)),
 	title,
 	write('Siapa Anda?'), nl,
@@ -90,14 +94,16 @@ start :-
 	asserta(mayCapture(0, -1)),
 	asserta(inGym(0)),
 	asserta(inLegend(0)),
-	asserta(legendKillCount(0)).
+	asserta(legendKillCount(0)),
+	asserta(statLegend1(0)),
+	asserta(statLegend2(0)), !.
 
 title :-
 	open('assets/title.txt',read,Str), !,
 	readMap(Str, CharT),
 	atom_codes(T,CharT),
 	close(Str),
-	%cls,
+	cls,
 	write(T),  nl,
 	!.
 
@@ -241,9 +247,8 @@ isMember(X, [_|T]):- isMember(X, T).
 randInterval(X, X, X) :- !.
 randInterval(X, A, B) :- random(R), X is floor((B-A+1)*R)+A.
 
-%% todo Bedain linux dan windows
-cls :- shell(clear), !.
-cls :- shell(cls), !.
+%% CLEAR SCREEN
+cls :- (shell(clear);shell(cls)), !.
 
 %% ================= STAT_TOKEMON =================
 
@@ -347,13 +352,13 @@ healList([Id|T]) :-
 %% ================= LEGEND =================
 
 handleLegend :-
-	pemain(_, _, 43, 3, _),
+	(pemain(_, _, 43, 3, _), statLegend1(0)),
 	retract(inLegend(_)),
 	write('Anda bertemu Legendary Tokemon tipe Leaves!'), nl,
 	asserta(inLegend(1)), meetLegend(1), !.
 
 handleLegend :-
-	pemain(_, _, 44, 24, _),
+	(pemain(_, _, 44, 24, _), statLegend2(0)),
 	retract(inLegend(_)),
 	write('Anda bertemu Legendary Tokemon tipe Water!'), nl,
 	asserta(inLegend(2)), meetLegend(2), !.
@@ -374,7 +379,7 @@ meetLegend(Id) :-
 %% RANDOMLY MEET TOKEMON
 %% random id from list of wild tokemons (not including legendary)
 randomWildTokemon(Id) :-
-	findall(X, (stat_tokemon(X, _, _, Lvl, _, _), wildTokemon(X), \+legendaryTokemon(X), (maxLvlInv(MaxLvl), Lvl < MaxLvl+2) ), L),
+	findall(X, (stat_tokemon(X, _, _, Lvl, _, _), wildTokemon(X), \+legendaryTokemon(X), (maxLvlInv(MaxLvl), Lvl < MaxLvl+5) ), L),
 	count(L, Len),
 	IdxMax is Len-1,
 	randInterval(N, 0, IdxMax),
@@ -448,7 +453,10 @@ status :-
 status :-
 	pemain(X,Inventory,_,_,_), nl,
 	write('[ ***** '), write(X), write('\'s  tokemon  ***** ]'), nl,
-	writeInventory(Inventory), !.
+	writeInventory(Inventory),
+	((statLegend1(1), write('You have defeated the Legendary Tokemon, tubes!'), nl);
+	 (statLegend2(1), write('You have defeated the Legendary Tokemon, sesasasosa!'), nl)),
+	!.
 
 
 %% ================= QUIT =================
