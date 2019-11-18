@@ -63,9 +63,10 @@ pick(_) :-
 
 pick(Idx) :-
 	pemain(_, L, _, _, _),
-	length(L, X), Idx>X, Idx=<0, 
+	length(L, X), (Idx>X; Idx=<0), 
 	write('Tidak ada Tokemon berindeks '),
-	write(Idx), write('!'), nl, !.
+	write(Idx), write('!'), nl, 
+	writeIndex(L, 1), !.
 
 pick(Idx) :-
 	pemain(_, L, _, _, _),
@@ -77,20 +78,18 @@ pick(Idx) :-
 	writeStat(Id),
 	writeStat(EnemyId), !.
 
-drop(_,Name) :-
-	\+jenis_tokemon(Name, _, _, _, _, _),
-	write('Tidak ada tokemon bernama '),
-	write(Name), write('!'), nl, !.
 
-drop(Idt,Name) :-
-	inInventory(Name, Idt, Ada),
-	(Ada = -1),
-	write('Anda tidak memiliki '),
-	write(Name), write(' dengan ID: '), write(Idt), write('!'), nl, !.
+drop(Idx) :-
+	pemain(_, L, _, _, _),
+	length(L, X), (Idx>X; Idx=<0), 
+	write('Tidak ada Tokemon berindeks '),
+	write(Idx), write('!'), nl, 
+	writeIndex(L, 1), !.
 
-drop(Id,Name) :-
-	inInventory(Name, Id, Ada),
-	Ada \= -1,
+drop(Idx) :-
+	pemain(_, L, _, _, _),
+	getIndex(L, Idx, Id),
+	stat_tokemon(Id, Name, _, _, _, _),
 	deleteFromInv(Id),
 	retract(stat_tokemon(Id, _, _, _, _, _)),
 	write('You have dropped '), write(Name), write('!'), nl,
