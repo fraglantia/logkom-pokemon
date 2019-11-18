@@ -69,7 +69,7 @@
 %% mayCapture(Yes/No, Id) 1/0
 %% tokemonCount(Counter).
 %% stat_tokemon(Id,Nama,Curr_Health,Level,Exp,ExpMax).
-%% inLegend(X), X=0 -> NO, X=1 -> LEAVES, X=2 -> WATER
+%% inLegend(X), X=0 -> NO, X=1 -> LEAF, X=2 -> WATER
 
 start :-
 	retractall(pemain(_, _, _, _, _)),
@@ -354,7 +354,7 @@ healList([Id|T]) :-
 handleLegend :-
 	(pemain(_, _, 43, 3, _), statLegend1(0)),
 	retract(inLegend(_)),
-	write('Anda bertemu Legendary Tokemon tipe Leaves!'), nl,
+	write('Anda bertemu Legendary Tokemon tipe LEAF!'), nl,
 	asserta(inLegend(1)), meetLegend(1), !.
 
 handleLegend :-

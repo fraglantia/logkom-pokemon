@@ -38,18 +38,18 @@ runRandom(X) :- X=1, retract(inFight(_, _, _, _)), write('You sucessfully escape
 runRandom(X) :- X=2, write('You failed to run!'), nl, fight.
 
 %% cari Name di Inventory ambil yg pertama if none Id = -1
-inInventory(Name, Id) :-
+inInventory(Name, Id, Ada) :-
 	findall(X, (stat_tokemon(X, _, _, _, _, _), \+wildTokemon(X)), L),
-	searchNameInList(Name, L, Id).
+	searchNameInList(Name, L, Id, Ada).
 
 
-searchNameInList(_, [], -1) :- !.
+searchNameInList(_, [], _, -1) :- !.
 
-searchNameInList(Name, [Id|_], Id) :-
+searchNameInList(Name, [Id|_], Id, 1) :-
 	stat_tokemon(Id, Name, _, _, _, _), !.
 
-searchNameInList(Name, [_|T], Id) :-
-	searchNameInList(Name, T, Id).
+searchNameInList(Name, [_|T], Id, 1) :-
+	searchNameInList(Name, T, Id, 1).
 
 
 pick(_,_) :-
@@ -67,14 +67,14 @@ pick(_,Name) :-
 	write(Name), write('!'), nl, !.
 
 pick(Idt,Name) :-
-	inInventory(Name, Id),
-	(Id = -1; \+ Id == Idt),
+	inInventory(Name, Idt, Ada),
+	(Ada = -1),
 	write('Anda tidak memiliki '),
-	write(Name), write(' dengan ID: '), write(Idt), write('!'), nl, !.
+	write(Name), write(' dengan ID: '), write(Idt), write('!'), nl.
 
 pick(Id,Name) :-
-	inInventory(Name, Id),
-	Id \= -1,
+	inInventory(Name, Id, Ada),
+	Ada \= -1,
 	retract(inFight(EnemyId, _, _, Can_Special)),
 	asserta(inFight(EnemyId, Id, 0, Can_Special)),
 	write(Name), write(', I choose you!'), nl, nl,
@@ -87,14 +87,14 @@ drop(_,Name) :-
 	write(Name), write('!'), nl, !.
 
 drop(Idt,Name) :-
-	inInventory(Name, Id),
-	(Id = -1, Id \= Idt),
+	inInventory(Name, Idt, Ada),
+	(Ada = -1),
 	write('Anda tidak memiliki '),
 	write(Name), write(' dengan ID: '), write(Idt), write('!'), nl, !.
 
 drop(Id,Name) :-
-	inInventory(Name, Id),
-	Id \= -1,
+	inInventory(Name, Id, Ada),
+	Ada \= -1,
 	deleteFromInv(Id),
 	retract(stat_tokemon(Id, _, _, _, _, _)),
 	write('You have dropped '), write(Name), write('!'), nl,

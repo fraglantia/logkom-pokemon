@@ -16,18 +16,18 @@
 jenis_tokemon(missingno,fire,999,att,spec,0).
 jenis_tokemon(karma_nder,fire,100,duarr,nmax,0).
 jenis_tokemon(tukangair,water,100,ciprat,sebor,0).
-jenis_tokemon(lumud,leaves,100,kepelesed,badmud,0).
+jenis_tokemon(lumud,leaf,100,kepelesed,badmud,0).
 jenis_tokemon(kompor_gas,fire,125,bom,bitu,0).
-jenis_tokemon(rerumputan,leaves,125,lambai,bergoyang,0).
+jenis_tokemon(rerumputan,leaf,125,lambai,bergoyang,0).
 jenis_tokemon(sugiono,water,69,genjot,crot,0).
-jenis_tokemon(edukamon,leaves,135,startup,bukalepek,0).
+jenis_tokemon(edukamon,leaf,135,startup,bukalepek,0).
 jenis_tokemon(abhaigimon,water,182,warga,turun,0).
 jenis_tokemon(martabak,earth,135,mamet,bowo,0).
 jenis_tokemon(mumu,wind,125,badai,topan,0).
 jenis_tokemon(gledek,lightning,125,halilintar,atta,0).
 jenis_tokemon(hiring,lightning,125,sekip,debat,0).
 jenis_tokemon(danus,earth,130,paid,promote,0).
-jenis_tokemon(sesasasosa,leaves,200,sekali,tujuhkali,1).
+jenis_tokemon(sesasasosa,leaf,200,sekali,tujuhkali,1).
 jenis_tokemon(tubes,water,200,kelar,dapetA,1).
 
 
@@ -69,39 +69,39 @@ special_attack(tujuhkali,77).
 special_attack(dapetA,100).
 
 %% tipeModifier(FromTipe, ToTipe, Modf).
-%%fire<water<lightning<earth<leaves<wind<fire
+%%fire<water<lightning<earth<leaf<wind<fire
 %% from fire
 tipeModifier(fire, fire, 1.0).
 tipeModifier(fire, water, 0.5).
-tipeModifier(fire, leaves, 1.5).
+tipeModifier(fire, leaf, 1.5).
 tipeModifier(fire, lightning, 1.0).
 tipeModifier(fire, earth, 1.0).
 tipeModifier(fire, wind, 1.0).
 %% from water
 tipeModifier(water, fire, 1.5).
 tipeModifier(water, water, 1.0).
-tipeModifier(water, leaves, 0.5).
+tipeModifier(water, leaf, 0.5).
 tipeModifier(water, lightning, 1.0).
 tipeModifier(water, earth, 1.0).
 tipeModifier(water, wind, 1.0).
-%% from leaves
-tipeModifier(leaves, fire, 0.5).
-tipeModifier(leaves, water, 1.5).
-tipeModifier(leaves, leaves, 1.0).
-tipeModifier(leaves, lightning, 1.0).
-tipeModifier(leaves, earth, 1.0).
-tipeModifier(leaves, wind, 0.0).
+%% from leaf
+tipeModifier(leaf, fire, 0.5).
+tipeModifier(leaf, water, 1.5).
+tipeModifier(leaf, leaf, 1.0).
+tipeModifier(leaf, lightning, 1.0).
+tipeModifier(leaf, earth, 1.0).
+tipeModifier(leaf, wind, 0.0).
 %% from lightning
 tipeModifier(lightning, fire, 1.0).
 tipeModifier(lightning, water, 1.0).
-tipeModifier(lightning, leaves, 1.0).
+tipeModifier(lightning, leaf, 1.0).
 tipeModifier(lightning, lightning, 1.0).
 tipeModifier(lightning, earth, 0.5).
 tipeModifier(lightning, wind, 1.5).
 %% from earth
 tipeModifier(earth, fire, 1.0).
 tipeModifier(earth, water, 1.0).
-tipeModifier(earth, leaves, 1.0).
+tipeModifier(earth, leaf, 1.0).
 tipeModifier(earth, lightning, 1.5).
 tipeModifier(earth, earth, 1.0).
 tipeModifier(earth, wind, 0.5).
@@ -110,7 +110,7 @@ tipeModifier(wind, fire, 1.0).
 tipeModifier(wind, water, 1.0).
 tipeModifier(wind, lightning, 1.0).
 tipeModifier(wind, earth, 0.5).
-tipeModifier(wind, leaves, 1.5).
+tipeModifier(wind, leaf, 1.5).
 tipeModifier(wind, wind, 1.0).
 
 % MAPS (Location, Filename)
