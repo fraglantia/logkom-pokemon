@@ -1,33 +1,34 @@
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-X  o=====o  X - - - - - - - - XXXXXXXXXXXXXXXXXX - - - - - - - - - - - - - - - - - - - - - - - X
-X  |G Y M|  X - - - - -v- - - - - - - >< - - - - - - - - - - - - - - - - - - - - - - - - - - - X
-X  |=====|  X -v- - -@- - - - - - - - >< - - - - - - - - - - - - - - - - - - - - - - - - L - - X
-X  |[] []|  X - - - - - - - v - - - - >< - - - - - - - - - - - - - - - - - - - - - - - - - - - X
-X  o==G==o  X - -v- - - - - - - - - - >< - - - - - - - - - - - - - - - - - - - - - - - - - - - X
-X+X+X - X+X+X - - - - - - - - XXXXXXXXXXXXXXXXXXXX - - - - - - - - - - - - - - - - - - - - - - X
-X -v- - - @@- - - -v- -v- - - X                 XXXX - - - - - - - - - - - - - - - - - - - - - X    
-X - - - - - - - - - - -v- - - X                   XXXXX- - - - - - - - - - - - - - - - - - - - X
-X - - - - @v- - -v- - - - - - X                        XXX - - - - - - - - - - - - - - - - - - X
-X - - - - - - - - -v- - - - - X                           XX - - - - - - - - - - - - - - - - - X
-X - - - - - - -v- - - -v- - - X                             XX - - - - - - - - - - - - - - - - X
-X -@- - - XXXXXXXXXXXXXXXXXXXXX                              X - - - - - - - - - - - - - - - - X
-X - - - - X                                                  XXXXXXXXXXXXXXXXXXXXXXX V V V V XXX
-X - - - - X                                                  XXXXXXXXXXXXXXXXXXXXXXX ^ ^ ^ ^ XXXXXXX                
-X - - - - X                                                  X - -v- - - - v - - -vv - - - - vv- - X                
-XXX V V XXX                                                  X - - -v- - - - - - vv- - - - - -vv - X                  
-XXX ^ ^ XXXXXXXXXXXXXXXXXXX                                  X - - - - - - - - - - - - - - - - - - X    S   S       
-X - - -v- - - - - - - - - X        /\                        X - - - - - - - - - - - - - - - - - - XSS          S   
-X -v- - - - - - - - -/\ - X  /\   /  \    XXXXXXXXXXXXXXXXXXXX @ - - - - - - -@@ - - - - -@- - - XX        S         S
-X - -v- - - - /\- - - - - X      / .  \   x - - /\- - - XX -v- - - - - - - - -@@ - - - - - - - XX                     
-X - - - - - - - - /\- - - X               x - -/  \/\ - XX - - - - - - - - - - - - - -@- - - XXX  . S     .    S       
-X - - - - - - - - - - - - XXXXXXXXXXXXXXXXX - /   /  \- >< - - - - - - - - -XXXXX- - - - - XX S . S         <><       
-X - - - - - - - - - - - - - - - - - - - - - - - - - - - >< - - @@ - - - - -XX S XX - - - -XX . S        S             
-X - - - - - - - - - - - - - - - - - - - - - - - - - - v >< - - - - - - - X    .   X- - L -XX       S              .   
-X - -/\ - - - - -/\ - - - - - - /\- - - - - - - - - - - >< - - - - - - - -XX   S     XX- - XX              .    S       
-X - /  \- - - - - - - - - -/\ -/  \ - - - - - - - - - - >< - -v- - - - -X .    ><>   XXX       S    .                 
-X - - - - -/\ - - - - - - /  \/    \- - -/\ - - - - - - >< - - - -@ - - X                  .              S           
-X - - - - /  \- - - - - -/    \ - - - - - - -/\ - - -v- XX -v- - - - - - -X     .                     S               
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX           S      <><             .       
-                                                                            S                      S                  
-                                                                              S   .       S                .          
-                                                                                 S          .        S     ><>   S    
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                    
+X  o=====o  X v - - - - - - - XXXXXXXXX XXXXXXXXX - - v - - - v - - - v - - - W - v v V v v - W X                    
+X  |G Y M|  X v - v - - v - - - - - v >-< v - - - v - - - v - W - v - W - v - | v v V - V v v | X                    
+X  |=====|  X v - - - - - - - - v - v >-< - - v - - - v - - - | - - - | - - - - v v - L - v v - X                    
+X  |[] []|  X v - - - - - - - - v - v >-< v - - - v - - - v - - - v - - - v - W v v V - V v v W X                    
+X  o==G==o  X v - v - - - - - - - - v >-< - - v - - - v - - - v - - - v - - - | - v v V v v - | X                    
+X+X+X - X+X+X - - - - - v - v XXXXXXXXX XXXXXXXXXXX - - - v - W - v - W - v - - - - v v v - - - X                    
+X -v- - -v- - v - - v V V V v X                   XXXXX - - - | - - - | - - - W - - - W - - - W X                    
+X -v- - -v- - - - v W W W W V X                       XXXXv - - - v - - - v - | - v - | - v - | X                    
+X - - - - - - - v V W W W W V X                         XXX - v - - - v - - - - - - - - - - - - X                    
+X - - - - - - - - v W W W W V X                           XXX - - v - W - v - - - v - - - v - - X                    
+X - - v - - - - v v V V V V V X                             XXX - - - | - - - v - - - v - - - - X                    
+X - - - - - XXXXXXXXXXXXXXXXXXX                               X - v - - - v - - - v - - - v - - X                    
+X - - - - - X                                                 XXXXXXXXXXXXXXXXXXXXX V V V V XXXXX                    
+X - - v - - X                                                                       | | | |                          
+X - - - - - X                                                 XXXXXXXXXXXXXXXXXXXXX ^ ^ ^ ^ XXXXX                    
+XXX V V V XXX                                                 X - - - - - - - - - v v - - v v - X                    
+    | | |                                                     X - O o - - - - - v v - - - - v v X     o o o o o      
+XXX ^ ^ ^ XXXXXXXXXXXXXXXXX                                   X - O o - - ^ - - - - - - - - - - X   o ~ ~ ~ ~ ~ o    
+X v - - - v - - - - - - - X        /\  _                      X - - - - - - - - - - - - - - - - X O ~ ~ ~ ~ ~ ~ ~ o  
+X - v v v - - - - - -/\ - X  /\   /  \/ \ XXXXXXXXXXXXXXX XXXXX - ^ - - - - - - - - - ^ - - - ^ o ~ ~ ~ ~ ~ ~ ~ ~ ~  
+X - - - - - - /\- - - - v X /  \ /    \   x - - /\- - - X X - - - - - - - - - - - - - - - - - - o ~ ~ ~ ~ ~ ~ ~ ~ ~  
+X - - - - - - - - /\- v V X/    \         X - -/  \/\ - X X - v - - - - - - ^ - - - - - - - - O ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  
+X - - - - -_- - - - - v V XXXXXXXXXXXXXXXXX - /   /  \- >-< v - - - - ^ - o o O - ^ - - - ^ o ~ ~ ~ ~   ~ ~  <><  ~  
+X - - - - / \ - - - - v V V V v - - - - - - - - - - - - >-< - - - - - - o ~ ~ ~ o - ^ - ^ o ~ ~ ~ ~   o   ~ ~ ~ ~ ~  
+X - - - - - - - - - - v v v v - - - - - - - - - - - - v >-< - - - ^ - O ~ ~ ~ ~ ~ o - L - o ~ ~ ~ ~  O O  ~ ~ ~ ~ ~  
+X - -/\ - - - - -/\ - - - - - - /\- - - - - - - - - v - >-< - - - - o ~ ~ ~ ~ ~ ~ o ^ - ^ o ~ ~ ~ ~ O O O ~ ~ ~ ~ ~  
+X v /  \- - - - - - - - - -/\ -/  \ - - - - - - - - - v >-< - - - - O ~ ~ ~ ~ ~ ~ ~ o O o ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  
+X v v v - -/\ - - - - - - /  \/    \- - -/\ - - - - v - >-< v - - ^ o ~ ~ ~ ><> ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  
+X v v v v /  \- - - - - -/    \ - - - - - - -/\ - - - v X X - v - - - o ~ ~ ~ ~ ~ ~ ~ ~ ~       ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX XXXXXXXXXXXXXXO ~ ~ ~ ~ ~ ~ ~ ~  <><  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  
+                                                                         o ~ ~ ~ ~ ~ ~ ~       ~ ~ ~ ~ ~ ~ ~ ~ ~ ~   
+                                                                           o ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~         ~ ~   
+                                                                             o ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~     ><>     ~   

@@ -11,5 +11,5 @@ XXXXXXXXXXX - - - v - W - v - W - v - - - - v v v - - - X
                   XXX - - v - W - v - - - v - - - v - - X  
                     XXX - - - | - - - v - - - v - - - - X  
                       X - v - - - v - - - v - - - v - - X  
-                      XXXXXXXXXXXXXXXXXXXXXXX V V V V XXX  
-                                                            
+                      XXXXXXXXXXXXXXXXXXXXX V V V V XXXXX  
+                                                           

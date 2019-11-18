@@ -1,10 +1,10 @@
                                                            
-  XXXXXXXXXXXXXXXXXXXXXXX ^ ^ ^ ^ XXXXXXX                  
-  X - - - - - - - - - - v v - - v v - - X                  
-  X - - O o - - - - - v v - - - - v v - X   o o o o o      
-  X - - O o - - ^ - - - - - - - - - - - X o ~ ~ ~ ~ ~ o    
-  X - - - - - - - - - - - - - - - - - - O ~ ~ ~ ~ ~ ~ ~ o  
-XXX - - ^ - - - - - - - - - ^ - - - ^ o ~ ~ ~ ~ ~ ~ ~ ~ ~  
+    XXXXXXXXXXXXXXXXXXXXX ^ ^ ^ ^ XXXXX                    
+    X - - - - - - - - - v v - - v v - X                    
+    X - O o - - - - - v v - - - - v v X     o o o o o      
+    X - O o - - ^ - - - - - - - - - - X   o ~ ~ ~ ~ ~ o    
+    X - - - - - - - - - - - - - - - - X O ~ ~ ~ ~ ~ ~ ~ o  
+XXXXX - ^ - - - - - - - - - ^ - - - ^ o ~ ~ ~ ~ ~ ~ ~ ~ ~  
 X - - - - - - - - - - - - - - - - - - o ~ ~ ~ ~ ~ ~ ~ ~ ~  
 X - v - - - - - - ^ - - - - - - - - O ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  
 < v - - - - ^ - o o O - ^ - - - ^ o ~ ~ ~ ~   ~ ~  <><  ~  

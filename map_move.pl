@@ -12,9 +12,8 @@ checkChar(Char,[Char|Chars],InStream):-
 	get_code(InStream,NextChar),
 	checkChar(NextChar,Chars,InStream).
 
-%% (X, Y) = 24*Y + 2*X
+%% (X, Y) = 60*Y + 2*X
 replaceCoor(Chars, X, Y, Symbol, Replaced) :- Pos is  (60*Y + 2*X), replace(Chars, Symbol, Pos, Replaced).
-
 
 map :- donePlayer(_), write('Anda belum memilih player!'),!.
 map :- doneTokemon(_), write('Anda belum memilih tokemon!'),!.
