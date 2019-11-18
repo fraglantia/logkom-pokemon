@@ -13,7 +13,7 @@
 
 %% Static Variables
 %% jenis_tokemon(Nama, Tipe, Base_Health, Nama_Attack, Nama_Special, Legend_or_normal).
-jenis_tokemon(missingno,entah,999,att,spec,0).
+jenis_tokemon(missingno,fire,999,att,spec,0).
 jenis_tokemon(karma_nder,fire,100,duarr,nmax,0).
 jenis_tokemon(tukangair,water,100,ciprat,sebor,0).
 jenis_tokemon(lumud,leaves,100,kepelesed,badmud,0).

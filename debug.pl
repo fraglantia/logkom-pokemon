@@ -81,16 +81,16 @@ start :-
 	retractall(tokemonExpUp(_, _)),
 	retractall(inLegend(_)),
 	retractall(legendKillCount(_)),
-	asserta(donePlayer(0)),
 	title,
-	write('Siapa Anda?'), nl,
-	write('choosePlayer/1: akill, jun-go, atau (Nama bebas).'),
-	asserta(doneTokemon(0)),
+	write('######## DEBUG MODE ########'), nl,
+	write('Anda adalah akill, pokemon Anda adalah karma_nder level 100'), nl,
+	addPemain(akill,10,9,tl),
 	asserta(tokemonCount(0)),
 	asserta(mayCapture(0, -1)),
 	asserta(inGym(0)),
 	asserta(inLegend(0)),
-	asserta(legendKillCount(0)).
+    addTokemon(karma_nder,100,0), add2InvTokemon(0), addWildTokemon,
+	asserta(legendKillCount(0)), !.
 
 title :-
 	open('assets/title.txt',read,Str), !,
@@ -114,7 +114,7 @@ choosePlayer(Name) :-
 	write('chooseTokemon/1: karma_nder (Fire), tukangair (Water), atau lumud (Leaf)!')).
 chooseTokemon(_) :- donePlayer(_), write('Pilih player terlebih dahulu!'), !.
 chooseTokemon(Tokemon) :- (\+ tokemonInit(Tokemon)), write('Tokemon tidak ada dalam pilihan!'), !.
-chooseTokemon(Tokemon) :- addTokemon(Tokemon,3,0), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
+chooseTokemon(Tokemon) :- addTokemon(Tokemon,100,0), add2InvTokemon(0), retract(doneTokemon(_)), addWildTokemon.
 
 addWildTokemon :-
 	%% add legendaries at (FIX ID 1 AND 2)
@@ -381,7 +381,7 @@ randomWildTokemon(Id) :-
 	nth0(N, L, Id).
 
 meetWild(Id) :-
-	%% 20%
+	%% 12.5%
 	randInterval(X, 1, 8), X=1,
 	stat_tokemon(Id, Nama, _, Level, _, _),
 	write('A wild '), write(Nama), write(' (lv.'), write(Level), write(') appears!'), nl,

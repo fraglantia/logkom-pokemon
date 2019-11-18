@@ -26,6 +26,10 @@ run :-
 	inFight(_, _, 0, _),
 	write('Gak bisa lari :('), nl, !.
 run :-
+	(inLegend(X), (X == 1; X==2)), 
+	retract(inFight(_, _, _, _)),
+	write('You ran from a Legendary Tokemon! A wise choice whether you\'re ready or not.'), nl, !.
+run :-
 	%% 50%
 	randInterval(X, 1, 2),
 	runRandom(X).
@@ -84,7 +88,7 @@ drop(_,Name) :-
 
 drop(Idt,Name) :-
 	inInventory(Name, Id),
-	(Id = -1; \+ Id == Idt),
+	(Id = -1, Id \= Idt),
 	write('Anda tidak memiliki '),
 	write(Name), write(' dengan ID: '), write(Idt), write('!'), nl, !.
 
@@ -146,6 +150,7 @@ specialAttack :-
 	asserta(inFight(EnemyId, MyId, Can_Run, 0)),
 	write(SpecialName), write('!!!'), nl,
 	write('You dealt '), write(NewDmg), write(' damage to '), write(EnemyName), write('!'), nl,
+	write('It\'s super effective!'), nl,
 	(checkIfEnemyDead(EnemyId)); (randInterval(X, 1, 8), ((((\+ X==2), enemyAttack); (X==2, enemyspecialAttack)), (inFight(EnemyId, MyId, _, _), writeStat(MyId), writeStat(EnemyId)))),
 	checkIfTokemonPemainDead(MyId), !.
 
@@ -192,7 +197,7 @@ checkIfEnemyDead(Id) :-
 	write(' faints! Do you want to capture '),
 	write(Name),
 	write('? (capture/0 to capture '),
-	write(Name), write(', otherwise move away.'), nl,
+	write(Name), write(', otherwise move away.)'), nl,
 	retract(inFight(_, IdUp, _, _)),
 	retract(stat_tokemon(Id, Name, Health, Level, Exp, ExpMax)),
 	max_Health(Name, Level, Max_H),
