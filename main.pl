@@ -158,7 +158,7 @@ addWildTokemon :-
 	addTokemon(danus, 2, 0),
 	addTokemon(danus, 10, 0).
 
-%% ==========  SAVE/LOAD  ==========
+%% SAVE/LOAD
 %% note: filename harus pake kutip
 
 savefile(Filename) :-
@@ -177,7 +177,9 @@ writeFacts(Str) :-
 	forall(inGym(X), (write(Str,'inGym('), write(Str,X), write(Str,').\n'))),
 	forall(tokemonExpUp(X, Y), (write(Str,'tokemonExpUp('), write(Str,X), write(Str,','), write(Str,Y), write(Str,').\n'))),
 	forall(inLegend(X), (write(Str,'inLegend('), write(Str,X), write(Str,').\n'))),
-	forall(legendKillCount(X), (write(Str,'legendKillCount('), write(Str,X), write(Str,').\n'))).
+	forall(legendKillCount(X), (write(Str,'legendKillCount('), write(Str,X), write(Str,').\n'))),
+	forall(statLegend1(X), (write(Str,'statLegend1('), write(Str,X), write(Str,').\n'))),
+	forall(statLegend2(X), (write(Str,'statLegend2('), write(Str,X), write(Str,').\n'))).
 
 
 loadfile(Filename) :-
@@ -193,6 +195,8 @@ loadfile(Filename) :-
 	retractall(tokemonExpUp(_, _)),
 	retractall(inLegend(_)),
 	retractall(legendKillCount(_)),
+	retractall(statLegend1(_)),
+	retractall(statLegend2(_)),
 	readFacts(Str,Facts),
 	close(Str),
 	process(Facts), nl,
@@ -416,6 +420,20 @@ help :-
 	write('17. loadfile(filename) : Membuka save-an pemain.'),nl,
 	write('18. quit : Keluar dari permainan.'),nl.
 
+%% USAGE: writeIndex(Inv, 1)
+writeIndex([], _) :- !.
+writeIndex([Id|T], S) :- 
+	stat_tokemon(Id, Nama, _, Level, _, _),
+	write(S), write('. '), write(Nama), write(' (Lv. '), write(Level), write(')'), nl,
+	Snew is S+1,
+	writeIndex(T, Snew).
+
+getIndex([Id|_], 1, Id) :- !.
+getIndex([_|T], X, R) :-
+	Xnew is X-1,
+	getIndex(T, Xnew, R).
+
+
 writeAvailable([]) :- !.
 writeAvailable([A]) :-
 	write('ID:'),write(A),write(' - '),
@@ -438,7 +456,7 @@ writeStat(Id) :-
 	stat_tokemon(Id, Nama, Curr_H, Level,Exp,ExpMax),
 	jenis_tokemon(Nama, Tipe, _, _, _, _),
 	max_Health(Nama, Level, Max_H),
-	write('ID     : '),write(Id),write(' - '),write(Nama), nl,
+	write('Nama   : '), write(Nama), nl,
 	write('Level  : '), write(Level), nl,
 	write('Health : '), write(Curr_H), write('/'), write(Max_H), nl,
 	write('Type   : '), write(Tipe), nl,

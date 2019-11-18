@@ -16,8 +16,9 @@ fight :-
 	write('Anda melawan '), write(Nama), write('!!'), nl,
 	pemain(_, L, _, _, _),
 	write('Choose your Tokemon!'), nl,
-	write('Available Tokemons: ['), writeAvailable(L), write(']'), nl, 
-	write('pick/2 : ID,NamaTokemon'), nl, !.
+	write('Available Tokemons:'), nl,
+	writeIndex(L, 1), nl, 
+	write('pick/1 : Index Tokemon'), nl, !.
 
 run :-
 	\+inFight(_, _, _, _),
@@ -34,7 +35,7 @@ run :-
 	randInterval(X, 1, 2),
 	runRandom(X).
 
-runRandom(X) :- X=1, retract(inFight(_, _, _, _)), write('You sucessfully escaped the Tokemon!'), nl, !.
+runRandom(X) :- X=1, retract(inFight(_, _, _, _)), write('You sucessfully escaped from the Tokemon!'), nl, !.
 runRandom(X) :- X=2, write('You failed to run!'), nl, fight.
 
 %% cari Name di Inventory ambil yg pertama if none Id = -1
@@ -51,30 +52,25 @@ searchNameInList(Name, [Id|_], Id, 1) :-
 searchNameInList(Name, [_|T], Id, 1) :-
 	searchNameInList(Name, T, Id, 1).
 
-
-pick(_,_) :-
+pick(_) :-
 	\+inFight(_, _, _, _),
 	write('Anda tidak dalam battle saat ini.'), nl, !.
 
-pick(_,_) :-
+pick(_) :-
 	inFight(_, MyId, _, _),
 	MyId \= -1,
 	write('Anda sudah pick tokemon!'), nl, !.
 
-pick(_,Name) :-
-	\+jenis_tokemon(Name, _, _, _, _, _),
-	write('Tidak ada tokemon bernama '),
-	write(Name), write('!'), nl, !.
+pick(Idx) :-
+	pemain(_, L, _, _, _),
+	length(L, X), Idx>X, Idx=<0, 
+	write('Tidak ada Tokemon berindeks '),
+	write(Idx), write('!'), nl, !.
 
-pick(Idt,Name) :-
-	inInventory(Name, Idt, Ada),
-	(Ada = -1),
-	write('Anda tidak memiliki '),
-	write(Name), write(' dengan ID: '), write(Idt), write('!'), nl.
-
-pick(Id,Name) :-
-	inInventory(Name, Id, Ada),
-	Ada \= -1,
+pick(Idx) :-
+	pemain(_, L, _, _, _),
+	getIndex(L, Idx, Id),
+	stat_tokemon(Id, Name, _, _, _, _),
 	retract(inFight(EnemyId, _, _, Can_Special)),
 	asserta(inFight(EnemyId, Id, 0, Can_Special)),
 	write(Name), write(', I choose you!'), nl, nl,
