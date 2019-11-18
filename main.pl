@@ -418,7 +418,8 @@ help :-
 	write('15. run     : Lariiiii.'),nl,
 	write('16. savefile(filename) : Menyimpan permainan pemain.'),nl,
 	write('17. loadfile(filename) : Membuka save-an pemain.'),nl,
-	write('18. quit : Keluar dari permainan.'),nl.
+	write('18. heal. : Mengobati seluruh pokemon pada inventory pada petak gym.'),nl,
+	write('19. quit : Keluar dari permainan.'),nl.
 
 %% USAGE: writeIndex(Inv, 1)
 writeIndex([], _) :- !.
