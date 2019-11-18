@@ -130,6 +130,9 @@ tokemonInit(tukangair).
 tokemonInit(lumud).
 %tokemonInit(missingno).
 choosePlayer(Name) :-
+	atom_codes(Name, L),
+	sumList(L, Seed),
+	set_seed(Seed),
 	addPemain(Name,10,9,tl),
 	retract(donePlayer(_)),
 	(write(Name), write(' pilih tokemon Anda terlebih dahulu!'), nl,
@@ -258,6 +261,11 @@ replace([H|T], X, Pos, [H|B]) :- Pos > 0, Posmin1 is Pos-1, replace(T, X, Posmin
 getChar([H|_], X, 0) :- X is H.
 getChar([_|T], X, Pos) :- Pos > 0, Posmin1 is Pos-1, getChar(T, X, Posmin1).
 
+%% SUM LIST
+sumList([], 0) :- !.
+sumList([H|T], S) :-
+	sumList(T, STail),
+	S is H+STail.
 
 %% ISLISTMEMBER
 isMember(X, [X|_]) :- !.
