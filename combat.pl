@@ -196,7 +196,21 @@ checkIfEnemyDead(Id) :-
 	retract(stat_tokemon(Id, Name, Health, Level, Exp, ExpMax)),
 	max_Health(Name, Level, Max_H),
 	assertz(stat_tokemon(Id, Name, Max_H, Level, Exp, ExpMax)),
-	makeCanCapture(Id), ExpUp is Level*20, asserta(tokemonExpUp(IdUp,ExpUp)), fail, !.
+	makeCanCapture(Id), ExpUp is Level*20, asserta(tokemonExpUp(IdUp,ExpUp)),
+	ExpUpEnemy is ExpUp//2,
+	handleEnemyLvlUp(Id, ExpUpEnemy),
+	fail, !.
+
+
+handleEnemyLvlUp(Id, ExpUp) :-
+	stat_tokemon(Id,Name,H,Level,Exp,ExpMax), ExpNew is (Exp + ExpUp), (\+ isLevelUp(ExpNew,ExpMax), 
+	retract(stat_tokemon(Id,Name,H,Level,Exp,ExpMax)),
+	asserta(stat_tokemon(Id,Name,H,Level,ExpNew,ExpMax))), !.
+
+handleEnemyLvlUp(Id, ExpUp) :-
+	retract(stat_tokemon(Id,Name,_,Level,Exp,ExpMax)),ExpTemp is (Exp + ExpUp),
+	isLevelUp(ExpTemp,ExpMax), ExpNew is (ExpTemp-ExpMax), ExpMaxNew is (ExpMax + 50), LevelUp is (Level + 1), max_Health(Name,LevelUp, HNew),
+	asserta(stat_tokemon(Id,Name,HNew,LevelUp,ExpNew,ExpMaxNew)), !.
 
 handleLegendDead(Id) :-
 	((Id = 1, retract(statLegend1(_)), asserta(statLegend1(1)));
