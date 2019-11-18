@@ -11,7 +11,7 @@
 :- include('main.pl').
 
 
-start(d) :-
+startd :-
 	retractall(pemain(_, _, _, _, _)),
 	retractall(inFight(_, _, _, _)),
 	retractall(mayCapture(_, _)),
@@ -28,8 +28,9 @@ start(d) :-
 	title,
 	write('######## DEBUG MODE ########'), nl,
 	write('Anda adalah akill, pokemon Anda adalah lumud level 100'), nl,
-	%addPemain(akill,10,9,tl),
-	addPemain(akill,18,21,bl),
+	%addPemain(akill,3,9,tl),
+	addPemain(akill,40,3,tr),
+	%addPemain(akill,18,21,bl),
 	%addPemain(akill,44,24,br),
 	asserta(tokemonCount(0)),
 	asserta(mayCapture(0, -1)),

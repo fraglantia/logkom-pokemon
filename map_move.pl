@@ -77,26 +77,33 @@ cekPeta(Map, Xnext, Ynext, _, Xnew, Ynew) :-
 	\+cekAscii(Symbol,64),
 	\+cekAscii(Symbol,47),
 	\+cekAscii(Symbol,92),
+	\+cekAscii(Symbol,124),
+	\+cekAscii(Symbol,79),
+	\+cekAscii(Symbol,111),
 	Xnew is Xnext,
 	Ynew is Ynext.
 
 cekPeta(_, Xnext, Ynext, w, Xnew, Ynew) :-
 	write('*thunk*'), nl,
+	sleep(0.5),
 	Xnew is Xnext,
 	Ynew is (Ynext+1).
 
 cekPeta(_, Xnext, Ynext, s, Xnew, Ynew) :-
 	write('*thunk*'), nl,
+	sleep(0.5),
 	Xnew is Xnext,
 	Ynew is (Ynext-1).
 
 cekPeta(_, Xnext, Ynext, a, Xnew, Ynew) :-
 	write('*thunk*'), nl,
+	sleep(0.5),
 	Xnew is (Xnext+1),
 	Ynew is Ynext.
 
 cekPeta(_, Xnext, Ynext, d, Xnew, Ynew) :-
 	write('*thunk*'), nl,
+	sleep(0.5),
 	Xnew is (Xnext-1),
 	Ynew is Ynext.
 

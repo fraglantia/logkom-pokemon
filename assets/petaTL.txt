@@ -1,18 +1,18 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                            
-X  o=====o  X - - - - - - - - XXXXXXXXX                    
-X  |G Y M|  X - - - - -v- - - - - - - >                    
-X  |=====|  X -v- - -@- - - - - - - - >                    
-X  |[] []|  X - - - - - - - v - - - - >                    
-X  o==G==o  X - -v- - - - - - - - - - >                    
-X+X+X - X+X+X - - - - - - - - XXXXXXXXX                    
-X - - - - - - - - - - -v- - - X                            
-X -v- - - @@- - - -v- -v- - - X                            
-X - - - - v@- - -v- - - - - - X                            
-X - - - - - - - - -v- - - - - X                            
-X - - - - - - -v- - - -v- - - X                            
-X -@- - - XXXXXXXXXXXXXXXXXXXXX                            
-X - - - - X                                                
-X - - - - X                                                
-X - - - - X                                                
-XXX V V XXX                                                
-                                                            
+X  o=====o  X v - - - - - - - XXXXXXXXX                    
+X  |G Y M|  X v - v - - v - - - - - v >                    
+X  |=====|  X v - - - - - - - - v - v >                    
+X  |[] []|  X v - - - - - - - - v - v >                    
+X  o==G==o  X v - v - - - - - - - - v >                    
+X+X+X - X+X+X - - - - - v - v XXXXXXXXX                    
+X -v- - -v- - v - - v V V V v X                            
+X -v- - -v- - - - v W W W W V X                            
+X - - - - - - - v V W W W W V X                            
+X - - - - - - - - v W W W W V X                            
+X - - v - - - - v v V V V V V X                            
+X - - - - - XXXXXXXXXXXXXXXXXXX                            
+X - - - - - X                                              
+X - - v - - X                                              
+X - - - - - X                                              
+XXX V V V XXX                                              
+                                                           

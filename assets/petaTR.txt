@@ -1,15 +1,15 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  
-XXXXXXXXX vv- - -v- - - - - - -W- - - - - -W- - v - -W- X  
-< - - - - -v- - - - - - - v - -|- -v-v- - -|-v- - -v-|- X  
-< -v- -v- -v- - -v- - - - - - - - - - vv- - - - L - - - X  
-< - - - - - -v- - - -v- -v- - -v- - - -v- -W-v- - -v-W- X  
-< - - - -v- - - v - -v- -|- - - v v -v- - -|- - v - -|- X  
-XXXXXXXXXXX v - - - - - - - v - -v- -v- - - - - - - - - X  
-           XXXXX-v- - -v- - - - - - -|-W- - -w- - - - - X  
-              XXXX- v - - - -v- - - - -|- - -|- - - -W- X  
-                XXX - -v- - - - v - - - - - - - - - -|- X  
-                   XX - - - - - - - - - - -v- - - - - - X  
-                     XX - - - v - -v- - - - - - - v - - X  
-                      X - - - - -v- - - - - - - - - - - X  
+XXXXXXXXX - - v - - - v - - - v - - - W - v v V v v - W X  
+< v - - - v - - - v - W - v - W - v - | v v V - V v v | X  
+< - - v - - - v - - - | - - - | - - - - v v - L - v v - X  
+< v - - - v - - - v - - - v - - - v - W v v V - V v v W X  
+< - - v - - - v - - - v - - - v - - - | - v v V v v - | X  
+XXXXXXXXXXX - - - v - W - v - W - v - - - - v v v - - - X  
+          XXXXX - - - | - - - | - - - W - - - W - - - W X  
+              XXXXv - - - v - - - v - | - v - | - v - | X  
+                XXX - v - - - v - - - - - - - - - - - - X  
+                  XXX - - v - W - v - - - v - - - v - - X  
+                    XXX - - - | - - - v - - - v - - - - X  
+                      X - v - - - v - - - v - - - v - - X  
                       XXXXXXXXXXXXXXXXXXXXXXX V V V V XXX  
                                                             

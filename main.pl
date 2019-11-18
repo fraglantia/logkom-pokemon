@@ -133,7 +133,7 @@ choosePlayer(Name) :-
 	atom_codes(Name, L),
 	sumList(L, Seed),
 	set_seed(Seed),
-	addPemain(Name,10,9,tl),
+	addPemain(Name,3,9,tl),
 	retract(donePlayer(_)),
 	(write(Name), write(' pilih tokemon Anda terlebih dahulu!'), nl,
 	write('chooseTokemon/1: karma_nder (Fire), tukangair (Water), atau lumud (Leaves)!')).
@@ -380,13 +380,13 @@ healList([Id|T]) :-
 %% ================= LEGEND =================
 
 handleLegend :-
-	(pemain(_, _, 43, 3, _), statLegend1(0)),
+	(pemain(_, _, 42, 3, _), statLegend1(0)),
 	retract(inLegend(_)),
 	write('Anda bertemu Legendary Tokemon tipe Leaves!'), nl,
 	asserta(inLegend(1)), meetLegend(1), !.
 
 handleLegend :-
-	(pemain(_, _, 44, 24, _), statLegend2(0)),
+	(pemain(_, _, 43, 24, _), statLegend2(0)),
 	retract(inLegend(_)),
 	write('Anda bertemu Legendary Tokemon tipe Water!'), nl,
 	asserta(inLegend(2)), meetLegend(2), !.
