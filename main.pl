@@ -87,6 +87,12 @@ start :-
 	retractall(statLegend2(_)),
 	asserta(donePlayer(0)),
 	title,
+	write('Pada zaman dahulu, di Negara Logkombia, semua orang dengan tokemon-tokemonnya hidup dengan damai. Semua itu berubah saat Negara Sparta menyerang.'), 
+	nl,write('Negara Sparta menyerang Logkombia dan menjajah dengan tokemon-tokemon ganas mereka.'), nl, 
+	write('Pemimpin dari Sparta yang sangat dikenal kejam dan dingin, Ibeyou, dikawal dengan dua tokemon legendarynya, tertawa melihat hancurnya negara Logkombia.'),
+	write('Setelah 20 tahun kemudian, Negara Logkombia kembali memiliki harapan dengan adanya 2 anak muda yang sangat antusiaAs untuk membebaskan negaranya dari jajahan Negara Sparta.'),nl,
+	write('Pemuda-pemuda berani itu bernama Jun-Go dan Akill. Mereka sama-sama memiliki tujuan yang sama untuk mengembalikan Logkombia menjadi damai seperti semula, tetapi mereka memiliki metode yang berbeda untuk mencapai tujuan tersebut, sehingga mereka berpisah dan menjadi rival satu sama lain dalam mengalahkan Ibeyou.')
+	,nl,nl,
 	write('Siapa Anda?'), nl,
 	write('choosePlayer/1: akill, jun-go, atau (Nama bebas).'),
 	asserta(doneTokemon(0)),
@@ -488,7 +494,7 @@ quit :- halt.
 
 checkLose :-
 	pemain(_, [], _, _, _),
-	write('YOU LOSE!'), nl,
+	write('GET REKT NOOB! YOU LOSE!!, tokemon yang anda miliki mati semua:( Innalillahi... Coba lagi yuk..'), nl,
 	halt, !.
 
 checkLose :-
@@ -500,7 +506,7 @@ checkLose :-
 checkWin :-
 	legendKillCount(X),
 	X >= 2,
-	write('YOU WIN!'), nl,
+	write('YOU WIN! Anda telah mengalahkan dua tokemon legendary milik pemimpin Sparta, Ibeyou. Para prajurit Sparta kabur dengan rasa takut dari Logkombia. Negara Logkombia sudah bebas dari kekuasaan Sparta yang kejam. YEAY!!!'), nl,
 	halt, !.
 
 checkWin :- !.
